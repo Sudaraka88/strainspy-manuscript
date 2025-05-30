@@ -47,3 +47,8 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# We should include test data at some point, waiting for clean up
+TEST_DATA
+
+.DS_Store
