@@ -48,7 +48,7 @@ sylph query /data1/gerryt/sylph_analyses/gtdb-r220-c200-dbv1.syldb -u --read-seq
 ```
 
 
-### Function to generate sensitivity heatmaps
+### Functions to generate plots and heatmaps
 ```{r}
 library(ggplot2)
 library(dplyr)
@@ -75,13 +75,7 @@ gg_facet_plot <- function(op, title = NULL){
     Sensitivity = tp / (tp + fn) * 100,
     Specificity = tn / (tn + fn) * 100,
     Precision   = tp / (tp + fp) * 100,
-    # Recall      = tp / (tp + fn) * 100,
     F1          = 2 * tp / (2 * tp + fp + fn) * 100,
-    # MCC         = ifelse(
-    #   (tp + fp) * (tp + fn) * (tn + fp) * (tn + fn) == 0,
-    #   NA,
-    #   ((tp * tn) - (fp * fn)) / sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn))
-    # ) * 100
   )
   
   long_op <- op %>%
@@ -124,15 +118,8 @@ gg_heatmaps <- function(op){
     Sensitivity = tp / (tp + fn) * 100,
     Specificity = tn / (tn + fn) * 100,
     Precision   = tp / (tp + fp) * 100,
-    # Recall      = tp / (tp + fn) * 100,
     F1          = 2 * tp / (2 * tp + fp + fn) * 100,
-    # MCC         = ifelse(
-    #   (tp + fp) * (tp + fn) * (tn + fp) * (tn + fn) == 0,
-    #   NA,
-    #   ((tp * tn) - (fp * fn)) / sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn))
-    # ) * 100
   )
-  
   
   op_long <- op %>%
     pivot_longer(cols = c(Sensitivity, Specificity, Precision, F1),
@@ -150,40 +137,6 @@ gg_heatmaps <- function(op){
       strip.text = element_text(size = 10, face = "bold"),
       axis.text.x = element_text(angle = 45, hjust = 1)
     )
-  
-  
-  # ggplot(op, aes(x = z_prop, y = sf, fill = Specificity)) +
-  #   geom_tile() +
-  #   facet_wrap(~ Test) +  # Separate plots for each test
-  #   
-  #   scale_fill_viridis_c(name = "Sensitivity") +  # Viridis color scale
-  #   
-  #   labs(
-  #     x = "Zero Proportion",
-  #     y = "Scale Factor",
-  #     # title = "Sensitivity Across Tests"
-  #   ) +
-  #   theme_minimal() +
-  #   theme(
-  #     strip.text = element_text(size = 12, face = "bold"),  # Styling facet labels
-  #     axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels if needed
-  #   )
-  # 
-  # ggplot(op, aes(x = zero_prop, y = scale_factor, fill = fp)) +
-  #   geom_tile() +
-  #   scale_fill_viridis_c(name = "False Positives") +  # Viridis color scale
-  #   facet_wrap(~ test) +  # Separate plots for each test
-  #   labs(
-  #     x = "Zero Proportion",
-  #     y = "Scale Factor",
-  #     # title = "Sensitivity Across Tests"
-  #   ) +
-  #   theme_minimal() +
-  #   theme(
-  #     strip.text = element_text(size = 12, face = "bold"),  # Styling facet labels
-  #     axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels if needed
-  #   )
-  
 }
 
 ```
@@ -389,10 +342,11 @@ if(file.exists(save_path)){
 }
 gg_heatmaps(op_full)
 ```
-# Generate a manhattan plot with ground truth for a single data point
+
+## Generate a manhattan plots with ground truth for a single data point
 ```{r}
-scale_factor = 0.9
-zero_prop = 0.6
+scale_factor = 0.975
+zero_prop = 0.25
 
 exp_beta = c()
 exp_zi = c()
