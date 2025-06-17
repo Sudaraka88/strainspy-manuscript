@@ -20,6 +20,7 @@
 
 # RStudio files
 .Rproj.user/
+*.Rproj
 
 # produced vignettes
 vignettes/*.html
@@ -50,5 +51,20 @@ rsconnect/
 
 # We should include test data at some point, waiting for clean up
 TEST_DATA
+ecoli_sims
 
 .DS_Store
+
+# Large files
+*.fna
+*.fastq
+*.tsv
+
+# Log files
+*.log
+
+# Simulated Genomes
+GCF*
+
+# Simulation outputs
+*txt
