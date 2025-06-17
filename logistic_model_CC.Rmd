@@ -125,7 +125,7 @@ gg_facet_plot <- function(op, title = NULL){
 ```
 
 ### Simulate changes in identity
-```{r}
+```{r, fig.width=8, fig.asp=0.75, out.width='100%'}
 save_path = "output_rds/logi_sim_id.rds"
 if(file.exists(save_path)){
   op_id = readRDS(save_path)
@@ -177,7 +177,7 @@ gg_facet_plot(op_id, "Variation in feature identity")
 ```
 
 ### Simulate changes in presence/absence
-```{r}
+```{r, fig.width=8, fig.asp=0.75, out.width='100%'}
 save_path = "output_rds/logi_sim_pa.rds"
 if(file.exists(save_path)){
   op_pa = readRDS(save_path)
