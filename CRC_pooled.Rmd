@@ -1,29 +1,13 @@
 ---
-title: "Untitled"
+title: "Analysis of 3414 pooled colorectal cancer metagenomes"
 output: html_document
-date: "2024-12-20"
+date: "2025-06-30"
 editor_options: 
   chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-```
-
-# Run Sylph v0.8.0
-
-### UHGG
-
-```
-sylph query /data1/gerryt/sylph_analyses/uhgg_all_c200_v0.3.0.syldb -u --read-seq-id 99.9 -t 100 -1 ./*_1.fastq.gz -2 ./*_2.fastq.gz -o ./warren_sylph_query_uhgg_all_c200_v030.tsv
-
-sylph profile /data1/gerryt/sylph_analyses/gtdb-r220-c200-dbv1.syldb -u --read-seq-id 99.9 -t 100 -1 ./*_1.fastq.gz -2 ./*_2.fastq.gz -o ./warren_sylph_profile_gtdb-r220-c200-dbv1.tsv
-```
-
-### GTDB 99%
-
-```
-sylph query /data1/gerryt/sylph_analyses/gtdb_99_ordered_DB/gtdb_ordered_99.syldb -u --read-seq-id 99.9 -t 100 -1 ./*_1.fastq.gz -2 ./*_2.fastq.gz -o ./wallen_sylph_query_gtdb_220_id99.tsv
 ```
 
 ## Run full analysis
@@ -33,45 +17,66 @@ library(SummarizedExperiment)
 library(tidyverse)
 library(strainspy)
 
-meta_path <- "./data/wallen/wallen_metadata.csv"
-meta <- readr::read_csv(meta_path) 
+meta_path <- "./data/segata_pooled_3741/combined_metadata.tsv"
+meta <- read.csv(meta_path, sep = '\t') 
 
 # sylph_query_path <- "~/Documents/wallen_example/warren_sylph_query_uhgg_all_c200_v030.tsv.gz"
-sylph_query_path <- "./data/wallen/wallen_sylph_query_gtdb_220_id99.tsv.gz"
+sylph_query_path <- "./data/segata_pooled_3741/combined_q_99.tsv.gz"
 # sylph_query_path <- "~/Documents/wallen_example/wallen_sylph_profile_gtdb-r220-c200-dbv1.tsv.gz"
 
-taxonomy <- read_taxonomy("data/TAXONOMY/sylph_DB_taxonomy_99.tsv")
-
 sy <- read_sylph(sylph_query_path)
-sy <- filter_by_presence(sy, min_nonzero = 72)
+sy <- filter_by_presence(sy, min_nonzero = 342)
+
+# rename sequence names in the sylph file
 colnames(sy) <- gsub("_1", "", colnames(sy))
+colnames(sy) <- gsub("_merged", "", colnames(sy))
+colData(sy)$Sample_file <- gsub("_1", "", basename(colData(sy)$Sample_file))
+colData(sy)$Sample_file <- gsub("CRC_pooled.Rmd`
+                                \``erged", "", basename(colData(sy)$Sample_file))
+
 dim(sy)
 
-sy <- sy[colnames(sy) %in% meta$run_accession,]
+all(colnames(sy) %in% meta$run_accession)
 
-colData(sy)$Sample_file <- gsub("_1", "", basename(colData(sy)$Sample_file))
-meta$scale_read_count <- as.numeric(scale(meta$total_sequences))
+sy = strainspy:::modify_metadata(sy, meta)
 
-temp <- merge(colData(sy), meta, by.x="Sample_file", by.y="run_accession", all.x=TRUE)
-# Reorder the dataframe to match the original order
-temp <- temp[match(colData(sy)$Sample_file, temp$Sample_file), ]
-stopifnot(all(temp$Sample_file==colData(sy)$Sample_file))
+design <- as.formula("~ disease + age + sex + BMI + (1 | study)")
+ZB_fit <- glmZiBFit(sy,  design, nthreads = 4)
 
-# 490 cases and 234 controls (total 724)
-table(temp$Case_status, useNA = "always")
-#missing
-temp$Sample_file[is.na(temp$Case_status)]
+taxonomy <- read_taxonomy(system.file("extdata", "example_taxonomy.tsv.gz", package = "strainspy"))
 
-colData(sy) <- temp
+plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = T)
+plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = F)
+plot_volcano(ZB_fit)
 
-sy <- sy[, !is.na(colData(sy)$collection_method)]
-sy <- sy[, colData(sy)$collection_method!="swab"]
+OB_fit <- glmFit(sy,  design, nthreads = 10)
+
+taxonomy <- read_taxonomy(system.file("extdata", "example_taxonomy.tsv.gz", package = "strainspy"))
+
+plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = T)
+plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = F)
+plot_volcano(ZB_fit)
 
 
-design <- as.formula("Case_status ~ Value + Age_at_collection + Sex + Do_you_drink_alcohol + Laxatives + Probiotic +
-                     Pain_med + Depression_anxiety_mood_med + Antibiotics_current + Sleep_aid")
 
-colData(sy)$Case_status <- factor(colData(sy)$Case_status)
+# 
+# temp <- merge(colData(sy), meta, by.x="Sample_file", by.y="run_accession", all.x=TRUE)
+# # Reorder the dataframe to match the original order
+# temp <- temp[match(colData(sy)$Sample_file, temp$Sample_file), ]
+# stopifnot(all(temp$Sample_file==colData(sy)$Sample_file))
+# 
+# # 490 cases and 234 controls (total 724)
+# table(temp$Case_status, useNA = "always")
+# #missing
+# temp$Sample_file[is.na(temp$Case_status)]
+# 
+# colData(sy) <- temp
+# 
+# sy <- sy[, !is.na(colData(sy)$collection_method)]
+# sy <- sy[, colData(sy)$collection_method!="swab"]
+
+
+
 
 save_path = "output_rds/wallen_logit_q_99.rds"
 if(file.exists(save_path)){
@@ -86,15 +91,15 @@ if(file.exists(save_path)){
 # tophits
 sort(strainspy:::clean_contig_names(top_hits(logit_fit, method = "BH")$Contig_name))
 # volcano_plot
-plot_volcano(logit_fit, label = T)
+plot_volcano(logit_fit)
 
 # Manhattan plots
 plot_manhattan(logit_fit, taxonomy = taxonomy, method = "BH")
 plot_manhattan(logit_fit, taxonomy = taxonomy, aggregate_by_taxa = F)
 
 # See the top few distributions
-plot_ani_dist(sy, 'Case_status', contigs = top_hits(logit_fit)$Contig_name[1:10], plot_type = "box")
-plot_ani_dist(sy, 'Case_status', contigs = top_hits(logit_fit)$Contig_name[1:10], drop_zeros = T, plot_type = "box")
+plot_ani_dist(sy, 'Case_status', contigs = top_hits(logit_fit)$Contig_name[1:5], plot_type = "box")
+plot_ani_dist(sy, 'Case_status', contigs = top_hits(logit_fit)$Contig_name[1:5], drop_zeros = T, plot_type = "box")
 
 # saveRDS(logit_fit, "~/Documents/wallen_example/wallen_fit_profile_UHGG_logit.rds")
 # saveRDS(logit_fit, "~/Documents/wallen_example/wallen_logit_fit_profile_GTDB_99_logit.rds")
@@ -140,9 +145,10 @@ if(file.exists(save_path)){
     ZB_fit <- glmZiBFit(sy,  design, nthreads = 4)
   })
   saveRDS(ZB_fit, save_path)
+
 }
 
-plot_volcano(ZB_fit, label = T)
+plot_volcano(ZB_fit)
 plot_manhattan(ZB_fit, taxonomy = taxonomy)
 plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = F)
 
@@ -163,15 +169,12 @@ table(unique(th$Species) %in% unique(lth$Species))
 table(unique(lth$Species) %in% unique(th$Species))
 
 
-badj <- hadjust(ZB_fit, taxonomy=taxonomy)
+badj <- hadjust(beta_fit, taxonomy=taxonomy)
 
-gg <- plot_manhattan(ZB_fit, taxonomy = taxonomy, method = 'HMP')
+gg <- plot_manhattan(beta_fit, taxonomy = taxonomy, method = 'HMP')
 gg + ggplot2::geom_point(aes(y = log_p_adjust, x = index_min + (index_max-index_min)/2), size=0.1) + 
   ggplot2::geom_segment(aes(y = log_p_adjust, x = index_min - 10, xend = index_max + 10), linewidth=3)
 
-
-plot_ani_dist(sy, 'Case_status', contigs = top_hits(ZB_fit)$Contig_name[1:100], plot_type = "box")
-plot_ani_dist(sy, 'Case_status', contigs = top_hits(ZB_fit)$Contig_name[1:20], drop_zeros = T, plot_type = "box")
 
 # cols <- c('#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#ffff99','#b15928')
 # 

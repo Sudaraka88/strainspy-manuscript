@@ -52,6 +52,7 @@ rsconnect/
 # We should include test data at some point, waiting for clean up
 TEST_DATA
 ecoli_sims
+data
 
 .DS_Store
 

@@ -1,0 +1,23 @@
+---
+title: "ICB analysis (Lee et al. 2022)"
+output: html_document
+date: "2025-03-12"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```
+kingfisher get --run-identifiers-list PRJEB43119_ids.tsv --download-threads 10 -m ena-ascp ena-ftp aws-http prefetch
+```
+
+
+```
+sylph query /data1/gerryt/sylph_analyses/gtdb_99_ordered_DB/gtdb_ordered_99.syldb -u --read-seq-id 99.9 -t 50 -1 ./*_1.fastq.gz -2 ./*_2.fastq.gz -o ./lee_sylph_query_gtdb_220_id99.tsv
+```
+
+```
+sylph profile /data1/gerryt/sylph_analyses/gtdb-r220-c200-dbv1.syldb -u --read-seq-id 99.9 -t 50 -1 ./*_1.fastq.gz -2 ./*_2.fastq.gz -o ./lee_sylph_profile_gtdb-r220-c200-dbv1.tsv
+```
+

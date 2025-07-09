@@ -1,0 +1,115 @@
+---
+title: "Simulations with spiked E. coli strain analysed using Sylph Profile"
+output:
+  html_document: default
+  pdf_document: default
+date: "2025-06-167"
+editor_options:
+  chunk_output_type: console
+---
+
+### Load data and prepare for simulations
+
+```{r}
+library(strainspy)
+# Profiles
+d_p95 <- read_sylph("ecoli_sims/test/sylph_p_95.tsv")
+d_p98 <- read_sylph("ecoli_sims/test/sylph_p_98.tsv")
+d_p99 <- read_sylph("ecoli_sims/test/sylph_p_99.tsv")
+
+# spiked samples
+ss = readLines("ecoli_sims/test/sampled.txt")
+
+# add the metadata
+d_p95 = strainspy:::modify_metadata(se = d_p95, meta_data = data.frame(run_accession = colnames(d_p95),
+                       spiked = as.factor(sapply(colnames(d_p95), function(x) x%in% ss))))
+
+d_p98 = strainspy:::modify_metadata(se = d_p98, meta_data = data.frame(run_accession = colnames(d_p98),
+                       spiked = as.factor(sapply(colnames(d_p98), function(x) x%in% ss))))
+
+d_p99 = strainspy:::modify_metadata(se = d_p99, meta_data = data.frame(run_accession = colnames(d_p99),
+                       spiked = as.factor(sapply(colnames(d_p99), function(x) x%in% ss))))
+
+
+d_p95 <- filter_by_presence(d_p95, min_nonzero = 20)
+d_p98 <- filter_by_presence(d_p98, min_nonzero = 20)
+d_p99 <- filter_by_presence(d_p99, min_nonzero = 20)
+
+# taxonomies
+tax_95 = read_taxonomy(system.file("extdata", "example_taxonomy.tsv.gz", package = "strainspy"))
+tax_98 = read_taxonomy("ecoli_sims/test/sylph_DB_taxonomy_98.tsv")
+tax_99 = read_taxonomy("ecoli_sims/test/sylph_DB_taxonomy_99.tsv")
+
+design <- as.formula(" ~ spiked")
+
+```
+
+## Fit ZIB models
+
+### profile 95
+
+```{r, fig.width=8, fig.asp=0.75, out.width='100%'}
+fit_zib_95 <- glmZiBFit(d_p95, design, nthreads = 10)
+
+plot_manhattan(fit_zib_95, taxonomy = tax_95, method = "HMP", tax_levels = c("Phylum", "Order", "Class", "Genus"))
+plot_volcano(fit_zib_95, label = T)
+plot_ani_dist(d_p95, phenotype = 'spiked', contigs = top_hits(fit_zib_95, alpha = 0.05)$Contig_name, drop_zeros = F, show_points = T, plot_type = 'violin')
+
+```
+
+### profile 98
+
+```{r, fig.width=8, fig.asp=0.75, out.width='100%'}
+fit_zib_98 <- glmZiBFit(d_p98, design, nthreads = 10)
+
+plot_manhattan(fit_zib_98, taxonomy = tax_98, method = "holm", tax_levels = c("Phylum", "Order", "Class", "Genus", "Species"))
+plot_volcano(fit_zib_98, label = T)
+plot_ani_dist(d_p98, phenotype = 'spiked', contigs = top_hits(fit_zib_98, alpha = 0.05)$Contig_name)
+plot_ani_dist(d_p98, phenotype = 'spiked', contigs = top_hits(fit_zib_98, alpha = 0.05)$Contig_name, drop_zeros = T)
+```
+
+### profile 99
+
+```{r, fig.width=8, fig.asp=0.75, out.width='100%'}
+fit_zib_99 <- glmZiBFit(d_p99, design, nthreads = 10)
+
+plot_manhattan(fit_zib_99, taxonomy = tax_99, method = "HMP", tax_levels = c("Phylum", "Order", "Class", "Genus"))
+plot_volcano(fit_zib_99, label = T)
+plot_ani_dist(d_p99, phenotype = 'spiked', contigs = top_hits(fit_zib_99, alpha = 0.05)$Contig_name)
+plot_ani_dist(d_p99, phenotype = 'spiked', contigs = top_hits(fit_zib_99, alpha = 0.05)$Contig_name, drop_zeros = T)
+
+```
+
+## Fit OB models
+
+### profile 95
+
+```{r, fig.width=8, fig.asp=0.75, out.width='100%'}
+fit_ob_95 <- glmFit(d_p95, design, nthreads = 10)
+
+plot_manhattan(fit_ob_95, taxonomy = tax_95, method = "HMP", tax_levels = c("Phylum", "Order", "Class", "Genus"))
+plot_volcano(fit_ob_95, label = T)
+plot_ani_dist(d_p95, phenotype = 'spiked', contigs = top_hits(fit_ob_95, alpha = 0.5)$Contig_name, drop_zeros = F, show_points = T, plot_type = 'violin')
+```
+
+### profile 98
+
+```{r}
+fit_ob_98 <- glmFit(d_p98, design, nthreads = 10)
+
+plot_manhattan(fit_ob_98, taxonomy = tax_98, method = "HMP", tax_levels = c("Phylum", "Order", "Class", "Genus", "Species"))
+plot_volcano(fit_ob_98, label = T)
+plot_ani_dist(d_p98, phenotype = 'spiked', contigs = top_hits(fit_ob_98, alpha = 0.05)$Contig_name, show_points = T, plot_type = 'violin')
+plot_ani_dist(d_p98, phenotype = 'spiked', contigs = top_hits(fit_ob_98, alpha = 0.05)$Contig_name, drop_zeros = T, show_points = T, plot_type = 'violin')
+```
+
+### profile 99
+
+```{r}
+fit_ob_99 <- glmFit(d_p99, design, nthreads = 10)
+
+plot_manhattan(fit_ob_99, taxonomy = tax_99, method = "HMP", tax_levels = c("Phylum", "Order", "Class", "Genus", "Species"))
+plot_volcano(fit_ob_99, label = T)
+plot_ani_dist(d_p99, phenotype = 'spiked', contigs = top_hits(fit_ob_99, alpha = 0.05)$Contig_name, drop_zeros = F, show_points = T, plot_type = 'violin')
+plot_ani_dist(d_p99, phenotype = 'spiked', contigs = top_hits(fit_ob_99, alpha = 0.05)$Contig_name, drop_zeros = T, show_points = T, plot_type = 'violin')
+```

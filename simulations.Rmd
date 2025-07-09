@@ -214,6 +214,7 @@ if(file.exists(save_path)){
     fit_zib_updated = strainspy:::update_fit(fit = fit_zib_null, se = se, update_idx = sel, nthreads = 10)
     fit_ob_updated = strainspy:::update_fit(fit = fit_ob_null, se = se, update_idx = sel, nthreads = 10)
     fit_cascon_updated = strainspy:::update_fit(fit = fit_cascon_null, se = se, update_idx = sel, nthreads = 10, min_identity = 0.9)
+    fit_lr_updated = strainspy:::update_fit(fit = fit_lr_null, se = se, update_idx = sel, nthreads = 10, family = "binomial")
     cat(scale_factor, "\n")
     
     op_id = rbind(op_id, 
@@ -356,9 +357,9 @@ data_matrix <- SummarizedExperiment::assay(se) # NULL
 vals_to_mod = data_matrix[sel, cases]
 
 for(i in 1:length(sel)){ 
-  tmp = rescale_beta(x = data_matrix[sel[i], cases]/100,
-                     beta = scale_factor,
-                     zi = zero_prop)
+  tmp = strainspy:::rescale_beta(x = data_matrix[sel[i], cases]/100,
+                                 beta = scale_factor,
+                                 zi = zero_prop)
   
   vals_to_mod[i,] = tmp$rescaled*100
   exp_beta[i] = tmp$expected_beta
