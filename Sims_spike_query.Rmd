@@ -62,8 +62,8 @@ if(file.exists(save_path)){
 plot_manhattan(fit_zib_95, taxonomy = tax_95, method = "HMP", tax_levels = c("Phylum", "Order", "Class", "Genus"))
 plot_manhattan(fit_zib_95, taxonomy = tax_95, aggregate_by_taxa = F)
 plot_volcano(fit_zib_95, label = T)
-plot_ani_dist(d_q95, phenotype = 'spiked', contigs = top_hits(fit_zib_95, alpha = 0.1)$Contig_name, drop_zeros = F, show_points = T, plot_type = 'violin')
-plot_ani_dist(d_q95, phenotype = 'spiked', contigs = top_hits(fit_zib_95, alpha = 0.1)$Contig_name, drop_zeros = T, show_points = T, plot_type = 'violin')
+plot_ani_dist(d_q95, phenotype = 'spiked', contigs = top_hits(fit_zib_95)$Contig_name, drop_zeros = F, show_points = T, plot_type = 'violin')
+plot_ani_dist(d_q95, phenotype = 'spiked', contigs = top_hits(fit_zib_95)$Contig_name, drop_zeros = T, show_points = T, plot_type = 'violin')
 ```
 
 ### query 98
@@ -101,8 +101,8 @@ if(file.exists(save_path)){
 
 plot_manhattan(fit_zib_99, taxonomy = tax_99, aggregate_by_taxa = F)
 plot_volcano(fit_zib_99, label = T)
-plot_ani_dist(d_q99, phenotype = 'spiked', contigs = top_hits(fit_zib_99, alpha = 1e-10)$Contig_name)
-plot_ani_dist(d_q99, phenotype = 'spiked', contigs = top_hits(fit_zib_99, alpha = 1e-10)$Contig_name, drop_zeros = T)
+plot_ani_dist(d_q99, phenotype = 'spiked', contigs = top_hits(fit_zib_99)$Contig_name)
+plot_ani_dist(d_q99, phenotype = 'spiked', contigs = top_hits(fit_zib_99)$Contig_name, drop_zeros = T)
 
 ```
 

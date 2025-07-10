@@ -20,6 +20,23 @@ library(strainspy)
 meta_path <- "./data/segata_pooled_3741/combined_metadata.tsv"
 meta <- read.csv(meta_path, sep = '\t') 
 
+# set up factors
+meta$disease = factor(meta$disease, levels = c("Control", "CRC", "Adenoma"))
+meta$study = factor(meta$study)
+meta$cascon = ifelse(meta$cascon == "Case", "Case", "Control")
+meta$cascon = factor(meta$cascon, levels = c("Control", "Case"))
+meta$country = factor(meta$country)
+meta$sex = factor(meta$sex, levels = c("Female", "Male"))
+# let's reset tumour stages
+meta$tumour_stage_AJCC[meta$tumour_stage_AJCC == ""] = "NoTumour"
+meta$tumour_stage_AJCC[meta$disease == "Adenoma"] = "Adenoma"
+meta$tumour_stage_AJCC[meta$tumour_stage_AJCC == "CRC_stage_unlabelled"] = "Unstaged"
+meta$tumour_stage_AJCC = factor(meta$tumour_stage_AJCC, levels = c("NoTumour", "Adenoma", "0", "I", "II", "III", "IV", "Unstaged"))
+
+meta$tumour_location[meta$disease == "Control"] = "NoTumour"
+meta$tumour_location[meta$disease == "Adenoma"] = "Adenoma"
+meta$tumour_location = factor(meta$tumour_location, levels = c("NoTumour", "Adenoma", "transverse", "left_sided", "right_sided", "multiple_sites", "nd"))
+
 # sylph_query_path <- "~/Documents/wallen_example/warren_sylph_query_uhgg_all_c200_v030.tsv.gz"
 sylph_query_path <- "./data/segata_pooled_3741/combined_q_99.tsv.gz"
 # sylph_query_path <- "~/Documents/wallen_example/wallen_sylph_profile_gtdb-r220-c200-dbv1.tsv.gz"
@@ -31,19 +48,20 @@ sy <- filter_by_presence(sy, min_nonzero = 342)
 colnames(sy) <- gsub("_1", "", colnames(sy))
 colnames(sy) <- gsub("_merged", "", colnames(sy))
 colData(sy)$Sample_file <- gsub("_1", "", basename(colData(sy)$Sample_file))
-colData(sy)$Sample_file <- gsub("CRC_pooled.Rmd`
-                                \``erged", "", basename(colData(sy)$Sample_file))
+colData(sy)$Sample_file <- gsub("_merged", "", colnames(sy))
 
 dim(sy)
 
 all(colnames(sy) %in% meta$run_accession)
+all(meta$run_accession %in% colnames(sy))
 
 sy = strainspy:::modify_metadata(sy, meta)
 
 design <- as.formula("~ disease + age + sex + BMI + (1 | study)")
-ZB_fit <- glmZiBFit(sy,  design, nthreads = 4)
+ZB_fit <- glmZiBFit(sy,  design, nthreads = parallel::detectCores())
 
-taxonomy <- read_taxonomy(system.file("extdata", "example_taxonomy.tsv.gz", package = "strainspy"))
+taxonomy <- read_taxonomy("data/TAXONOMY/sylph_DB_taxonomy_99.tsv")
+# taxonomy <- read_taxonomy(system.file("extdata", "example_taxonomy.tsv.gz", package = "strainspy"))
 
 plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = T)
 plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = F)
@@ -55,9 +73,10 @@ taxonomy <- read_taxonomy(system.file("extdata", "example_taxonomy.tsv.gz", pack
 
 plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = T)
 plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = F)
-plot_volcano(ZB_fit)
+plot_volcano(ZB_fit, label = T)
 
-
+plot_ani_dist(sy, phenotype = 'disease', contigs = top_hits(ZB_fit)$Contig_name[1:10], 
+              drop_zeros = F, show_points = T, plot_type = 'violin')
 
 # 
 # temp <- merge(colData(sy), meta, by.x="Sample_file", by.y="run_accession", all.x=TRUE)
