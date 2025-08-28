@@ -59,7 +59,7 @@ data
 # Large files
 *.fna
 *.fastq
-*.tsv
+#*.tsv
 
 # Log files
 *.log

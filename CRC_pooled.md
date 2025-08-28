@@ -1,30 +1,21 @@
----
-title: "Analysis of 3414 pooled colorectal cancer metagenomes"
-output:
-  github_document
-date: "2025-08-27"
-editor_options:
-  chunk_output_type: console
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+Analysis of 3414 pooled colorectal cancer metagenomes
+================
+2025-08-27
 
 # Run ZiB analysis in q99 mode
 
 ## Load dependencies
 
-```{r, warning=FALSE, message=FALSE}
+``` r
 library(SummarizedExperiment)
 library(tidyverse)
 library(strainspy)
 library(dplyr)
 ```
 
-## Load metadata 
+## Load metadata
 
-```{r}
+``` r
 meta_path <- "./data/segata_pooled_3741/combined_metadata.tsv"
 meta <- read.csv(meta_path, sep = '\t') 
 
@@ -44,15 +35,23 @@ meta$tumour_stage_AJCC = factor(meta$tumour_stage_AJCC, levels = c("NoTumour", "
 meta$tumour_location[meta$disease == "Control"] = "NoTumour"
 meta$tumour_location[meta$disease == "Adenoma"] = "Adenoma"
 meta$tumour_location = factor(meta$tumour_location, levels = c("NoTumour", "Adenoma", "transverse", "left_sided", "right_sided", "multiple_sites", "nd"))
-
 ```
 
 ## Load sylph outputs
 
-```{r}
+``` r
 sy <- read_sylph("./data/segata_pooled_3741/combined_q_99.tsv.gz") # q99)
-sy <- filter_by_presence(sy, min_nonzero = 342) # filter at 10%
+```
 
+    ## Detected Sylph query output file.
+
+``` r
+sy <- filter_by_presence(sy, min_nonzero = 342) # filter at 10%
+```
+
+    ## Retained 20476 rows after filtering
+
+``` r
 # annoying renames to match meta V sylph file
 colnames(sy) <- gsub("_1", "", colnames(sy))
 colnames(sy) <- gsub("_merged", "", colnames(sy))
@@ -60,22 +59,32 @@ colData(sy)$Sample_file <- gsub("_1", "", basename(colData(sy)$Sample_file))
 colData(sy)$Sample_file <- gsub("_merged", "", colnames(sy))
 
 dim(sy)
-
 ```
+
+    ## [1] 20476  3414
 
 ## Load GTDB taxonomy
 
-```{r}
+``` r
 taxonomy <- read_taxonomy("data/TAXONOMY/sylph_DB_taxonomy_99.tsv")
 ```
 
 ## Fit the model
 
-```{r}
+``` r
 # Checks before merging metadata
 all(colnames(sy) %in% meta$run_accession)
-all(meta$run_accession %in% colnames(sy))
+```
 
+    ## [1] TRUE
+
+``` r
+all(meta$run_accession %in% colnames(sy))
+```
+
+    ## [1] TRUE
+
+``` r
 sy = modify_metadata(sy, meta)
 
 design <- as.formula("~ disease + age + sex + BMI + (1 | study)")
@@ -95,24 +104,71 @@ if(file.exists(save_path)){
 
 ## Manhattan and Volcano plots
 
-### Control vs. Adenoma
+### Control vs. Adenoma
 
-```{r, fig.width=12}
+``` r
 plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = T, coef = 3)
+```
+
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+
+![](CRC_pooled_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+``` r
 plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = F, coef = 3)
+```
+
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+
+![](CRC_pooled_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->
+
+``` r
 plot_volcano(ZB_fit, coef = 3)
 ```
 
+![](CRC_pooled_files/figure-gfm/unnamed-chunk-6-3.png)<!-- -->
+
 No real signal detected. This agrees with the original paper.
 
-### Control vs. CRC
+### Control vs. CRC
 
-```{r, fig.width=12}
+``` r
 plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = T, coef = 2) 
-plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = F, coef = 2) 
-plot_volcano(ZB_fit, coef = 2)
-
 ```
+
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+
+![](CRC_pooled_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+``` r
+plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = F, coef = 2) 
+```
+
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+
+![](CRC_pooled_files/figure-gfm/unnamed-chunk-7-2.png)<!-- -->
+
+``` r
+plot_volcano(ZB_fit, coef = 2)
+```
+
+![](CRC_pooled_files/figure-gfm/unnamed-chunk-7-3.png)<!-- -->
 
 Looks like there are many hits.
 
@@ -120,13 +176,17 @@ Looks like there are many hits.
 
 ## Build a summary from top hits
 
-```{r}
+``` r
 th = top_hits(ZB_fit, coef = 2)
 th$Species = taxonomy$Species[match(th$Genome_file, taxonomy$Genome)]
 
 # Signals detected from 71 species
 length(sort(table(th$Species), decreasing = T))
+```
 
+    ## [1] 71
+
+``` r
 # Ask chatGPT for a nice summary table
 summary_tbl <- th %>%
   filter(!is.na(Species)) %>%
@@ -158,16 +218,17 @@ summary_tbl <- th %>%
 
 # Write as tsv for manual perusal
 # write.table(summary_tbl, "output_tables/CRC_Z99_ebp_summary.tsv", sep = '\t', col.names = T, row.names = F, quote = F)
-
 ```
 
 ## ZI component hits
 
-When the `Dominant_component` is ZI, negative and positive `Dominant_coef` indicates presence and absence in CRC compared to control.
+When the `Dominant_component` is ZI, negative and positive
+`Dominant_coef` indicates presence and absence in CRC compared to
+control.
 
 ### Visualise this in a forest plot
 
-```{r, paged.print=FALSE, fig.width=12, fig.height=20}
+``` r
 zi_summary <- summary_tbl %>%
   filter(Dominant_component == "ZI") %>%
   arrange(Min_adj_p) %>%
@@ -205,17 +266,17 @@ ggplot(zi_summary, aes(x = Dominant_coef, y = Species, color = Trend)) +
     color = "Trend"
   ) +
   theme_minimal(base_size = 16)
-
-
-
 ```
+
+![](CRC_pooled_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 ## Beta component hits
 
-When the `Dominant_component` is Beta, negative and positive `Dominant_coef` indicates lower and higher cANI in CRC compared to control, reflecting similarity of the strain to the reference.
+When the `Dominant_component` is Beta, negative and positive
+`Dominant_coef` indicates lower and higher cANI in CRC compared to
+control, reflecting similarity of the strain to the reference.
 
-
-```{r, paged.print=FALSE, fig.width=12, fig.height=6}
+``` r
 beta_summary <- summary_tbl %>%
   filter(Dominant_component == "Beta") %>%
   arrange(Min_adj_p) %>%
@@ -246,23 +307,37 @@ ggplot(beta_summary, aes(x = Dominant_coef, y = Species, color = Trend)) +
     theme_minimal(base_size = 16)
 ```
 
-# ANI distribution of the top strain of each beta detected species 
+![](CRC_pooled_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
-```{r, fig.width=12}
+# ANI distribution of the top strain of each beta detected species
+
+``` r
 plot_ani_dist(sy, phenotype = 'disease', contigs = beta_summary$Dominant_contig, 
               drop_zeros = T, show_points = T, plot_type = 'box', contig_names = as.character(beta_summary$Species))
-
 ```
 
+    ## Warning: Removed 8198 rows containing non-finite outside the scale range
+    ## (`stat_boxplot()`).
+
+![](CRC_pooled_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 # Run ZiB analysis in p95 mode
 
 ## Load sylph outputs
 
-```{r}
+``` r
 sy <- read_sylph("./data/segata_pooled_3741/combined_p_95.tsv.gz") # q99)
-sy <- filter_by_presence(sy, min_nonzero = 342) # filter at 10%
+```
 
+    ## Detected Sylph profile output file.
+
+``` r
+sy <- filter_by_presence(sy, min_nonzero = 342) # filter at 10%
+```
+
+    ## Retained 582 rows after filtering
+
+``` r
 # annoying renames to match meta V sylph file
 colnames(sy) <- gsub("_1", "", colnames(sy))
 colnames(sy) <- gsub("_merged", "", colnames(sy))
@@ -270,22 +345,32 @@ colData(sy)$Sample_file <- gsub("_1", "", basename(colData(sy)$Sample_file))
 colData(sy)$Sample_file <- gsub("_merged", "", colnames(sy))
 
 dim(sy)
-
 ```
+
+    ## [1]  582 3414
 
 ## Load GTDB taxonomy
 
-```{r}
+``` r
 taxonomy <- read_taxonomy(system.file("extdata", "example_taxonomy.tsv.gz", package = "strainspy"))
 ```
 
 ## Fit the model
 
-```{r}
+``` r
 # Checks:
 all(colnames(sy) %in% meta$run_accession)
-all(meta$run_accession %in% colnames(sy))
+```
 
+    ## [1] TRUE
+
+``` r
+all(meta$run_accession %in% colnames(sy))
+```
+
+    ## [1] TRUE
+
+``` r
 sy = strainspy:::modify_metadata(sy, meta)
 
 design <- as.formula("~ disease + age + sex + BMI + (1 | study)")
@@ -305,23 +390,71 @@ if(file.exists(save_path)){
 
 ## Manhattan and Volcano plots
 
-### Control vs. Adenoma
+### Control vs. Adenoma
 
-```{r, fig.width=12}
+``` r
 plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = T, coef = 3)
+```
+
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+
+![](CRC_pooled_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
+``` r
 plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = F, coef = 3)
+```
+
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+
+![](CRC_pooled_files/figure-gfm/unnamed-chunk-15-2.png)<!-- -->
+
+``` r
 plot_volcano(ZB_fit, coef = 3)
 ```
 
+![](CRC_pooled_files/figure-gfm/unnamed-chunk-15-3.png)<!-- -->
+
 No real signal detected. This agrees with the original paper.
 
-### Control vs. CRC
+### Control vs. CRC
 
-```{r, fig.width=12}
+``` r
 plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = T, coef = 2) 
+```
+
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+
+![](CRC_pooled_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+
+``` r
 plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = F, coef = 2) 
+```
+
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+
+![](CRC_pooled_files/figure-gfm/unnamed-chunk-16-2.png)<!-- -->
+
+``` r
 plot_volcano(ZB_fit, coef = 2)
 ```
+
+![](CRC_pooled_files/figure-gfm/unnamed-chunk-16-3.png)<!-- -->
 
 Looks like there are many hits.
 
@@ -329,13 +462,17 @@ Looks like there are many hits.
 
 ## Build a summary from top hits
 
-```{r}
+``` r
 th = top_hits(ZB_fit, coef = 2)
 th$Species = taxonomy$Species[match(th$Genome_file, taxonomy$Genome)]
 
 # Signals detected from 56 species
 length(sort(table(th$Species), decreasing = T))
+```
 
+    ## [1] 56
+
+``` r
 # Ask chatGPT for a nice summary table
 
 # PS: There is going to be only one strain per species here - GTDB95, keep it anyway
@@ -370,16 +507,17 @@ summary_tbl <- th %>%
 
 # Write as tsv for manual perusal
 # write.table(summary_tbl, "output_tables/CRC_Z95_ebp_summary.tsv", sep = '\t', col.names = T, row.names = F, quote = F)
-
 ```
 
 ## ZI component hits
 
-When the `Dominant_component` is ZI, negative and positive `Dominant_coef` indicates presence and absence in CRC compared to control.
+When the `Dominant_component` is ZI, negative and positive
+`Dominant_coef` indicates presence and absence in CRC compared to
+control.
 
 ### Visualise this in a forest plot
 
-```{r, paged.print=FALSE, fig.width=12, fig.height=18}
+``` r
 zi_summary <- summary_tbl %>%
   filter(Dominant_component == "ZI") %>%
   arrange(Min_adj_p) %>%
@@ -419,12 +557,15 @@ ggplot(zi_summary, aes(x = Dominant_coef, y = Species, color = Trend)) +
   theme_minimal(base_size = 16)
 ```
 
+![](CRC_pooled_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+
 ## Beta component hits
 
-When the `Dominant_component` is Beta, negative and positive `Dominant_coef` indicates lower and higher cANI in CRC compared to control, reflecting similarity of the strain to the reference.
+When the `Dominant_component` is Beta, negative and positive
+`Dominant_coef` indicates lower and higher cANI in CRC compared to
+control, reflecting similarity of the strain to the reference.
 
-
-```{r, paged.print=FALSE, fig.width=12, fig.height=3}
+``` r
 beta_summary <- summary_tbl %>%
   filter(Dominant_component == "Beta") %>%
   arrange(Min_adj_p) %>%
@@ -455,11 +596,16 @@ ggplot(beta_summary, aes(x = Dominant_coef, y = Species, color = Trend)) +
     theme_minimal(base_size = 16)
 ```
 
+![](CRC_pooled_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+
 # ANI distribution of the top strain of each beta detected species
 
-```{r, fig.width=12}
+``` r
 plot_ani_dist(sy, phenotype = 'disease', contigs = beta_summary$Dominant_contig, 
               drop_zeros = T, show_points = T, plot_type = 'box', contig_names = as.character(beta_summary$Species))
-
 ```
 
+    ## Warning: Removed 4046 rows containing non-finite outside the scale range
+    ## (`stat_boxplot()`).
+
+![](CRC_pooled_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
