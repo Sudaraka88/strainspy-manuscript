@@ -1,8 +1,12 @@
 ---
 title: "Analysis of 3414 pooled colorectal cancer metagenomes"
-output: html_document
-date: "2025-06-30"
-editor_options: 
+output:
+  html_document:
+    theme: null         # removes narrow Bootstrap container
+    toc: false
+    self_contained: true
+date: "2025-08-27"
+editor_options:
   chunk_output_type: console
 ---
 
@@ -10,17 +14,24 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Run full analysis
+# Run ZiB analysis in q99 mode
 
-```{r}
+## Load dependencies
+
+```{r, warning=FALSE, message=FALSE}
 library(SummarizedExperiment)
 library(tidyverse)
 library(strainspy)
+library(dplyr)
+```
 
+## Load metadata 
+
+```{r}
 meta_path <- "./data/segata_pooled_3741/combined_metadata.tsv"
 meta <- read.csv(meta_path, sep = '\t') 
 
-# set up factors
+# set up contrasts/reference levels
 meta$disease = factor(meta$disease, levels = c("Control", "CRC", "Adenoma"))
 meta$study = factor(meta$study)
 meta$cascon = ifelse(meta$cascon == "Case", "Case", "Control")
@@ -37,14 +48,15 @@ meta$tumour_location[meta$disease == "Control"] = "NoTumour"
 meta$tumour_location[meta$disease == "Adenoma"] = "Adenoma"
 meta$tumour_location = factor(meta$tumour_location, levels = c("NoTumour", "Adenoma", "transverse", "left_sided", "right_sided", "multiple_sites", "nd"))
 
-# sylph_query_path <- "~/Documents/wallen_example/warren_sylph_query_uhgg_all_c200_v030.tsv.gz"
-sylph_query_path <- "./data/segata_pooled_3741/combined_q_99.tsv.gz"
-# sylph_query_path <- "~/Documents/wallen_example/wallen_sylph_profile_gtdb-r220-c200-dbv1.tsv.gz"
+```
 
-sy <- read_sylph(sylph_query_path)
-sy <- filter_by_presence(sy, min_nonzero = 342)
+## Load sylph outputs
 
-# rename sequence names in the sylph file
+```{r}
+sy <- read_sylph("./data/segata_pooled_3741/combined_q_99.tsv.gz") # q99)
+sy <- filter_by_presence(sy, min_nonzero = 342) # filter at 10%
+
+# annoying renames to match meta V sylph file
 colnames(sy) <- gsub("_1", "", colnames(sy))
 colnames(sy) <- gsub("_merged", "", colnames(sy))
 colData(sy)$Sample_file <- gsub("_1", "", basename(colData(sy)$Sample_file))
@@ -52,271 +64,405 @@ colData(sy)$Sample_file <- gsub("_merged", "", colnames(sy))
 
 dim(sy)
 
+```
+
+## Load GTDB taxonomy
+
+```{r}
+taxonomy <- read_taxonomy("data/TAXONOMY/sylph_DB_taxonomy_99.tsv")
+```
+
+## Fit the model
+
+```{r}
+# Checks before merging metadata
+all(colnames(sy) %in% meta$run_accession)
+all(meta$run_accession %in% colnames(sy))
+
+sy = modify_metadata(sy, meta)
+
+design <- as.formula("~ disease + age + sex + BMI + (1 | study)")
+
+save_path <- "output_rds/CRC_zib_q_99_ebp.rds"
+# Run with ebp - this looks a bit less noisy
+if(file.exists(save_path)){
+  ZB_fit <- readRDS(save_path)
+} else {
+  # ebp = compute_eb_priors(sy, strainspy:::nobars_(design), nthreads = parallel::detectCores(),low_cutoff = 0, high_cutoff = Inf)
+  # ZB_fit <- glmZiBFit(sy,  design, MAP_prior = ebp, nthreads = parallel::detectCores())
+  # saveRDS(ZB_fit, save_path)
+}
+```
+
+## Visualise Outputs
+
+## Manhattan and Volcano plots
+
+### Control vs. Adenoma
+
+```{r, fig.width=12}
+plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = T, coef = 3)
+plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = F, coef = 3)
+plot_volcano(ZB_fit, coef = 3)
+```
+
+No real signal detected. This agrees with the original paper.
+
+### Control vs. CRC
+
+```{r, fig.width=12}
+plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = T, coef = 2) 
+plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = F, coef = 2) 
+plot_volcano(ZB_fit, coef = 2)
+
+```
+
+Looks like there are many hits.
+
+## Summarise and inspect
+
+## Build a summary from top hits
+
+```{r}
+th = top_hits(ZB_fit, coef = 2)
+th$Species = taxonomy$Species[match(th$Genome_file, taxonomy$Genome)]
+
+# Signals detected from 71 species
+length(sort(table(th$Species), decreasing = T))
+
+# Ask chatGPT for a nice summary table
+summary_tbl <- th %>%
+  filter(!is.na(Species)) %>%
+  group_by(Species) %>%
+  summarise(
+    N_hits = n(),
+    
+    Top_adj_p_beta  = min(p_adjust, na.rm = TRUE),
+    Top_coef_beta   = coefficient[which.min(p_adjust)],
+    Top_se_beta     = std_error[which.min(p_adjust)],
+    Top_contig_beta = Contig_name[which.min(p_adjust)],
+    
+    Top_adj_p_ZI    = min(zi_p_adjust, na.rm = TRUE),
+    Top_coef_ZI     = zi_coefficient[which.min(zi_p_adjust)],
+    Top_se_ZI       = zi_std_error[which.min(zi_p_adjust)],
+    Top_contig_ZI   = Contig_name[which.min(zi_p_adjust)],
+    
+    .groups = "drop"
+  ) %>%
+  mutate(
+    Min_adj_p = pmin(Top_adj_p_beta, Top_adj_p_ZI, na.rm = TRUE),
+    Dominant_component = ifelse(Top_adj_p_beta < Top_adj_p_ZI, "Beta", "ZI"),
+    Dominant_contig    = ifelse(Dominant_component == "Beta", Top_contig_beta, Top_contig_ZI),
+    Dominant_coef      = ifelse(Dominant_component == "Beta", Top_coef_beta, Top_coef_ZI),
+    Dominant_se        = ifelse(Dominant_component == "Beta", Top_se_beta, Top_se_ZI)
+  ) %>%
+  select(Species, N_hits, Dominant_component, Min_adj_p, Dominant_coef, Dominant_se, Dominant_contig) %>%
+  arrange(Min_adj_p)
+
+# Write as tsv for manual perusal
+# write.table(summary_tbl, "output_tables/CRC_Z99_ebp_summary.tsv", sep = '\t', col.names = T, row.names = F, quote = F)
+
+```
+
+## ZI component hits
+
+When the `Dominant_component` is ZI, negative and positive `Dominant_coef` indicates presence and absence in CRC compared to control.
+
+### Visualise this in a forest plot
+
+```{r, paged.print=FALSE, fig.width=12, fig.height=20}
+zi_summary <- summary_tbl %>%
+  filter(Dominant_component == "ZI") %>%
+  arrange(Min_adj_p) %>%
+  mutate(
+    # Confidence interval before flipping
+    CI_low = Dominant_coef - 1.96 * Dominant_se,
+    CI_high = Dominant_coef + 1.96 * Dominant_se,
+    
+    # Flip effect size and CI
+    Dominant_coef = -Dominant_coef,
+    CI_low = -CI_low,
+    CI_high = -CI_high,
+    
+    # Trend annotation
+    Trend = ifelse(Dominant_coef > 0, "\u2191 CRC", "\u2193 CRC")
+  ) %>%
+  arrange(Trend, desc(Dominant_coef)) %>%
+  mutate(Species = factor(Species, levels = rev(unique(Species))))
+
+ggplot(zi_summary, aes(x = Dominant_coef, y = Species, color = Trend)) +
+  geom_point(aes(size = N_hits)) +
+  geom_errorbarh(aes(xmin = CI_low, xmax = CI_high), height = 0.2) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  scale_color_manual(values = c("\u2191 CRC" = "red", "\u2193 CRC" = "blue")) +
+  scale_size_continuous(
+    name = "Strains",
+    range = c(2, 8),  # tweak for your figure aesthetics
+    breaks = c(1, 45, 90),
+    labels = c("1", "45", "90"),
+    guide = guide_legend(override.aes = list(linetype = 0))  # remove lines from legend
+  ) +
+  labs(
+    x = "Effect size",
+    y = "Species",
+    color = "Trend"
+  ) +
+  theme_minimal(base_size = 16)
+
+
+
+```
+
+## Beta component hits
+
+When the `Dominant_component` is Beta, negative and positive `Dominant_coef` indicates lower and higher cANI in CRC compared to control, reflecting similarity of the strain to the reference.
+
+
+```{r, paged.print=FALSE, fig.width=12, fig.height=6}
+beta_summary <- summary_tbl %>%
+  filter(Dominant_component == "Beta") %>%
+  arrange(Min_adj_p) %>%
+  mutate(
+    CI_low = Dominant_coef - 1.96 * Dominant_se,
+    CI_high = Dominant_coef + 1.96 * Dominant_se,
+    Trend = ifelse(Dominant_coef > 0, "\u2191 CRC (similar)", "\u2193 CRC (divergent)"),
+    Species = factor(Species, levels = rev(unique(Species)))
+  )
+
+ggplot(beta_summary, aes(x = Dominant_coef, y = Species, color = Trend)) +
+    geom_point(aes(size = N_hits)) +
+    geom_errorbarh(aes(xmin = CI_low, xmax = CI_high), height = 0.2) +
+    geom_vline(xintercept = 0, linetype = "dashed") +
+    scale_color_manual(values = c("\u2191 CRC (similar)" = "red",
+                                  "\u2193 CRC (divergent)" = "blue")) +
+    scale_size_continuous(
+        name = "Strains",
+        range = c(2, 8),
+        breaks = c(1, 60, 120),
+        labels = c("1", "60", "120")
+    ) +
+    labs(
+        x = "Effect size (difference in ANI, CRC vs HC)",
+        y = "Species",
+        color = "Trend"
+    ) +
+    theme_minimal(base_size = 16)
+```
+
+# ANI distribution of the top strain of each beta detected species 
+
+```{r, fig.width=12}
+plot_ani_dist(sy, phenotype = 'disease', contigs = beta_summary$Dominant_contig, 
+              drop_zeros = T, show_points = T, plot_type = 'box', contig_names = as.character(beta_summary$Species))
+
+```
+
+
+# Run ZiB analysis in p95 mode
+
+## Load sylph outputs
+
+```{r}
+sy <- read_sylph("./data/segata_pooled_3741/combined_p_95.tsv.gz") # q99)
+sy <- filter_by_presence(sy, min_nonzero = 342) # filter at 10%
+
+# annoying renames to match meta V sylph file
+colnames(sy) <- gsub("_1", "", colnames(sy))
+colnames(sy) <- gsub("_merged", "", colnames(sy))
+colData(sy)$Sample_file <- gsub("_1", "", basename(colData(sy)$Sample_file))
+colData(sy)$Sample_file <- gsub("_merged", "", colnames(sy))
+
+dim(sy)
+
+```
+
+## Load GTDB taxonomy
+
+```{r}
+taxonomy <- read_taxonomy(system.file("extdata", "example_taxonomy.tsv.gz", package = "strainspy"))
+```
+
+## Fit the model
+
+```{r}
+# Checks:
 all(colnames(sy) %in% meta$run_accession)
 all(meta$run_accession %in% colnames(sy))
 
 sy = strainspy:::modify_metadata(sy, meta)
 
 design <- as.formula("~ disease + age + sex + BMI + (1 | study)")
-ZB_fit <- glmZiBFit(sy,  design, nthreads = parallel::detectCores())
 
-taxonomy <- read_taxonomy("data/TAXONOMY/sylph_DB_taxonomy_99.tsv")
-# taxonomy <- read_taxonomy(system.file("extdata", "example_taxonomy.tsv.gz", package = "strainspy"))
-
-plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = T)
-plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = F)
-plot_volcano(ZB_fit)
-
-OB_fit <- glmFit(sy,  design, nthreads = 10)
-
-taxonomy <- read_taxonomy(system.file("extdata", "example_taxonomy.tsv.gz", package = "strainspy"))
-
-plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = T)
-plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = F)
-plot_volcano(ZB_fit, label = T)
-
-plot_ani_dist(sy, phenotype = 'disease', contigs = top_hits(ZB_fit)$Contig_name[1:10], 
-              drop_zeros = F, show_points = T, plot_type = 'violin')
-
-# 
-# temp <- merge(colData(sy), meta, by.x="Sample_file", by.y="run_accession", all.x=TRUE)
-# # Reorder the dataframe to match the original order
-# temp <- temp[match(colData(sy)$Sample_file, temp$Sample_file), ]
-# stopifnot(all(temp$Sample_file==colData(sy)$Sample_file))
-# 
-# # 490 cases and 234 controls (total 724)
-# table(temp$Case_status, useNA = "always")
-# #missing
-# temp$Sample_file[is.na(temp$Case_status)]
-# 
-# colData(sy) <- temp
-# 
-# sy <- sy[, !is.na(colData(sy)$collection_method)]
-# sy <- sy[, colData(sy)$collection_method!="swab"]
-
-
-
-
-save_path = "output_rds/wallen_logit_q_99.rds"
-if(file.exists(save_path)){
-  logit_fit <- readRDS(save_path)
-} else {
-  system.time({
-    logit_fit <- caseControlFit(sy,  design, nthreads = 4)
-  })
-  saveRDS(logit_fit, save_path)
-}
-
-# tophits
-sort(strainspy:::clean_contig_names(top_hits(logit_fit, method = "BH")$Contig_name))
-# volcano_plot
-plot_volcano(logit_fit)
-
-# Manhattan plots
-plot_manhattan(logit_fit, taxonomy = taxonomy, method = "BH")
-plot_manhattan(logit_fit, taxonomy = taxonomy, aggregate_by_taxa = F)
-
-# See the top few distributions
-plot_ani_dist(sy, 'Case_status', contigs = top_hits(logit_fit)$Contig_name[1:5], plot_type = "box")
-plot_ani_dist(sy, 'Case_status', contigs = top_hits(logit_fit)$Contig_name[1:5], drop_zeros = T, plot_type = "box")
-
-# saveRDS(logit_fit, "~/Documents/wallen_example/wallen_fit_profile_UHGG_logit.rds")
-# saveRDS(logit_fit, "~/Documents/wallen_example/wallen_logit_fit_profile_GTDB_99_logit.rds")
-
-lth <- logit_fit@p_values
-lth$adj.pvalue <- p.adjust(lth$Value, method="BH")
-lth <- as_tibble(lth) %>% arrange(Value)
-
-lth <- top_hits(logit_fit, coef = 2, alpha = 0.05, method="BH") %>% 
-  arrange(p_value)
-
-lth$Species <- taxonomy$Species[match(lth$Genome_file, taxonomy$Genome)]
-
-lth %>% 
-  group_by(Species) %>%
-  summarise(min_pvalue= min(p_adjust))
-
-table(lth$Species)
-
-logit_fit@row_data
-
-adj <- hadjust(logit_fit, taxonomy=taxonomy)
-
-adj |> filter(p_adjust<0.05) %>% filter(Level=='Species')
-
-plot_manhattan(logit_fit, taxonomy = taxonomy)
-plot_manhattan(logit_fit, taxonomy = taxonomy, aggregate_by_taxa = F)
-```
-
-
-```{r}
-
-design <- as.formula(" ~ Case_status + Age_at_collection + Sex + 
-                     Do_you_drink_alcohol + Laxatives + Probiotic + Pain_med + 
-                     Depression_anxiety_mood_med + Antibiotics_current + 
-                     Sleep_aid")
-
-save_path = "output_rds/wallen_zib_q_99.rds"
+save_path <- "output_rds/CRC_zib_p_95_ebp.rds"
+# Run with ebp - this looks a bit less noisy
 if(file.exists(save_path)){
   ZB_fit <- readRDS(save_path)
 } else {
-  system.time({
-    ZB_fit <- glmZiBFit(sy,  design, nthreads = 4)
-  })
-  saveRDS(ZB_fit, save_path)
-
+  # ebp = compute_eb_priors(sy, strainspy:::nobars_(design), nthreads = parallel::detectCores(),low_cutoff = 0, high_cutoff = Inf)
+  # ZB_fit <- glmZiBFit(sy,  design, MAP_prior = ebp, nthreads = parallel::detectCores())
+  # saveRDS(ZB_fit, save_path)
 }
+```
 
-plot_volcano(ZB_fit)
-plot_manhattan(ZB_fit, taxonomy = taxonomy)
-plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = F)
+## Visualise Outputs
 
-th <- top_hits(ZB_fit, coef = 2, alpha = 0.05, method="BH") %>%
-  arrange(p_value) %>%
-  filter(p_adjust < 0.05)
-th[order(th$p_adjust),]
+## Manhattan and Volcano plots
 
-th$Species <- taxonomy$Species[match(th$Genome_file, taxonomy$Genome)]
+### Control vs. Adenoma
 
-# th %>% 
-#   group_by(Species) %>%
-#   summarise(min_pvalue= min(p_adjust))
+```{r, fig.width=12}
+plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = T, coef = 3)
+plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = F, coef = 3)
+plot_volcano(ZB_fit, coef = 3)
+```
 
-table(th$Species)[grepl(".*coli.*", names(table(th$Species)))]
+No real signal detected. This agrees with the original paper.
 
-table(unique(th$Species) %in% unique(lth$Species))
-table(unique(lth$Species) %in% unique(th$Species))
+### Control vs. CRC
+
+```{r, fig.width=12}
+plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = T, coef = 2) 
+plot_manhattan(ZB_fit, taxonomy = taxonomy, aggregate_by_taxa = F, coef = 2) 
+plot_volcano(ZB_fit, coef = 2)
+```
+
+Looks like there are many hits.
+
+## Summarise and inspect
+
+## Build a summary from top hits
+
+```{r}
+th = top_hits(ZB_fit, coef = 2)
+th$Species = taxonomy$Species[match(th$Genome_file, taxonomy$Genome)]
+
+# Signals detected from 56 species
+length(sort(table(th$Species), decreasing = T))
+
+# Ask chatGPT for a nice summary table
+
+# PS: There is going to be only one strain per species here - GTDB95, keep it anyway
+summary_tbl <- th %>%
+  filter(!is.na(Species)) %>%
+  group_by(Species) %>%
+  summarise(
+    N_hits = n(),
+    
+    Top_adj_p_beta  = min(p_adjust, na.rm = TRUE),
+    Top_coef_beta   = coefficient[which.min(p_adjust)],
+    Top_se_beta     = std_error[which.min(p_adjust)],
+    Top_contig_beta = Contig_name[which.min(p_adjust)],
+    
+    Top_adj_p_ZI    = min(zi_p_adjust, na.rm = TRUE),
+    Top_coef_ZI     = zi_coefficient[which.min(zi_p_adjust)],
+    Top_se_ZI       = zi_std_error[which.min(zi_p_adjust)],
+    Top_contig_ZI   = Contig_name[which.min(zi_p_adjust)],
+    
+    .groups = "drop"
+  ) %>%
+  mutate(
+    Min_adj_p = pmin(Top_adj_p_beta, Top_adj_p_ZI, na.rm = TRUE),
+    Dominant_component = ifelse(Top_adj_p_beta < Top_adj_p_ZI, "Beta", "ZI"),
+    Dominant_contig    = ifelse(Dominant_component == "Beta", Top_contig_beta, Top_contig_ZI),
+    Dominant_coef      = ifelse(Dominant_component == "Beta", Top_coef_beta, Top_coef_ZI),
+    Dominant_se        = ifelse(Dominant_component == "Beta", Top_se_beta, Top_se_ZI)
+  ) %>%
+  select(Species, N_hits, Dominant_component, Min_adj_p, Dominant_coef, Dominant_se, Dominant_contig) %>%
+  arrange(Min_adj_p)
 
 
-badj <- hadjust(beta_fit, taxonomy=taxonomy)
-
-gg <- plot_manhattan(beta_fit, taxonomy = taxonomy, method = 'HMP')
-gg + ggplot2::geom_point(aes(y = log_p_adjust, x = index_min + (index_max-index_min)/2), size=0.1) + 
-  ggplot2::geom_segment(aes(y = log_p_adjust, x = index_min - 10, xend = index_max + 10), linewidth=3)
-
-
-# cols <- c('#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#ffff99','#b15928')
-# 
-# 
-# pdf <- top_hits(beta_fit, coef = 2, alpha = 1, method="BH") 
-# 
-# pdf$Species <- taxonomy$Species[match(th$Genome_file, taxonomy$Genome)]
-# nspecies <- length(unique(beta_fit@p_values$colour))
-# 
-# #Sylph paper pvalues plot
-# ggplot(sylph_orig_pvalues, aes(y=-log10(p1), x=MAG, col=factor(colour))) +
-#   geom_point(size=0.2) +
-#   theme_bw() +
-#   theme(legend.position = "none",
-#         axis.text.x = element_blank(),
-#         axis.ticks.x = element_blank()) +
-#   scale_colour_manual(values = rep(cols, ceiling(nspecies/length(cols)))[1:nspecies])
+# Write as tsv for manual perusal
+# write.table(summary_tbl, "output_tables/CRC_Z95_ebp_summary.tsv", sep = '\t', col.names = T, row.names = F, quote = F)
 
 ```
 
+## ZI component hits
+
+When the `Dominant_component` is ZI, negative and positive `Dominant_coef` indicates presence and absence in CRC compared to control.
+
+### Visualise this in a forest plot
+
+```{r, paged.print=FALSE, fig.width=12, fig.height=18}
+zi_summary <- summary_tbl %>%
+  filter(Dominant_component == "ZI") %>%
+  arrange(Min_adj_p) %>%
+  mutate(
+    # Confidence interval before flipping
+    CI_low = Dominant_coef - 1.96 * Dominant_se,
+    CI_high = Dominant_coef + 1.96 * Dominant_se,
+    
+    # Flip effect size and CI
+    Dominant_coef = -Dominant_coef,
+    CI_low = -CI_low,
+    CI_high = -CI_high,
+    
+    # Trend annotation
+    Trend = ifelse(Dominant_coef > 0, "\u2191 CRC", "\u2193 CRC")
+  ) %>%
+  arrange(Trend, desc(Dominant_coef)) %>%
+  mutate(Species = factor(Species, levels = rev(unique(Species))))
+
+ggplot(zi_summary, aes(x = Dominant_coef, y = Species, color = Trend)) +
+  # geom_point(aes(size = N_hits)) +
+  geom_errorbarh(aes(xmin = CI_low, xmax = CI_high), height = 0.2) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  scale_color_manual(values = c("\u2191 CRC" = "red", "\u2193 CRC" = "blue")) +
+  # scale_size_continuous(
+  #   name = "Strains",
+  #   range = c(2, 8),  # tweak for your figure aesthetics
+  #   breaks = c(1, 45, 90),
+  #   labels = c("1", "45", "90"),
+  #   guide = guide_legend(override.aes = list(linetype = 0))  # remove lines from legend
+  # ) +
+  labs(
+    x = "Effect size",
+    y = "Species",
+    color = "Trend"
+  ) +
+  theme_minimal(base_size = 16)
+```
+
+## Beta component hits
+
+When the `Dominant_component` is Beta, negative and positive `Dominant_coef` indicates lower and higher cANI in CRC compared to control, reflecting similarity of the strain to the reference.
 
 
+```{r, paged.print=FALSE, fig.width=12, fig.height=3}
+beta_summary <- summary_tbl %>%
+  filter(Dominant_component == "Beta") %>%
+  arrange(Min_adj_p) %>%
+  mutate(
+    CI_low = Dominant_coef - 1.96 * Dominant_se,
+    CI_high = Dominant_coef + 1.96 * Dominant_se,
+    Trend = ifelse(Dominant_coef > 0, "\u2191 CRC (similar)", "\u2193 CRC (divergent)"),
+    Species = factor(Species, levels = rev(unique(Species)))
+  )
 
-<!-- Load pvalues form Sylph paper -->
+ggplot(beta_summary, aes(x = Dominant_coef, y = Species, color = Trend)) +
+    # geom_point(aes(size = N_hits)) +
+    geom_errorbarh(aes(xmin = CI_low, xmax = CI_high), height = 0.2) +
+    geom_vline(xintercept = 0, linetype = "dashed") +
+    scale_color_manual(values = c("\u2191 CRC (similar)" = "red",
+                                  "\u2193 CRC (divergent)" = "blue")) +
+    # scale_size_continuous(
+    #     name = "Strains",
+    #     range = c(2, 8),
+    #     breaks = c(1, 60, 120),
+    #     labels = c("1", "60", "120")
+    # ) +
+    labs(
+        x = "Effect size (difference in ANI, CRC vs HC)",
+        y = "Species",
+        color = "Trend"
+    ) +
+    theme_minimal(base_size = 16)
+```
 
-<!-- ```{r} -->
-<!-- library(tidyverse) -->
+# ANI distribution of the top strain of each beta detected species
 
-<!-- sylph_orig_pvalues <- read_tsv("~/Downloads/sylph-test-main/98-v05-covs-ordered_pvals.txt",  -->
-<!--                                col_names = c("p1", "p2", "estimate", "padj", "colour", "MAG")) -->
+```{r, fig.width=12}
+plot_ani_dist(sy, phenotype = 'disease', contigs = beta_summary$Dominant_contig, 
+              drop_zeros = T, show_points = T, plot_type = 'box', contig_names = as.character(beta_summary$Species))
 
-<!-- sylph_orig_pvalues$MAG <- factor(sylph_orig_pvalues$MAG, levels = unique(sylph_orig_pvalues$MAG)) -->
-<!-- sylph_orig_pvalues$colour <- factor(sylph_orig_pvalues$colour) -->
+```
 
-<!-- cols <- c('#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#ffff99','#b15928') -->
-
-<!-- nspecies <- length(unique(sylph_orig_pvalues$colour)) -->
-
-<!-- #Sylph paper pvalues plot -->
-<!-- ggplot(sylph_orig_pvalues, aes(y=-log10(p1), x=MAG, col=factor(colour))) + -->
-<!--   geom_point(size=0.2) + -->
-<!--   theme_bw() + -->
-<!--   theme(legend.position = "none", -->
-<!--         axis.text.x = element_blank(),  -->
-<!--         axis.ticks.x = element_blank()) + -->
-<!--   scale_colour_manual(values = rep(cols, ceiling(nspecies/length(cols)))[1:nspecies]) -->
-
-
-<!-- logit_fit <- readRDS("~/Documents/wallen_example/wallen_fit_profile_UHGG_logit.rds") -->
-<!-- lth <- top_hits(logit_fit, coef = 2, alpha = 1, method="BH") %>% arrange(p_value) -->
-<!-- lth -->
-
-<!-- merged_pdf <- sylph_orig_pvalues[,c("p1", "MAG", "colour")] %>% -->
-<!--   filter(MAG %in% lth$Genome_file) %>% -->
-<!--   rename(orig_sylph_pvalue = p1) -->
-
-<!-- merged_pdf$new_p_value <- lth$p_value[match(merged_pdf$MAG, lth$Genome_file)] -->
-
-<!-- # melt so that p1 and new_pvalue are in the same column -->
-<!-- merged_pdf <- merged_pdf %>% -->
-<!--   pivot_longer(cols = c(orig_sylph_pvalue, new_p_value),  -->
-<!--                names_to = "method",  -->
-<!--                values_to = "pvalue") -->
-
-<!-- merged_pdf$MAG <- factor(as.character(merged_pdf$MAG), levels = unique(sylph_orig_pvalues$MAG)) -->
-
-<!-- ggplot(merged_pdf, aes(y=-log10(pvalue), x=MAG, col=factor(colour))) + -->
-<!--   geom_point(size=0.2) + -->
-<!--   facet_wrap(~method, ncol=1) + -->
-<!--   theme_bw() + -->
-<!--   theme(legend.position = "none", -->
-<!--         axis.text.x = element_blank(),  -->
-<!--         axis.ticks.x = element_blank()) + -->
-<!--   scale_colour_manual(values = rep(cols, ceiling(nspecies/length(cols)))[1:nspecies]) -->
-
-<!-- ``` -->
-
-
-<!-- ```{r} -->
-<!-- testdf <- sylph_orig_pvalues[sample(1:nrow(sylph_orig_pvalues), size = 100, replace = FALSE), ]# %>% filter(-log10(p1) > 7) -->
-
-<!-- rownames(sy) <- gsub("_1", "", rownames(sy)) -->
-<!-- test_sy <- sy[rownames(sy) %in% testdf$MAG,] -->
-
-
-<!-- which(rownames(test_sy)=="MGYG000157255") -->
-
-<!-- #      run_to_covar[run] = [float(bases), float(age), sex, alc, lax, prob, pain, dep, anti, sleep] -->
-<!-- design <- as.formula("Case_status ~ Value + Age_at_collection + Sex + Do_you_drink_alcohol + Laxatives + Probiotic + -->
-<!--                      Pain_med + Depression_anxiety_mood_med + Antibiotics_current + Sleep_aid") -->
-<!-- # design <- as.formula("Case_status ~ Value") -->
-
-<!-- lapply(c("Age_at_collection", "Sex", "Do_you_drink_alcohol", "Laxatives", "Probiotic", -->
-<!--   "Pain_med", "Depression_anxiety_mood_med", "Antibiotics_current", "Sleep_aid"), function(x) { -->
-<!--     table(colData(test_sy)[,x]) -->
-<!--   }) -->
-
-<!-- colData(test_sy)$Case_status <- factor(colData(test_sy)$Case_status) -->
-<!-- colData(test_sy)$scale_total_sequences <- scale(colData(test_sy)$total_sequences) -->
-
-<!-- sort(colnames(colData(test_sy))) -->
-
-<!-- temp_df <- colData(test_sy) -->
-<!-- temp_df$Value <- SummarizedExperiment::assay(test_sy)[1,] -->
-
-<!-- temp_df$Value <- temp_df$Value/100 -->
-<!-- temp_df$Value[temp_df$Value<0.98] <- 0.98 -->
-
-<!-- summary(glm(Case_status ~ Value, data = temp_df, family = binomial)) -->
-
-
-<!-- system.time({ -->
-<!--   test_fit <- caseControlFit(test_sy,  design, nthreads = 4)   -->
-<!-- }) -->
-
-<!-- test_hits <- as_tibble(test_fit@p_values) %>%  -->
-<!--   add_column(MAG = rownames(test_sy), .before=1) %>% -->
-<!--   arrange(Value)  -->
-
-
-<!-- test_hits$sylph_orig <- testdf$p1[match(test_hits$MAG, testdf$MAG)] -->
-
-<!-- test_hits[,c(1, 3,13)] -->
-
-<!-- plot(test_hits[,c(3,13)]) -->
-<!-- ``` -->
