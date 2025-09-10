@@ -12,7 +12,7 @@ editor_options:
 
 ```{r}
 library(strainspy)
-# Profiles
+# Queries
 d_q95 <- read_sylph("ecoli_sims/test/sylph_q_95.tsv")
 d_q98 <- read_sylph("ecoli_sims/test/sylph_q_98.tsv")
 d_q99 <- read_sylph("ecoli_sims/test/sylph_q_99.tsv")

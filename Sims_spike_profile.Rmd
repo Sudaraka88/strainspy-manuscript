@@ -112,4 +112,3 @@ plot_manhattan(fit_ob_99, taxonomy = tax_99, method = "HMP", tax_levels = c("Phy
 plot_volcano(fit_ob_99, label = T)
 plot_ani_dist(d_p99, phenotype = 'spiked', contigs = top_hits(fit_ob_99, alpha = 0.05)$Contig_name, drop_zeros = F, show_points = T, plot_type = 'violin')
 plot_ani_dist(d_p99, phenotype = 'spiked', contigs = top_hits(fit_ob_99, alpha = 0.05)$Contig_name, drop_zeros = T, show_points = T, plot_type = 'violin')
-```

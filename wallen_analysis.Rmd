@@ -1,5 +1,5 @@
 ---
-title: "Untitled"
+title: "Analysis of Wallen data"
 output: html_document
 date: "2024-12-20"
 editor_options: 
@@ -15,9 +15,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ### UHGG
 
 ```
-sylph query /data1/gerryt/sylph_analyses/uhgg_all_c200_v0.3.0.syldb -u --read-seq-id 99.9 -t 100 -1 ./*_1.fastq.gz -2 ./*_2.fastq.gz -o ./warren_sylph_query_uhgg_all_c200_v030.tsv
+sylph query /data1/gerryt/sylph_analyses/uhgg_all_c200_v0.3.0.syldb -u --read-seq-id 99.9 -t 100 -1 ./*_1.fastq.gz -2 ./*_2.fastq.gz -o ./wallen_sylph_query_uhgg_all_c200_v030.tsv
 
-sylph profile /data1/gerryt/sylph_analyses/gtdb-r220-c200-dbv1.syldb -u --read-seq-id 99.9 -t 100 -1 ./*_1.fastq.gz -2 ./*_2.fastq.gz -o ./warren_sylph_profile_gtdb-r220-c200-dbv1.tsv
+sylph profile /data1/gerryt/sylph_analyses/gtdb-r220-c200-dbv1.syldb -u --read-seq-id 99.9 -t 100 -1 ./*_1.fastq.gz -2 ./*_2.fastq.gz -o ./wallen_sylph_profile_gtdb-r220-c200-dbv1.tsv
 ```
 
 ### GTDB 99%
@@ -32,53 +32,35 @@ sylph query /data1/gerryt/sylph_analyses/gtdb_99_ordered_DB/gtdb_ordered_99.syld
 library(SummarizedExperiment)
 library(tidyverse)
 library(strainspy)
+#TODO: THIS NEEDS TO BE RE-RUN after updates, remove all outputs and run 0724
 
 meta_path <- "./data/wallen/wallen_metadata.csv"
 meta <- readr::read_csv(meta_path) 
 
-# sylph_query_path <- "~/Documents/wallen_example/warren_sylph_query_uhgg_all_c200_v030.tsv.gz"
+# Keep only OMNIgene GUT data
+meta = meta[meta$collection_method != "swab",]
 sylph_query_path <- "./data/wallen/wallen_sylph_query_gtdb_220_id99.tsv.gz"
-# sylph_query_path <- "~/Documents/wallen_example/wallen_sylph_profile_gtdb-r220-c200-dbv1.tsv.gz"
+
+se <- read_sylph(sylph_query_path)
+colnames(se) <- gsub("_1", "", colnames(se))
+
+se = se[ , which(!colnames(se) %in% c("SRR19064711", "SRR19064710", "SRR19064713", "SRR19064765", "SRR19064889", "SRR19064890") )]
+
+se = modify_metadata(se, meta)
+
+se <- filter_by_presence(se, min_nonzero = 72)
 
 taxonomy <- read_taxonomy("data/TAXONOMY/sylph_DB_taxonomy_99.tsv")
 
-sy <- read_sylph(sylph_query_path)
-sy <- filter_by_presence(sy, min_nonzero = 72)
-colnames(sy) <- gsub("_1", "", colnames(sy))
-dim(sy)
-
-sy <- sy[colnames(sy) %in% meta$run_accession,]
-
-colData(sy)$Sample_file <- gsub("_1", "", basename(colData(sy)$Sample_file))
-meta$scale_read_count <- as.numeric(scale(meta$total_sequences))
-
-temp <- merge(colData(sy), meta, by.x="Sample_file", by.y="run_accession", all.x=TRUE)
-# Reorder the dataframe to match the original order
-temp <- temp[match(colData(sy)$Sample_file, temp$Sample_file), ]
-stopifnot(all(temp$Sample_file==colData(sy)$Sample_file))
-
-# 490 cases and 234 controls (total 724)
-table(temp$Case_status, useNA = "always")
-#missing
-temp$Sample_file[is.na(temp$Case_status)]
-
-colData(sy) <- temp
-
-sy <- sy[, !is.na(colData(sy)$collection_method)]
-sy <- sy[, colData(sy)$collection_method!="swab"]
-
-
 design <- as.formula("Case_status ~ Value + Age_at_collection + Sex + Do_you_drink_alcohol + Laxatives + Probiotic +
                      Pain_med + Depression_anxiety_mood_med + Antibiotics_current + Sleep_aid")
-
-colData(sy)$Case_status <- factor(colData(sy)$Case_status)
 
 save_path = "output_rds/wallen_logit_q_99.rds"
 if(file.exists(save_path)){
   logit_fit <- readRDS(save_path)
 } else {
   system.time({
-    logit_fit <- caseControlFit(sy,  design, nthreads = 4)
+    logit_fit <- caseControlFit(se,  design, nthreads = parallel::detectCores())
   })
   saveRDS(logit_fit, save_path)
 }

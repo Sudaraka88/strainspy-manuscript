@@ -612,7 +612,7 @@ In short, it looks like species such as *Fusobacterium animalis*, *Peptostreptoc
 
 Following the approach in 10.1016/j.chom.2025.03.012, attempt to compare the impact of tumour location by comparing with healthy controls.
 
-```{r}
+```{r, fig.width=12}
 # Compare left and right vs. control
 # Reload sylph q99
 sy <- read_sylph("./data/segata_pooled_3741/combined_q_99.tsv.gz") # q99)
@@ -648,7 +648,7 @@ if(file.exists(save_path)){
 
 Tabulate the left and right components separately.
 
-```{r}
+```{r, fig.width=12}
 
 ZB_fit_tl_full@priors@priors_df$coef[ZB_fit_tl_full@priors@priors_df$class == "fixef"]
 # idx 4 and 5
@@ -668,6 +668,7 @@ ggvenn(
 )
 ```
 
+We cannot call these direct differences between left and right tumours, this is all compared to control.
 
 ## Run ZiB analysis in p95 mode
 

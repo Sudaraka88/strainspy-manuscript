@@ -1,0 +1,126 @@
+---
+title: "varyingPrior"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+# Effects of varying the MAP prior
+
+# Analysing a large-ish dataset (157 non-spiked vs. 20 spiked)
+
+## Load data and prepare for simulations
+
+```{r}
+library(strainspy)
+library(dplyr)
+# Profile 95 - fastest to run
+d_p95 <- read_sylph("ecoli_sims/test/sylph_p_95.tsv")
+
+# taxonomy
+tax_95 = read_taxonomy(system.file("extdata", "example_taxonomy.tsv.gz", package = "strainspy"))
+design <- as.formula(" ~ spiked")
+
+```
+
+### Full model with default weak prior normal(0,5)
+```{r}
+# spiked samples
+ss = readLines("ecoli_sims/test/sampled.txt")
+
+# metadata 
+meta_data = data.frame(run_accession = colnames(d_p95),spiked = as.factor(sapply(colnames(d_p95), function(x) x%in% ss)))
+
+d_p95_full = modify_metadata(se = d_p95, meta_data = meta_data)
+
+d_p95_full <- filter_by_presence(d_p95_full, min_nonzero = 20)
+full_zib_95_w <- glmZiBFit(d_p95_full, design, nthreads = 10)
+top_hits(full_zib_95_w)
+# true/false positive
+plot_ani_dist(d_p95_full, phenotype = 'spiked', contigs = top_hits(full_zib_95_w, alpha = 0.05)$Contig_name, drop_zeros = F, show_points = T, plot_type = 'box')
+plot_ani_dist(d_p95_full, phenotype = 'spiked', contigs = top_hits(full_zib_95_w, alpha = 0.05)$Contig_name, drop_zeros = T, show_points = T, plot_type = 'box')
+```
+
+Here, *Clostridiales bacterium* is a false positive. Based on the box plot, it looks like an edge case with just 3 samples driving the signal.
+
+### Full model with strong prior normal(0,1)
+```{r}
+full_zib_95_s <- glmZiBFit(d_p95_full, design, nthreads = 10, MAP_prior = "preset_strong")
+top_hits(full_zib_95_s)
+```
+
+This fixes the FP issue.
+
+### Full model with ebayes prior
+```{r}
+ebp_full = compute_eb_priors(d_p95_full, design = design, nthreads = parallel::detectCores(), low_cutoff = 0, high_cutoff = Inf)
+plot_prior_bootstrap(object = ebp_full, "spikedTRUE")
+
+full_zib_95_eb <- glmZiBFit(d_p95_full, design, nthreads = 10, MAP_prior = ebp_full)
+top_hits(full_zib_95_eb)
+```
+
+Still no FP, but eBayes priors were unnecessary. 
+
+Larger datasets tend to work okay with either weak or strong prior options. Faster to use and maybe more stable.
+
+## Small sample test
+
+This is where our priors shine! Here we sample and take 16 spiked vs. 17 non spiked. The zero-inflated component does not have power to detect signal in smaller samples.
+
+## Subset data and prepare for simulations
+```{r}
+sample_sz = 33
+
+# hack to convert to function
+n1 <- floor(sample_sz * 0.5) # Let's do a half split
+n2 <- sample_sz - n1
+
+set.seed(1988)
+meta_subset <- bind_rows(
+  meta_data %>% filter(spiked == TRUE) %>% slice_sample(n = n1),
+  meta_data %>% filter(spiked == FALSE) %>% slice_sample(n = n2)
+)
+
+d_subset = d_p95[, meta_subset$run_accession]
+d_subset <- filter_by_presence(d_subset, min_nonzero = ceiling(max(sample_sz*0.1, 2)))
+
+d_subset = modify_metadata(d_subset, meta_subset)
+```
+
+# fit ZIB weak prior
+
+```{r}
+fit_zib_w <- glmZiBFit(d_subset,  design, nthreads=parallel::detectCores())
+head(top_hits(fit_zib_w))
+plot_manhattan(fit_zib_w, taxonomy = tax_95, aggregate_by_taxa = F)
+# edge cases
+plot_ani_dist(d_subset, phenotype = 'spiked', contigs = top_hits(fit_zib_w, alpha = 0.05)$Contig_name[1:5], drop_zeros = F, show_points = T, plot_type = 'box')
+plot_ani_dist(d_subset, phenotype = 'spiked', contigs = top_hits(fit_zib_w, alpha = 0.05)$Contig_name[1:15], drop_zeros = T, show_points = T, plot_type = 'box')
+```
+
+# fit ZIB strong prior
+```{r}
+fit_zib_s <- glmZiBFit(d_subset,  design, nthreads=parallel::detectCores(), MAP_prior = "preset_strong")
+head(top_hits(fit_zib_s))
+plot_manhattan(fit_zib_s, taxonomy = tax_95, aggregate_by_taxa = F)
+# edge cases
+plot_ani_dist(d_subset, phenotype = 'spiked', contigs = top_hits(fit_zib_s, alpha = 0.05)$Contig_name[1:5], drop_zeros = F, show_points = T, plot_type = 'box')
+plot_ani_dist(d_subset, phenotype = 'spiked', contigs = top_hits(fit_zib_s, alpha = 0.05)$Contig_name, drop_zeros = T, show_points = T, plot_type = 'box')
+```
+
+# fit empirical prior
+```{r}
+ebp = compute_eb_priors(d_subset, design = design, nthreads = parallel::detectCores(), low_cutoff = 0, high_cutoff = Inf)
+plot_prior_bootstrap(ebp, "spikedTRUE")
+
+fit_zib_eb <- glmZiBFit(d_subset,  design, nthreads=parallel::detectCores(), MAP_prior = ebp)
+
+head(top_hits(fit_zib_eb))
+plot_manhattan(fit_zib_eb, taxonomy = tax_95, aggregate_by_taxa = F)
+
+# valid case
+plot_ani_dist(d_subset, phenotype = 'spiked', contigs = top_hits(fit_zib_eb, alpha = 0.05)$Contig_name, drop_zeros = F, show_points = T, plot_type = 'box')
+plot_ani_dist(d_subset, phenotype = 'spiked', contigs = top_hits(fit_zib_eb, alpha = 0.05)$Contig_name, drop_zeros = T, show_points = T, plot_type = 'box')
+
+```

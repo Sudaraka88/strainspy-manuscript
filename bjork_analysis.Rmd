@@ -1,0 +1,39 @@
+---
+title: "Analysis of Bjork data"
+output: html_document
+date: "2024-12-20"
+editor_options: 
+  chunk_output_type: console
+---
+```{r}
+library(tidyverse)
+library(data.table)
+library(ggbeeswarm)
+library(ggthemes)
+library(strainspy)
+library(SummarizedExperiment)
+
+long_meta <- read_csv("./data/bjork/mdat_longi_pibble.csv")
+long_sprops <- read_csv("./data/bjork/sgbs_longi_pibble.csv", col_names = TRUE)
+base_meta <- read_csv("./data/bjork/mdat_baseline_survival.csv")
+base_sprops <- read_csv("./data/bjork/sgbs_baseline_survival.csv")
+
+meta_other_1 <- read_tsv("data/bjork/filereport_read_run_PRJEB43119_tsv.txt")
+meta_other_2 <- read_tsv("data/bjork/filereport_read_run_PRJEB70966_tsv.txt")
+meta = rbind(meta_other_1, meta_other_2)
+meta$sample_title = gsub(" wgs", "", meta$sample_title)
+meta$sample_title = gsub("-", "\\.", meta$sample_title)
+
+meta$sample_title %in% c(base_meta$sampleid, long_meta$sampleid)
+
+out_df = data.frame()
+
+which(meta$sample_title[1] == base_meta$sampleid)
+which(meta$sample_title[1] == base_meta$sampleid)
+
+se <- read_sylph("./data/bjork/bjork_2024_profile_gtdb_220_id95.tsv.gz")
+colnames(se) <- gsub("_1", "", colnames(se))
+
+
+
+``` 

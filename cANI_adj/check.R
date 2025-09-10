@@ -47,8 +47,8 @@ df_null$value_ = df_null$value
 df_fp$spiked = ifelse(df_fp$spiked == 1, "No", "Yes")
 df_null$spiked = ifelse(df_null$spiked == 1, "No", "Yes")
 
-
-
+df_crc = readRDS("../data/edge_cases/CRC_edge_beta.rds")
+df_crc = data.frame(value = df_crc$Value_orig, spiked = df_crc$disease, value_ = df_crc$Value_orig/100)
 # prelim setup
 # df_tp$value = base::pmin(as.vector(df_tp$value) / 100, 0.99999)
 
@@ -181,7 +181,10 @@ fit_all <- function(df, dpoint){
   op
 }
 
-op = rbind(fit_all(df_tp, 'tp'),
+
+
+op = rbind(fit_all(df_crc, 'crc')
+  fit_all(df_tp, 'tp'),
            fit_all(df_fp, 'fp'),
            fit_all(df_null, 'null'))
 

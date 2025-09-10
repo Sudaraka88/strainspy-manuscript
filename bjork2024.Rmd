@@ -141,7 +141,7 @@ beta_models <- map_dfr(SGBs_fig13, ~{
   print(.x)
   temp_data <- long_data %>% filter(SGB==.x)
   temp_data$proportion <- temp_data$proportion + 1e-8
-  m1 <- glmmTMB(proportion ~  PFS12 + visit + PFS12:visit + colitis +  combi_therapy + centre + (1|patientid_anon), 
+  m1 <- glmmTMB(proportion ~  PFS12 + visit + PFS12:visit + colitis +  combiIO + centre + (1|patientid), 
                 family = beta_family(), data = temp_data)
   
   return(broom.mixed::tidy(m1) %>%
@@ -156,7 +156,7 @@ beta_models %>%
 ### Figure 4
 
 ```{r}
-long_data$combination_therapy <- ifelse(long_data$combi_therapy=='no', 'Monotherapy', 'Combination')
+long_data$combination_therapy <- ifelse(long_data$combiIO=='no', 'Monotherapy', 'Combination')
 ggplot(long_data %>% filter(SGB %in% c("SGB5121", "SGB14991", "SGB1949")), 
        aes(x=factor(visit), y=proportion*100, col=PFS12, group=paste(visit, PFS12))) +
   geom_boxplot(outlier.color = NA, position = 'dodge') +
@@ -175,13 +175,13 @@ ggplot(long_data %>% filter(SGB %in% c("SGB5121", "SGB14991", "SGB1949")),
 ```{r}
 long_spec_total <- long_meta
 long_spec_total$nspecies <-   rowSums(long_sprops[,2:ncol(long_sprops)]>0)[match(long_spec_total$sampleid, long_sprops$sampleid)]
-long_spec_total$combi_therapy <- ifelse(long_spec_total$combi_therapy=='no', 'mono', 'combination')
+long_spec_total$combiIO <- ifelse(long_spec_total$combiIO=='no', 'mono', 'combination')
   
 ggplot(long_spec_total, 
        aes(x=factor(visit), y=nspecies, col=PFS12, group=paste(visit, PFS12))) +
   geom_boxplot(outlier.color = NA, position = 'dodge') +
   geom_jitter(position = position_jitterdodge(jitter.height = 0, jitter.width = 0.2)) +
-  facet_grid( ~ combi_therapy) +
+  facet_grid( ~ combiIO) +
   # scale_y_sqrt() +
   # scale_y_continuous(limits = c(0,5)) +
   scale_colour_manual(values = c('#8a0b80', '#d2a118')) +
@@ -202,7 +202,7 @@ beta_models <- map_dfr(SGBs_fig13, ~{
   print(.x)
   temp_data <- long_data %>% filter(SGB==.x)
   temp_data$proportion <- temp_data$proportion + 1e-8
-  m1 <- glmmTMB(proportion ~  PFS12 + visit + PFS12:visit + colitis +  combi_therapy + centre + (1|patientid_anon), 
+  m1 <- glmmTMB(proportion ~  PFS12 + visit + PFS12:visit + colitis +  combiIO + centre + (1|patientid), 
                 family = beta_family(), data = temp_data)
   
   return(broom.mixed::tidy(m1) %>%
@@ -223,8 +223,8 @@ beta_models <- map_dfr(SGBs_fig4, ~{
   print(.x)
   temp_data <- long_data %>% filter(SGB==.x)
   temp_data$proportion <- temp_data$proportion + 1e-8
-  m1 <- glmmTMB(proportion ~  PFS12 + visit + PFS12:visit + colitis +  combi_therapy + combi_therapy:visit + 
-                  centre + (1|patientid_anon), 
+  m1 <- glmmTMB(proportion ~  PFS12 + visit + PFS12:visit + colitis +  combiIO + combiIO:visit + 
+                  centre + (1|patientid), 
                 family = beta_family(), data = temp_data)
   
   return(broom.mixed::tidy(m1) %>%
@@ -237,7 +237,7 @@ beta_models %>%
 
 
 beta_models %>%
-  filter(term %in% c('visit:combi_therapyyes')) %>%
+  filter(term %in% c('visit:combiIOyes')) %>%
   mutate(p.adjust = p.adjust(p.value, method = "fdr"))
 
 
@@ -245,7 +245,7 @@ beta_models %>%
 #   print(.x)
 #   temp_data <- long_data %>% filter(SGB==.x)
 #   temp_data$proportion <- temp_data$proportion + 1e-8
-#   m1 <- glmmTMB(proportion ~  PFS12 + visit + PFS12:visit + colitis +  combi_therapy + centre, 
+#   m1 <- glmmTMB(proportion ~  PFS12 + visit + PFS12:visit + colitis +  combiIO + centre, 
 #                 family = beta_family(), data = temp_data)
 #   
 #   return(broom.mixed::tidy(m1) %>%
@@ -253,14 +253,14 @@ beta_models %>%
 # })
 # 
 # beta_fixed_models %>%
-#   filter(term %in% c('PFS12yes:visit', 'combi_therapyyes'))
+#   filter(term %in% c('PFS12yes:visit', 'combiIOyes'))
 # 
 # 
 # logistic_models <- map_dfr(SGBs_fig13, ~{
 #   print(.x)
 #   temp_data <- long_data %>% filter(SGB==.x)
 #   temp_data$PFS12 <- (temp_data$PFS12=="yes") * 1
-#   m2 <- glmmTMB(PFS12 ~ proportion + visit + proportion:visit + colitis +  combi_therapy + centre + (1|patientid_anon), 
+#   m2 <- glmmTMB(PFS12 ~ proportion + visit + proportion:visit + colitis +  combiIO + centre + (1|patientid_anon), 
 #                 family = binomial, data = temp_data)
 #   
 #   return(broom.mixed::tidy(m2) %>%
@@ -269,7 +269,7 @@ beta_models %>%
 # 
 # 
 # logistic_models %>%
-#   filter(term %in% c('proportion:visit', 'combi_therapyyes'))
+#   filter(term %in% c('proportion:visit', 'combiIOyes'))
 
 
 ```
@@ -283,18 +283,18 @@ beta_models <- map_dfr(SGBs_fig13, ~{
   temp_data <- long_data %>% filter(SGB==.x)
   temp_data$proportion <- temp_data$proportion + 1e-8
   m1 <- glmmTMB(proportion ~  
-                  visit*PFS12*combi_therapy + 
+                  visit*PFS12*combiIO + 
                   visit*PFS12*colitis +
                   visit*PFS12*ppi +
                   centre +
-                  days_since_start_thetapy +
+                  # days_since_start_thetapy +
                   antibiotics +
                   toxicity +
                   previous_therapy +
                   age +
                   sex +
                   bmi +
-                  (1|patientid_anon), 
+                  (1|patientid), 
                 family = beta_family(), data = temp_data)
   
   return(broom.mixed::tidy(m1) %>%
@@ -302,7 +302,7 @@ beta_models <- map_dfr(SGBs_fig13, ~{
 })
 
 beta_models %>%
-  filter(term %in% c('PFS12yes:visit', 'combi_therapyyes'))
+  filter(term %in% c('PFS12yes:visit', 'combiIOyes'))
 
 ```
 
@@ -312,7 +312,7 @@ beta_combi_models <- map_dfr(c("SGB5121", "SGB14991", "SGB1949"), ~{
   print(.x)
   temp_data <- long_data %>% filter(SGB==.x)
   temp_data$proportion <- temp_data$proportion + 1e-8
-  m1 <- glmmTMB(proportion ~  PFS12 + visit + PFS12:visit + colitis +  combi_therapy:visit + centre + (1|patientid_anon), 
+  m1 <- glmmTMB(proportion ~  PFS12 + visit + PFS12:visit + colitis +  combiIO:visit + centre + (1|patientid), 
                 family = beta_family(), data = temp_data)
   
   return(broom.mixed::tidy(m1) %>%
@@ -320,7 +320,7 @@ beta_combi_models <- map_dfr(c("SGB5121", "SGB14991", "SGB1949"), ~{
 })
 
 beta_combi_models %>%
-  filter(term %in% c('PFS12yes:visit', 'visit:combi_therapyyes', 'combi_therapyyes'))
+  filter(term %in% c('PFS12yes:visit', 'visit:combiIOyes', 'combiIOyes'))
 
 ```
 
@@ -328,7 +328,7 @@ beta_combi_models %>%
 
 ```{r}
 nvisits <- long_meta %>% 
-  group_by(patientid_anon) %>%
+  group_by(patientid) %>%
   summarise(n_visits = n())
 
 ggplot(nvisits, aes(x=n_visits)) +
@@ -339,7 +339,7 @@ ggplot(nvisits, aes(x=n_visits)) +
   scale_x_continuous(breaks = seq(0, max(nvisits$n_visits), by=1))
 
 long_meta %>% 
-  group_by(patientid_anon, visit) %>%
+  group_by(patientid, visit) %>%
   summarise(n_visits = n(),
             ndates = length(unique(date_fecal_sample))) %>%
   filter(n_visits>1) 
@@ -432,7 +432,7 @@ design <- as.formula(" ~ PFS12 + visit + PFS12:visit + colitis  + antibiotics + 
 # fit <- glmZiBFit(sylph_98_filt, design, nthreads=4, method='glmmTMB')
 fit <- strainspy::glmFit(sylph_98_filt, design, nthreads=1)
 
-# design <- as.formula(" ~ PFS12 + visit + PFS12:visit + colitis +  combi_therapy +
+# design <- as.formula(" ~ PFS12 + visit + PFS12:visit + colitis +  combiIO +
 #                 centre + gamlss::random(patientid_anon)")
 # 
 # fit <- glmZiBFit(sylph_98_filt, design, nthreads=4, method='gamlss')

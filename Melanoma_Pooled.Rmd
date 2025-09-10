@@ -1,0 +1,43 @@
+---
+title: "Analysis of 420 pooled melanoma cancer metagenomes"
+output: html_document
+date: "2025-07-29"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Run full analysis
+
+```{r}
+library(SummarizedExperiment)
+library(tidyverse)
+library(strainspy)
+
+meta_path <- "./data/melanoma_pooled/metadata.tsv" 
+meta <- read.table(meta_path, sep = '\t') 
+meta$Extraction.Kit <- iconv(meta$Extraction.Kit, from = "", to = "UTF-8", sub = " ")
+
+meta = cbind(acc = meta$SampleID, meta) 
+
+# These studies don't use PFS 6
+meta_pfs6 = meta[-which(meta$Study == "Frankel" | meta$Study == "Lee"), ]
+
+sylph_query_path <- "./data/melanoma_pooled/combined_q_99.tsv"
+se <- read_sylph(sylph_query_path)
+# se <- filter_by_presence(se, min_nonzero = 42)
+
+# rename sequence names in the sylph file
+colnames(se) <- gsub("_1", "", colnames(se))
+se_pfs6 = se[ , ]
+
+se = modify_metadata(se, meta)
+
+design <- as.formula("~ Response_simplified_for_analysis + Sex + (1 | Center)")
+ZB_fit_MAP <- glmZiBFit(se,  design, nthreads = parallel::detectCores(), MAP_prior = ebp)
+top_hits(ZB_fit)
+
+```

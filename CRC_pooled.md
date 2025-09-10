@@ -1003,6 +1003,9 @@ ggvenn(
 
 ![](CRC_pooled_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
+We cannot call these direct differences between left and right tumours,
+this is all compared to control.
+
 ## Run ZiB analysis in p95 mode
 
 ## Load sylph outputs
