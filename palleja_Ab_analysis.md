@@ -1,27 +1,18 @@
----
-title: "Analysis of Palleja Antibiotic Exposure data"
-output: github_document
-date: "2025-07-28"
-editor_options: 
-  chunk_output_type: console
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+Analysis of Palleja Antibiotic Exposure data
+================
+2025-07-28
 
 # Run Sylph v0.8.0
 
 Examples:
 
-```
-sylph profile ../db/gtdb_95_ordered_DB/gtdb_ordered_95.syldb -u --read-seq-id 99.9 -t 8 -1 ./*_1.fastq.gz -2 /*_2.fastq.gz -o palleja_p_95.tsv
+    sylph profile ../db/gtdb_95_ordered_DB/gtdb_ordered_95.syldb -u --read-seq-id 99.9 -t 8 -1 ./*_1.fastq.gz -2 /*_2.fastq.gz -o palleja_p_95.tsv
 
-sylph query ../db/gtdb_99_ordered_DB/gtdb_ordered_99.syldb -u --read-seq-id 99.9 -t 8 -1 ./*_1.fastq.gz -2 /*_2.fastq.gz -o palleja_q_99.tsv
+    sylph query ../db/gtdb_99_ordered_DB/gtdb_ordered_99.syldb -u --read-seq-id 99.9 -t 8 -1 ./*_1.fastq.gz -2 /*_2.fastq.gz -o palleja_q_99.tsv
 
-```
 ## Load deps
-```{r, warning=FALSE, message=FALSE}
+
+``` r
 library(tidyverse)
 library(data.table)
 library(ggbeeswarm)
@@ -33,7 +24,8 @@ library(patchwork)
 ```
 
 ## Load metadata and tax
-```{r}
+
+``` r
 meta = read.table("data/palleja_ab_recovery/metadata.tsv", header = T)
 meta$days = factor(meta$days, levels = c(0, 4, 8, 42, 180))
 meta$subject = factor(meta$subject)
@@ -44,11 +36,11 @@ design = as.formula('~ days + (1|subject) + load')
 
 tax95 = read_taxonomy(system.file("extdata", "example_taxonomy.tsv.gz", package = "strainspy"))
 tax99 = read_taxonomy("data/TAXONOMY/sylph_DB_taxonomy_99.tsv")
-
 ```
 
 ## Helper functions
-```{r}
+
+``` r
 cleanup = function(se, meta, min_subj = 3, min_days = 2){
   colnames(se) = gsub("_1", "", colnames(se)) # Reset colnames
   
@@ -84,24 +76,31 @@ viz = function(se, fit, tax){
 pool_contigs = function(fit, coef = c(2,3,4,5), alpha = 0.05){ # For baseline vs. changes
   return(unique(unlist(sapply(coef, function(cf) top_hits(fit, coef = cf, alpha = alpha)$Contig_name))))
 }
-
 ```
 
 # Immediate changes following exposure
 
-```{r}
-
+``` r
 meta_pre2post = meta[meta$days == 0 | meta$days == 8, ]
 
 se_p = cleanup(read_sylph("data/palleja_ab_recovery/combined_p_95.tsv"), meta)
-se_q = cleanup(read_sylph("data/palleja_ab_recovery/combined_q_99.tsv"), meta)
-
 ```
 
-## Fit to profile 
+    ## Detected Sylph profile output file.
 
-```{r, fig.width=12}
+    ## Retained 371 rows after subject-aware filtering
 
+``` r
+se_q = cleanup(read_sylph("data/palleja_ab_recovery/combined_q_99.tsv"), meta)
+```
+
+    ## Detected Sylph query output file.
+
+    ## Retained 15802 rows after subject-aware filtering
+
+## Fit to profile
+
+``` r
 save_path <- "output_rds/palleja_zib_p_95.rds"
 if(file.exists(save_path)){
   fit_zib_p <- readRDS(save_path)
@@ -115,13 +114,41 @@ if(file.exists(save_path)){
 
 
 plot_ani_dist(se_p, 'days', pool_contigs(fit_zib_p), drop_zeros = T, show_points = T, plot_type = "box")
+```
+
+    ## Warning: Removed 866 rows containing non-finite outside the scale range
+    ## (`stat_boxplot()`).
+
+![](palleja_Ab_analysis_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+``` r
 viz(se_p, fit_zib_p, tax95)
 ```
 
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+
+    ## Warning: Removed 381 rows containing non-finite outside the scale range
+    ## (`stat_boxplot()`).
+
+![](palleja_Ab_analysis_files/figure-gfm/unnamed-chunk-5-2.png)<!-- -->
+
+    ## Warning: Removed 381 rows containing non-finite outside the scale range
+    ## (`stat_boxplot()`).
+
+![](palleja_Ab_analysis_files/figure-gfm/unnamed-chunk-5-3.png)<!-- -->
+
 ## Fit to query - takes long, skip for now
 
-```{r, fig.width=12}
-
+``` r
 save_path <- "output_rds/palleja_zib_q_99.rds"
 if(file.exists(save_path)){
   fit_zib_q <- readRDS(save_path)
@@ -135,36 +162,86 @@ if(file.exists(save_path)){
 
 
 viz(se_q, fit_zib_q, tax99)
+```
 
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+
+    ## Warning: Removed 473 rows containing non-finite outside the scale range
+    ## (`stat_boxplot()`).
+
+![](palleja_Ab_analysis_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+    ## Warning: Removed 473 rows containing non-finite outside the scale range
+    ## (`stat_boxplot()`).
+
+![](palleja_Ab_analysis_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->
+
+``` r
 # Nice signal here:
 # Veillonella parvula - 00100
 # Faecalibacterium prausnitzii - 0-1-3-20
-
-
 ```
 
-# Run abundance testing AKA why don't see see *E. coli* in ANI testing?
+# Run abundance testing AKA why don’t see see *E. coli* in ANI testing?
 
-*E. coli* shows a sharp shift in abundance in the paper (goes up after exposure and then down) - but no change in ANI. Indicative of no strain change or replacement?
+*E. coli* shows a sharp shift in abundance in the paper (goes up after
+exposure and then down) - but no change in ANI. Indicative of no strain
+change or replacement?
 
-```{r, fig.width=12}
-
+``` r
 se_p95_abund  = cleanup(read_sylph("data/palleja_ab_recovery/combined_p_95.tsv", variable = "Taxonomic_abundance"), meta)
+```
 
+    ## Detected Sylph profile output file.
+
+    ## Retained 371 rows after subject-aware filtering
+
+``` r
 bug = c("Veillonella", "Klebsiella pneumoniae", "Escherichia coli"); bug_i = 3
 
 p1 = plot_ani_dist(se_p95_abund, 'days',contigs = rownames(se_p95_abund)[grep(bug[bug_i], rownames(se_p95_abund))] ,drop_zeros = T,show_points = TRUE,plot_type = 'box')
-
-p2 = plot_ani_dist(se_p, 'days',contigs = rownames(se_p)[grep(bug[bug_i], rownames(se_p))] ,drop_zeros = T,show_points = TRUE,plot_type = 'box')
-
-p1/p2
-
 ```
 
-It seems that relative abundance does have the trend mentioned in the paper, but ANI is stable.
+    ## Warning: Removed 10 rows containing non-finite outside the scale range
+    ## (`stat_boxplot()`).
+
+![](palleja_Ab_analysis_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+``` r
+p2 = plot_ani_dist(se_p, 'days',contigs = rownames(se_p)[grep(bug[bug_i], rownames(se_p))] ,drop_zeros = T,show_points = TRUE,plot_type = 'box')
+```
+
+    ## Warning: Removed 10 rows containing non-finite outside the scale range
+    ## (`stat_boxplot()`).
+
+![](palleja_Ab_analysis_files/figure-gfm/unnamed-chunk-7-2.png)<!-- -->
+
+``` r
+p1/p2
+```
+
+    ## Warning: Removed 10 rows containing non-finite outside the scale range
+    ## (`stat_boxplot()`).
+    ## Removed 10 rows containing non-finite outside the scale range
+    ## (`stat_boxplot()`).
+
+![](palleja_Ab_analysis_files/figure-gfm/unnamed-chunk-7-3.png)<!-- -->
+
+It seems that relative abundance does have the trend mentioned in the
+paper, but ANI is stable.
 
 ## Check microbial load vs reported enriched low abundance commensals
-```{r, fig.width=12}
+
+``` r
 summary_df <- meta %>%
   group_by(days) %>%
   summarise(
@@ -182,15 +259,23 @@ ggplot() +
   scale_x_continuous(breaks = unique(as.numeric(summary_df$days)), labels = unique(summary_df$days)) +
   theme(legend.position = "right") +
   theme_clean()
-
-
 ```
 
-As expected microbial load goes down after antibiotic exposure. Could the relative abundance change in *E. coli&* be an artifact of this effect?
+    ## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+    ## ℹ Please use `linewidth` instead.
+    ## This warning is displayed once every 8 hours.
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+![](palleja_Ab_analysis_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
+As expected microbial load goes down after antibiotic exposure. Could
+the relative abundance change in *E. coli&* be an artifact of this
+effect?
 
 ## Perform differential abundance testing
-```{r, fig.width=12}
 
+``` r
 # Helper function
 generate_species_plot = function(fit_ab){
   # Pool the stains that are different at least one day compared to baseline
@@ -226,7 +311,7 @@ generate_species_plot = function(fit_ab){
 
 ### Model without correcting for microbial load
 
-```{r, fig.width=12}
+``` r
 save_path <- "output_rds/palleja_abud_p_95_conv.rds"
 if(file.exists(save_path)){
   fit_ab_conv <- readRDS(save_path)
@@ -237,8 +322,11 @@ if(file.exists(save_path)){
 generate_species_plot(fit_ab_conv)
 ```
 
+![](palleja_Ab_analysis_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
 ### Model with load adjustment
-```{r, fig.width=12}
+
+``` r
 save_path <- "output_rds/palleja_abud_p_95_load_adj.rds"
 if(file.exists(save_path)){
   fit_ab_load <- readRDS(save_path)
@@ -250,4 +338,7 @@ if(file.exists(save_path)){
 generate_species_plot(fit_ab_load)
 ```
 
-After adjusting for load, we lose many top hits, including *E. coli*. These were all likely driven by the reduction of overall microbial load.
+![](palleja_Ab_analysis_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+After adjusting for load, we lose many top hits, including *E. coli*.
+These were all likely driven by the reduction of overall microbial load.
