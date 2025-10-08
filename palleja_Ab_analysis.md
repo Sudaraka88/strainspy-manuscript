@@ -20,7 +20,6 @@ library(ggthemes)
 library(strainspy)
 library(SummarizedExperiment)
 library(ggplot2)
-library(patchwork)
 ```
 
 ## Load metadata and tax
@@ -224,17 +223,6 @@ p2 = plot_ani_dist(se_p, 'days',contigs = rownames(se_p)[grep(bug[bug_i], rownam
     ## (`stat_boxplot()`).
 
 ![](palleja_Ab_analysis_files/figure-gfm/unnamed-chunk-7-2.png)<!-- -->
-
-``` r
-p1/p2
-```
-
-    ## Warning: Removed 10 rows containing non-finite outside the scale range
-    ## (`stat_boxplot()`).
-    ## Removed 10 rows containing non-finite outside the scale range
-    ## (`stat_boxplot()`).
-
-![](palleja_Ab_analysis_files/figure-gfm/unnamed-chunk-7-3.png)<!-- -->
 
 It seems that relative abundance does have the trend mentioned in the
 paper, but ANI is stable.

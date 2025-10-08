@@ -29,7 +29,6 @@ library(ggthemes)
 library(strainspy)
 library(SummarizedExperiment)
 library(ggplot2)
-library(patchwork)
 ```
 
 ## Load metadata and tax
@@ -157,8 +156,6 @@ p1 = plot_ani_dist(se_p95_abund, 'days',contigs = rownames(se_p95_abund)[grep(bu
 
 p2 = plot_ani_dist(se_p, 'days',contigs = rownames(se_p)[grep(bug[bug_i], rownames(se_p))] ,drop_zeros = T,show_points = TRUE,plot_type = 'box')
 
-p1/p2
-
 ```
 
 It seems that relative abundance does have the trend mentioned in the paper, but ANI is stable.
@@ -226,7 +223,7 @@ generate_species_plot = function(fit_ab){
 
 ### Model without correcting for microbial load
 
-```{r, fig.width=12}
+```{r, fig.width=12, fig.height=20}
 save_path <- "output_rds/palleja_abud_p_95_conv.rds"
 if(file.exists(save_path)){
   fit_ab_conv <- readRDS(save_path)
@@ -238,7 +235,7 @@ generate_species_plot(fit_ab_conv)
 ```
 
 ### Model with load adjustment
-```{r, fig.width=12}
+```{r, fig.width=12, fig.height=12}
 save_path <- "output_rds/palleja_abud_p_95_load_adj.rds"
 if(file.exists(save_path)){
   fit_ab_load <- readRDS(save_path)
