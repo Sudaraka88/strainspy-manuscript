@@ -18,8 +18,10 @@ library(data.table)
 library(ggbeeswarm)
 library(ggthemes)
 library(strainspy)
+library(stringr)
 library(SummarizedExperiment)
 library(ggplot2)
+library(ggsci)
 ```
 
 ## Load metadata and tax
@@ -145,7 +147,7 @@ viz(se_p, fit_zib_p, tax95)
 
 ![](palleja_Ab_analysis_files/figure-gfm/unnamed-chunk-5-3.png)<!-- -->
 
-## Fit to query - takes long, skip for now
+## Fit to query
 
 ``` r
 save_path <- "output_rds/palleja_zib_q_99.rds"
@@ -155,7 +157,7 @@ if(file.exists(save_path)){
   ebp_q = compute_eb_priors(se = se_q, design = as.formula('~ days'),
                             nthreads = parallel::detectCores(), low_cutoff = 0, high_cutoff = Inf)
   
-  fit_zib_q = glmZiBFit(se_q, design, nthreads = parallel::detectCores(), MAP_prior = ebp_q)
+  fit_zib_q = glmZiBFit(se_q, conv_design, nthreads = parallel::detectCores(), MAP_prior = ebp_q)
   saveRDS(fit_zib_q, save_path)
 }
 
@@ -330,3 +332,255 @@ generate_species_plot(fit_ab_load)
 
 After adjusting for load, we lose many top hits, including *E. coli*.
 These were all likely driven by the reduction of overall microbial load.
+
+# Paper Figure
+
+## Strain emergence or disappearance
+
+Pool top hits with BH at `alpha = 0.05`.
+
+``` r
+top_hits = rbind( data.frame(strainspy:::add_tax2tophits(top_hits(fit_zib_q, coef = 2, method = "BH"), tax99, columns = c("Phylum", "Genus", "Species")), day = 4), # day 4
+                  data.frame(strainspy:::add_tax2tophits(top_hits(fit_zib_q, coef = 3, method = "BH"), tax99, columns = c("Phylum", "Genus", "Species")), day = 8), # day 8
+                  data.frame(strainspy:::add_tax2tophits(top_hits(fit_zib_q, coef = 4, method = "BH"), tax99, columns = c("Phylum", "Genus", "Species")), day = 42), # day 42
+                  data.frame(strainspy:::add_tax2tophits(top_hits(fit_zib_q, coef = 5, method = "BH"), tax99, columns = c("Phylum", "Genus", "Species")), day = 180)) # day 180
+
+contigs_to_pull = unique(top_hits$Contig_name)
+asy = SummarizedExperiment::assay(se_q)
+asy = as.matrix(asy[unname(sapply(contigs_to_pull, function(x) which(x == rownames(asy)))),])
+
+ani_long <- as.data.frame(asy) %>%
+  tibble::rownames_to_column("Contig_name") %>%
+  pivot_longer(-Contig_name, names_to = "run_accession", values_to = "ANI") %>%
+  left_join(meta %>% select(run_accession, subject, days), by = "run_accession") %>%
+  mutate(
+    Species = top_hits$Species[match(Contig_name, top_hits$Contig_name)],
+    Genus   = top_hits$Genus[match(Contig_name, top_hits$Contig_name)]
+  )
+
+ani_filtered <- ani_long %>%
+  group_by(subject, Contig_name) %>%
+  # Keep only those with at least one non-zero ANI for that subject
+  filter(any(ANI != 0)) %>%
+  ungroup()
+
+
+# look at zeros
+non_zero_counts <- ani_filtered %>%
+  group_by(subject, Genus, days) %>%
+  summarise(
+    n_zeros   = sum(ANI != 0),
+    n_total   = n(),
+    prop_zero = n_zeros / n_total,
+    n_contigs = n_distinct(Contig_name),
+    .groups = "drop"
+  ) %>%
+  group_by(Genus, days) %>%
+  summarise(
+    mean_prop_zeros = mean(prop_zero),
+    se_prop_zeros   = sd(prop_zero) / sqrt(n()),
+    mean_zeros      = mean(n_zeros),
+    se_zeros        = sd(n_zeros) / sqrt(n()),
+    n_contigs_total = sum(n_contigs),
+    n_subjects      = n_distinct(subject),
+    .groups = "drop"
+  )
+```
+
+## Fate of Short-chain fatty acid producers
+
+``` r
+scfa_genera <- c(
+  "Faecalibacterium",  # classic butyrate producer
+  "Agathobacter",      # Eubacterium rectale group
+  "Anaerobutyricum",   # E. hallii group
+  "Anaerostipes",      # strong butyrate producer
+  "Roseburia",         # hallmark butyrate producer
+  "Blautia_A",         # butyrate/acetate producer
+  "Fusicatenibacter",  # secondary butyrate producer
+  "Ruminococcus_E"     # butyrate producer
+)
+
+sfca_non_zeros <- non_zero_counts %>% filter(Genus %in% scfa_genera)
+set.seed(25); cols <- ggsci::pal_bmj()(9)[sample(10, length(unique(sfca_non_zeros$Genus)))]
+
+ggplot(sfca_non_zeros, aes(x = days, y = mean_prop_zeros, color = Genus, group = Genus)) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  geom_errorbar(aes(ymin = mean_prop_zeros - se_prop_zeros, ymax = mean_prop_zeros + se_prop_zeros),
+                width = 0.2, alpha = 0.6) +
+  scale_x_discrete(breaks = sort(unique(sfca_non_zeros$days))) +
+  scale_color_manual(values = cols) +
+  labs(
+    x = "Sample day",
+    y = "Fraction of strain presence",
+    color = "Genus"
+  ) +
+  theme(
+    legend.position = "right",
+    panel.grid.minor = element_blank(),
+    plot.title = element_text(face = "bold")
+  ) +
+  theme_clean(base_size = 14)
+```
+
+![](palleja_Ab_analysis_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+## Fate of some oppotunistic bacteria
+
+``` r
+opportunistic_genera <- c(
+  "Clostridium",
+  "Clostridium_AQ",
+  "Klebsiella",
+  "Escherichia"       # E. coli and related, classic opportunist
+)
+
+opp_non_zeros <- non_zero_counts %>% filter(Genus %in% opportunistic_genera)
+set.seed(25); cols <- ggsci::pal_bmj()(length(opportunistic_genera))[sample(length(unique(opp_non_zeros$Genus)))]
+
+ggplot(opp_non_zeros, aes(x = days, y = mean_prop_zeros, color = Genus, group = Genus)) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  geom_errorbar(aes(ymin = mean_prop_zeros - se_prop_zeros, ymax = mean_prop_zeros + se_prop_zeros),
+                width = 0.2, alpha = 0.6) +
+  scale_x_discrete(breaks = sort(unique(opp_non_zeros$days))) +
+  scale_color_manual(values = cols) +
+  labs(
+    x = "Sample day",
+    y = "Fraction of strain presence",
+    color = "Genus"
+  ) +
+  theme_clean(base_size = 14) +
+  theme(
+    legend.position = "right",
+    panel.grid.minor = element_blank(),
+    plot.title = element_text(face = "bold")
+  )
+```
+
+![](palleja_Ab_analysis_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+
+## Strain replacement
+
+``` r
+bact_filt_out = function(genus){
+  bact <- top_hits[grep(genus, top_hits$Genus),]
+  bact = bact[which(bact$p_adjust < 0.05),]
+  bact = bact[order(bact$p_adjust),]
+  
+  bact_to_pull = unique(bact$Contig_name)
+  asy = SummarizedExperiment::assay(se_q)
+  asy = as.matrix(asy[unname(sapply(bact_to_pull, function(x) which(x == rownames(asy)))),])
+  
+  bact_long <- as.data.frame(asy) %>%
+    tibble::rownames_to_column("Contig_name") %>%
+    pivot_longer(-Contig_name, names_to = "run_accession", values_to = "ANI") %>%
+    left_join(meta %>% select(run_accession, subject, days), by = "run_accession") %>%
+    mutate(
+      Species = top_hits$Species[match(Contig_name, top_hits$Contig_name)],
+      Genus   = top_hits$Genus[match(Contig_name, top_hits$Contig_name)]
+    )
+  
+  bact_filtered <- bact_long %>%
+    group_by(subject, Contig_name) %>%
+    # Keep only those with at least one non-zero ANI for that subject
+    filter(any(ANI != 0)) %>%
+    ungroup() %>%
+    group_by(Contig_name, subject) %>%
+    mutate(
+      ANI_day0 = ANI[days == 0],        # baseline for that contig+subject
+      ANI_relative = ANI - ANI_day0     # drop or gain relative to day0
+    ) %>%
+    ungroup() %>% 
+    filter(abs(ANI_relative)< 10 & abs(ANI_relative) > 1)
+  
+  return(bact_filtered)
+}
+
+bact_filtered = bact_filt_out("Bacteroides")
+contigs_subset <-names(sort(table(bact_filtered$Contig_name), decreasing = T))[c(9, 11, 26)]
+ct_to_check = contigs_subset
+
+bact_filtered = bact_filt_out("Alistipes")
+contigs_subset <-names(sort(table(bact_filtered$Contig_name), decreasing = T))[c(3)]
+ct_to_check = c(ct_to_check, contigs_subset)
+
+bact_filtered = bact_filt_out("Veillonella")
+contigs_subset <-names(sort(table(bact_filtered$Contig_name), decreasing = T))[c(8,2)]
+ct_to_check = c(ct_to_check, contigs_subset)
+
+bact_filtered = bact_filt_out("Prevotella")
+contigs_subset <-names(sort(table(bact_filtered$Contig_name), decreasing = T))[c(2)]
+ct_to_check = c(ct_to_check, contigs_subset)
+
+bact <- top_hits
+bact = bact[which(bact$p_adjust < 0.05),]
+bact = bact[order(bact$p_adjust),]
+
+bact_to_pull = unique(bact$Contig_name)
+asy = SummarizedExperiment::assay(se_q)
+asy = as.matrix(asy[unname(sapply(bact_to_pull, function(x) which(x == rownames(asy)))),])
+
+bact_long <- as.data.frame(asy) %>%
+  tibble::rownames_to_column("Contig_name") %>%
+  pivot_longer(-Contig_name, names_to = "run_accession", values_to = "ANI") %>%
+  left_join(meta %>% select(run_accession, subject, days), by = "run_accession") %>%
+  mutate(
+    Species = top_hits$Species[match(Contig_name, top_hits$Contig_name)],
+    Genus   = top_hits$Genus[match(Contig_name, top_hits$Contig_name)]
+  )
+
+bact_filtered <- bact_long %>%
+  group_by(subject, Contig_name) %>%
+  # Keep only those with at least one non-zero ANI for that subject
+  filter(any(ANI != 0)) %>%
+  ungroup() %>%
+  group_by(Contig_name, subject) %>%
+  mutate(
+    ANI_day0 = ANI[days == 0],        # baseline for that contig+subject
+    ANI_relative = ANI - ANI_day0     # drop or gain relative to day0
+  ) %>%
+  ungroup() %>% 
+  filter(abs(ANI_relative)< 10 & abs(ANI_relative) > 1)
+ct_to_check_ = ct_to_check[c(1, 5, 4)]
+
+# All hits with very small beta p-values indicate strain replacement, but we also track strain disappearances. Let's try to keep strains that persist 
+df_plot <- bact_long %>%
+  filter(Contig_name %in% ct_to_check_, ANI > 0)
+
+df_plot$Contig_name = factor(df_plot$Contig_name, levels = ct_to_check_ )
+
+for(i in 1:nrow(df_plot)){
+  df_plot$Species[i] = paste(df_plot$Species[i], str_extract(df_plot$Contig_name[i], "^[^ ]+"))
+}
+df_plot$Species = factor(df_plot$Species, levels = unique(df_plot$Species) )
+
+ggplot(df_plot, aes(x = factor(days), y = ANI, group = subject, color = subject)) +
+  geom_point(size = 3, alpha = 0.8) +        # points per subject/day
+  geom_line(size = 1) +                      # lines connecting days per subject
+  scale_color_manual(values =  c(
+    "#D55E00", # reddish-orange  
+    "#0072B2", # deep blue  
+    "#009E73", # teal/green  
+    "#CC79A7", # magenta  
+    "#F0E442", # yellow  
+    "#E69F00", # orange  
+    "#56B4E9", # sky blue  
+    "#999999", # gray  
+    "#A6761D", # brown  
+    "#66CC99", # mint  
+    "#CC6666", # muted red  
+    "#6699CC"  # muted blue  
+  )) +
+  facet_wrap(~Species, scales = "free_x") +
+  labs(x = "Day", y = "ANI", color = "Subject") +
+  theme(axis.text.x = element_text(hjust = 0.5)) +
+  theme_clean(base_size = 14)
+```
+
+![](palleja_Ab_analysis_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
+``` r
+# Strain replacement p-values for these three strains: 4.664351e-12 4.011619e-08 3.600068e-05
+```
