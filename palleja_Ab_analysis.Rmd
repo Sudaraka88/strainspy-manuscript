@@ -158,6 +158,8 @@ p1 = plot_ani_dist(se_p95_abund, 'days',contigs = rownames(se_p95_abund)[grep(bu
 
 p2 = plot_ani_dist(se_p, 'days',contigs = rownames(se_p)[grep(bug[bug_i], rownames(se_p))] ,drop_zeros = T,show_points = TRUE,plot_type = 'box')
 
+p1/p2
+
 ```
 
 It seems that relative abundance does have the trend mentioned in the paper, but ANI is stable.
@@ -172,15 +174,28 @@ summary_df <- meta %>%
   )
 
 ggplot() +
-  geom_line(data = meta, aes(x = as.numeric(days), y = log(g_load), group = subject, color = subject), alpha = 0.5) +
-  geom_point(data = meta, aes(x = as.numeric(days), y = log(g_load), color = subject), alpha = 1) +
+  geom_line(data = meta, aes(x = as.numeric(days), y = log(g_load), group = subject, color = subject), size = 0.8, alpha = 0.5) +
+  geom_point(data = meta, aes(x = as.numeric(days), y = log(g_load), color = subject), size = 3, alpha = 0.8) +
   geom_line(data = summary_df, aes(x = as.numeric(days), y = mean_log_gload), size = 1.2, color = "black") +
   geom_ribbon(data = summary_df, aes(x = as.numeric(days), ymin = mean_log_gload - se_log_gload, ymax = mean_log_gload + se_log_gload), alpha = 0.3, fill = "grey") +
   xlab("Days") +
   ylab("Predicted log microbial load (Galaxy model)") +
+   scale_color_manual(values =  c(
+    "#D55E00", # reddish-orange  
+    "#0072B2", # deep blue  
+    "#009E73", # teal/green  
+    "#CC79A7", # magenta  
+    "#F0E442", # yellow  
+    "#E69F00", # orange  
+    "#56B4E9", # sky blue  
+    "#999999", # gray  
+    "#A6761D", # brown  
+    "#66CC99", # mint  
+    "#CC6666", # muted red  
+    "#6699CC"  # muted blue  
+  )) +
   scale_x_continuous(breaks = unique(as.numeric(summary_df$days)), labels = unique(summary_df$days)) +
-  theme(legend.position = "right") +
-  theme_clean()
+  theme_clean(base_size = 14)
 
 
 ```
@@ -380,7 +395,7 @@ ggplot(opp_non_zeros, aes(x = days, y = mean_prop_zeros, color = Genus, group = 
 ```
 
 ## Strain replacement
-```{r}
+```{r, fig.width=12}
 
 bact_filt_out = function(genus){
   bact <- top_hits[grep(genus, top_hits$Genus),]
@@ -499,4 +514,3 @@ ggplot(df_plot, aes(x = factor(days), y = ANI, group = subject, color = subject)
 # Strain replacement p-values for these three strains: 4.664351e-12 4.011619e-08 3.600068e-05
 
 ```
-

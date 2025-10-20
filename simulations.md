@@ -1,60 +1,58 @@
----
-title: "Simulations"
-output: github_document
-date: "2025-02-04"
-editor_options: 
-  chunk_output_type: console
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+Simulations
+================
+2025-02-04
 
 ### Download data
 
 Sample 200 sample IDs from the Zeevi et al., dataset (PRJEB11532)
 
-```
-{ head -n 1 PRJEB11532_ena_meta.tsv; tail -n +2 PRJEB11532_ena_meta.tsv | shuf -n 200; } > subsample200_PRJEB11532_ena_meta.tsv
-cut -f1 subsample200_PRJEB11532_ena_meta.tsv > subsample200_PRJEB11532_ids.tsv
+    { head -n 1 PRJEB11532_ena_meta.tsv; tail -n +2 PRJEB11532_ena_meta.tsv | shuf -n 200; } > subsample200_PRJEB11532_ena_meta.tsv
+    cut -f1 subsample200_PRJEB11532_ena_meta.tsv > subsample200_PRJEB11532_ids.tsv
 
 
-kingfisher get --run-identifiers-list subsample200_PRJEB11532_ids.tsv --download-threads 5 -m ena-ascp ena-ftp aws-http prefetch
-```
+    kingfisher get --run-identifiers-list subsample200_PRJEB11532_ids.tsv --download-threads 5 -m ena-ascp ena-ftp aws-http prefetch
 
 ### Run Sylph
 
-Run Sylph (v0.8.0) in 'query' mode using the GTDB 99% identity dataset.
+Run Sylph (v0.8.0) in ‘query’ mode using the GTDB 99% identity dataset.
 
-```
-sylph query gtdb_ordered_99.syldb -u --read-seq-id 99.9 -t 100  -1 ./*_1.fastq.gz -2 ./*_2.fastq.gz -o ./zeevi_PRJEB11532_query_gtdb_220_id99.tsv ./ERR*[0-9][0-9].fastq.gz
-```
+    sylph query gtdb_ordered_99.syldb -u --read-seq-id 99.9 -t 100  -1 ./*_1.fastq.gz -2 ./*_2.fastq.gz -o ./zeevi_PRJEB11532_query_gtdb_220_id99.tsv ./ERR*[0-9][0-9].fastq.gz
 
-```
-sylph query /data1/gerryt/sylph_analyses/gtdb_98_ordered_DB/gtdb_ordered_98.syldb -u --read-seq-id 99.9 -t 25  -1 ./*_1.fastq.gz -2 ./*_2.fastq.gz -o ./zeevi_PRJEB11532_query_gtdb_220_id98.tsv ./ERR*[0-9][0-9].fastq.gz
-```
+    sylph query /data1/gerryt/sylph_analyses/gtdb_98_ordered_DB/gtdb_ordered_98.syldb -u --read-seq-id 99.9 -t 25  -1 ./*_1.fastq.gz -2 ./*_2.fastq.gz -o ./zeevi_PRJEB11532_query_gtdb_220_id98.tsv ./ERR*[0-9][0-9].fastq.gz
 
-```
-sylph profile /data1/gerryt/sylph_analyses/gtdb_98_ordered_DB/gtdb_ordered_98.syldb -u --read-seq-id 99.9 -t 25  -1 ./*_1.fastq.gz -2 ./*_2.fastq.gz -o ./zeevi_PRJEB11532_profile_gtdb_220_id98.tsv ./ERR*[0-9][0-9].fastq.gz
-```
+    sylph profile /data1/gerryt/sylph_analyses/gtdb_98_ordered_DB/gtdb_ordered_98.syldb -u --read-seq-id 99.9 -t 25  -1 ./*_1.fastq.gz -2 ./*_2.fastq.gz -o ./zeevi_PRJEB11532_profile_gtdb_220_id98.tsv ./ERR*[0-9][0-9].fastq.gz
 
-```
-sylph profile /data1/gerryt/sylph_analyses/gtdb-r220-c200-dbv1.syldb -u --read-seq-id 99.9 -t 25  -1 ./*_1.fastq.gz -2 ./*_2.fastq.gz -o ./zeevi_PRJEB11532_profile_gtdb_220_id95.tsv ./ERR*[0-9][0-9].fastq.gz
-```
+    sylph profile /data1/gerryt/sylph_analyses/gtdb-r220-c200-dbv1.syldb -u --read-seq-id 99.9 -t 25  -1 ./*_1.fastq.gz -2 ./*_2.fastq.gz -o ./zeevi_PRJEB11532_profile_gtdb_220_id95.tsv ./ERR*[0-9][0-9].fastq.gz
 
-```
-sylph query /data1/gerryt/sylph_analyses/gtdb-r220-c200-dbv1.syldb -u --read-seq-id 99.9 -t 25  -1 ./*_1.fastq.gz -2 ./*_2.fastq.gz -o ./zeevi_PRJEB11532_query_gtdb_220_id95.tsv ./ERR*[0-9][0-9].fastq.gz
-```
-
+    sylph query /data1/gerryt/sylph_analyses/gtdb-r220-c200-dbv1.syldb -u --read-seq-id 99.9 -t 25  -1 ./*_1.fastq.gz -2 ./*_2.fastq.gz -o ./zeevi_PRJEB11532_query_gtdb_220_id95.tsv ./ERR*[0-9][0-9].fastq.gz
 
 ### Functions to generate plots and heatmaps
-```{r}
+
+``` r
 library(ggplot2)
 library(ggthemes)
 library(dplyr)
+```
+
+    ## 
+    ## Attaching package: 'dplyr'
+
+    ## The following objects are masked from 'package:stats':
+    ## 
+    ##     filter, lag
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
+
+``` r
 library(tidyr)
 library(viridis)
+```
 
+    ## Loading required package: viridisLite
+
+``` r
 gg_facet_plot <- function(op, title = NULL){
   if('sf' %in% colnames(op)){
     op$var = as.numeric(op$sf)
@@ -138,18 +136,27 @@ gg_heatmaps <- function(op){
       axis.text.x = element_text(angle = 45, hjust = 1)
     )
 }
-
 ```
+
 ### Load data and prepare for simulations
 
-```{r}
+``` r
 library(strainspy)
 
 # Load Zeevi the GTDB 99% identity dataset
 # data <- read_sylph("~/Documents/strainspy_manuscript/zeevi/zeevi_PRJEB11532_query_gtdb_220_id99.tsv.gz")
 data <- read_sylph("TEST_DATA/zeevi/zeevi_PRJEB11532_query_gtdb_220_id99.tsv.gz")
-data <- filter_by_presence(data, min_nonzero = 150)
+```
 
+    ## Detected Sylph query output file.
+
+``` r
+data <- filter_by_presence(data, min_nonzero = 150)
+```
+
+    ## Retained 5628 rows after filtering
+
+``` r
 # Get the ids of cases after a random split
 set.seed(789)
 cascon = rbinom(round(SummarizedExperiment::ncol(data)),  1, 0.5)
@@ -164,7 +171,8 @@ data = modify_metadata(se = data, meta_data = meta_data)
 ```
 
 ## Sensitivity Analysis
-```{r}
+
+``` r
 # randomly select 100 features (contigs) to rescale abundance - ensure omit NA from cascon model
 fit_cascon_null = readRDS("TEST_DATA/zeevi/TEMP_FITS/null_cascon.rds")
 set.seed(789)
@@ -174,11 +182,11 @@ contigs = data@elementMetadata$Contig_name[sel]
 # fit the 3 models using update option
 fit_ob_null = readRDS("TEST_DATA/zeevi/TEMP_FITS/null_ob.rds")
 fit_zib_null = readRDS("TEST_DATA/zeevi/TEMP_FITS/null_zib.rds")
-
 ```
 
 ### Simulate changes in identity
-```{r, fig.width=8, fig.asp=0.75, out.width='100%'}
+
+``` r
 save_path = "output_rds/zeevi_sim_id.rds"
 if(file.exists(save_path)){
   op_id = readRDS(save_path)
@@ -233,8 +241,14 @@ if(file.exists(save_path)){
 gg_facet_plot(op_id, "Variation in feature identity")
 ```
 
+    ## Warning: Removed 7 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+<img src="simulations_files/figure-gfm/unnamed-chunk-4-1.png" width="100%" />
+
 ### Simulate changes in presence/absence
-```{r, fig.width=8, fig.asp=0.75, out.width='100%'}
+
+``` r
 save_path = "output_rds/zeevi_sim_pa.rds"
 if(file.exists(save_path)){
   op_pa = readRDS(save_path)
@@ -283,12 +297,16 @@ if(file.exists(save_path)){
 }
 
 gg_facet_plot(op_pa, "Variation in feature presence/absence")
-
 ```
 
+    ## Warning: Removed 6 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+<img src="simulations_files/figure-gfm/unnamed-chunk-5-1.png" width="100%" />
 
 ### Simulate both identity and presence/absence changes
-```{r, fig.width=8, fig.asp=0.75, out.width='100%'}
+
+``` r
 save_path = "output_rds/zeevi_sim_full.rds"
 if(file.exists(save_path)){
   op_full = readRDS(save_path)
@@ -344,8 +362,11 @@ if(file.exists(save_path)){
 gg_heatmaps(op_full)
 ```
 
+<img src="simulations_files/figure-gfm/unnamed-chunk-6-1.png" width="100%" />
+
 ## Generate a manhattan plots with ground truth for a single data point
-```{r, fig.width=8, fig.asp=0.75, out.width='100%'}
+
+``` r
 # scale_factor = 0.975
 # zero_prop = 0.25
 # 
@@ -379,6 +400,4 @@ gg_heatmaps(op_full)
 # strainspy:::plot_manhattan_gt(fit_zib_updated, method = "holm", ground_truth = contigs)
 # strainspy:::plot_manhattan_gt(fit_ob_updated, method = "holm", ground_truth = contigs)
 # strainspy:::plot_manhattan_gt(fit_cascon_updated, method = "holm", ground_truth = contigs)
-
 ```
-

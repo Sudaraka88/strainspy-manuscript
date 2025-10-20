@@ -248,7 +248,7 @@ ggplot() +
   ylab("Predicted log microbial load (Galaxy model)") +
   scale_x_continuous(breaks = unique(as.numeric(summary_df$days)), labels = unique(summary_df$days)) +
   theme(legend.position = "right") +
-  theme_clean()
+  theme_clean(base_size = 14)
 ```
 
     ## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.

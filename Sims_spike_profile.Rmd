@@ -1,9 +1,7 @@
 ---
 title: "Simulations with spiked E. coli strain analysed using Sylph Profile"
-output:
-  html_document: default
-  pdf_document: default
-date: "2025-06-167"
+output: github_document
+date: "2025-06-17"
 editor_options:
   chunk_output_type: console
 ---
@@ -48,8 +46,16 @@ design <- as.formula(" ~ spiked")
 
 ### profile 95
 
-```{r, fig.width=8, fig.asp=0.75, out.width='100%'}
-fit_zib_95 <- glmZiBFit(d_p95, design, nthreads = 10)
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
+save_path = "output_rds/spike_ecoli_zib_p_95.rds"
+if(file.exists(save_path)){
+  fit_zib_95 <- readRDS(save_path)
+} else {
+  system.time({
+    fit_zib_95 <- glmZiBFit(d_p95, design, nthreads = 10)
+  })
+  saveRDS(fit_zib_95, save_path)
+}
 
 plot_manhattan(fit_zib_95, taxonomy = tax_95, method = "HMP", tax_levels = c("Phylum", "Order", "Class", "Genus"))
 plot_volcano(fit_zib_95, label = T)
@@ -59,8 +65,16 @@ plot_ani_dist(d_p95, phenotype = 'spiked', contigs = top_hits(fit_zib_95, alpha 
 
 ### profile 98
 
-```{r, fig.width=8, fig.asp=0.75, out.width='100%'}
-fit_zib_98 <- glmZiBFit(d_p98, design, nthreads = 10)
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
+save_path = "output_rds/spike_ecoli_zib_p_98.rds"
+if(file.exists(save_path)){
+  fit_zib_98 <- readRDS(save_path)
+} else {
+  system.time({
+    fit_zib_98 <- glmZiBFit(d_p98, design, nthreads = 10)
+  })
+  saveRDS(fit_zib_98, save_path)
+}
 
 plot_manhattan(fit_zib_98, taxonomy = tax_98, method = "holm", tax_levels = c("Phylum", "Order", "Class", "Genus", "Species"))
 plot_volcano(fit_zib_98, label = T)
@@ -70,8 +84,16 @@ plot_ani_dist(d_p98, phenotype = 'spiked', contigs = top_hits(fit_zib_98, alpha 
 
 ### profile 99
 
-```{r, fig.width=8, fig.asp=0.75, out.width='100%'}
-fit_zib_99 <- glmZiBFit(d_p99, design, nthreads = 10)
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
+save_path = "output_rds/spike_ecoli_zib_p_99.rds"
+if(file.exists(save_path)){
+  fit_zib_99 <- readRDS(save_path)
+} else {
+  system.time({
+    fit_zib_99 <- glmZiBFit(d_p99, design, nthreads = 10)
+  })
+  saveRDS(fit_zib_99, save_path)
+}
 
 plot_manhattan(fit_zib_99, taxonomy = tax_99, method = "HMP", tax_levels = c("Phylum", "Order", "Class", "Genus"))
 plot_volcano(fit_zib_99, label = T)
@@ -84,8 +106,16 @@ plot_ani_dist(d_p99, phenotype = 'spiked', contigs = top_hits(fit_zib_99, alpha 
 
 ### profile 95
 
-```{r, fig.width=8, fig.asp=0.75, out.width='100%'}
-fit_ob_95 <- glmFit(d_p95, design, nthreads = 10)
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
+save_path = "output_rds/spike_ecoli_ob_p_95.rds"
+if(file.exists(save_path)){
+  fit_ob_95 <- readRDS(save_path)
+} else {
+  system.time({
+    fit_ob_95 <- glmFit(d_p95, design, nthreads = 10)
+  })
+  saveRDS(fit_ob_95, save_path)
+}
 
 plot_manhattan(fit_ob_95, taxonomy = tax_95, method = "HMP", tax_levels = c("Phylum", "Order", "Class", "Genus"))
 plot_volcano(fit_ob_95, label = T)
@@ -94,8 +124,16 @@ plot_ani_dist(d_p95, phenotype = 'spiked', contigs = top_hits(fit_ob_95, alpha =
 
 ### profile 98
 
-```{r}
-fit_ob_98 <- glmFit(d_p98, design, nthreads = 10)
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
+save_path = "output_rds/spike_ecoli_ob_p_98.rds"
+if(file.exists(save_path)){
+  fit_ob_98 <- readRDS(save_path)
+} else {
+  system.time({
+    fit_ob_98 <- glmFit(d_p98, design, nthreads = 10)
+  })
+  saveRDS(fit_ob_98, save_path)
+}
 
 plot_manhattan(fit_ob_98, taxonomy = tax_98, method = "HMP", tax_levels = c("Phylum", "Order", "Class", "Genus", "Species"))
 plot_volcano(fit_ob_98, label = T)
@@ -105,8 +143,17 @@ plot_ani_dist(d_p98, phenotype = 'spiked', contigs = top_hits(fit_ob_98, alpha =
 
 ### profile 99
 
-```{r}
-fit_ob_99 <- glmFit(d_p99, design, nthreads = 10)
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
+save_path = "output_rds/spike_ecoli_ob_p_99.rds"
+if(file.exists(save_path)){
+  fit_ob_99 <- readRDS(save_path)
+} else {
+  system.time({
+    fit_ob_99 <- glmFit(d_p99, design, nthreads = 10)
+  })
+  saveRDS(fit_ob_99, save_path)
+}
+
 
 plot_manhattan(fit_ob_99, taxonomy = tax_99, method = "HMP", tax_levels = c("Phylum", "Order", "Class", "Genus", "Species"))
 plot_volcano(fit_ob_99, label = T)

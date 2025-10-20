@@ -1,6 +1,6 @@
 ---
 title: "varyingPrior"
-output: html_document
+output: github_document
 editor_options: 
   chunk_output_type: console
 ---
@@ -24,7 +24,7 @@ design <- as.formula(" ~ spiked")
 ```
 
 ### Full model with default weak prior normal(0,5)
-```{r}
+```{r, fig.width=12}
 # spiked samples
 ss = readLines("ecoli_sims/test/sampled.txt")
 
@@ -34,7 +34,17 @@ meta_data = data.frame(run_accession = colnames(d_p95),spiked = as.factor(sapply
 d_p95_full = modify_metadata(se = d_p95, meta_data = meta_data)
 
 d_p95_full <- filter_by_presence(d_p95_full, min_nonzero = 20)
-full_zib_95_w <- glmZiBFit(d_p95_full, design, nthreads = 10)
+
+save_path = "output_rds/prior_zib95_weak.rds"
+if(file.exists(save_path)){
+  full_zib_95_w <- readRDS(save_path)
+} else {
+  system.time({
+    full_zib_95_w <- glmZiBFit(d_p95_full, design, nthreads = 10)
+  })
+  saveRDS(full_zib_95_w, save_path)
+}
+
 top_hits(full_zib_95_w)
 # true/false positive
 plot_ani_dist(d_p95_full, phenotype = 'spiked', contigs = top_hits(full_zib_95_w, alpha = 0.05)$Contig_name, drop_zeros = F, show_points = T, plot_type = 'box')
@@ -44,29 +54,55 @@ plot_ani_dist(d_p95_full, phenotype = 'spiked', contigs = top_hits(full_zib_95_w
 Here, *Clostridiales bacterium* is a false positive. Based on the box plot, it looks like an edge case with just 3 samples driving the signal.
 
 ### Full model with strong prior normal(0,1)
-```{r}
-full_zib_95_s <- glmZiBFit(d_p95_full, design, nthreads = 10, MAP_prior = "preset_strong")
+```{r, fig.width=12}
+save_path = "output_rds/prior_zib95_strong.rds"
+if(file.exists(save_path)){
+  full_zib_95_s <- readRDS(save_path)
+} else {
+  system.time({
+    full_zib_95_s <- glmZiBFit(d_p95_full, design, nthreads = 10, MAP_prior = "preset_strong")
+  })
+  saveRDS(full_zib_95_s, save_path)
+}
+
+
 top_hits(full_zib_95_s)
+
+# true/false positive
+plot_ani_dist(d_p95_full, phenotype = 'spiked', contigs = top_hits(full_zib_95_s, alpha = 0.05)$Contig_name, drop_zeros = T, show_points = T, plot_type = 'box')
 ```
 
 This fixes the FP issue.
 
 ### Full model with ebayes prior
-```{r}
+```{r, fig.width=12}
+
+save_path = "output_rds/prior_zib95_ebp.rds"
+
 ebp_full = compute_eb_priors(d_p95_full, design = design, nthreads = parallel::detectCores(), low_cutoff = 0, high_cutoff = Inf)
+ebp_full
 plot_prior_bootstrap(object = ebp_full, "spikedTRUE")
 
-full_zib_95_eb <- glmZiBFit(d_p95_full, design, nthreads = 10, MAP_prior = ebp_full)
+if(file.exists(save_path)){
+  full_zib_95_eb <- readRDS(save_path)
+} else {
+  system.time({
+    full_zib_95_eb <- glmZiBFit(d_p95_full, design, nthreads = 10, MAP_prior = ebp_full)
+  })
+  saveRDS(full_zib_95_eb, save_path)
+}
+
 top_hits(full_zib_95_eb)
+# This plot is redundant - same as (0,1) prior
+plot_ani_dist(d_p95_full, phenotype = 'spiked', contigs = top_hits(full_zib_95_s, alpha = 0.05)$Contig_name, drop_zeros = T, show_points = T, plot_type = 'box')
+
 ```
 
-Still no FP, but eBayes priors were unnecessary. 
+Still no FP as expected. However, eBayes priors were unnecessary for this case. Larger datasets tend to work okay with either weak or strong prior options. Faster to use and maybe more stable.
 
-Larger datasets tend to work okay with either weak or strong prior options. Faster to use and maybe more stable.
+# Small sample test
 
-## Small sample test
-
-This is where our priors shine! Here we sample and take 16 spiked vs. 17 non spiked. The zero-inflated component does not have power to detect signal in smaller samples.
+This is where ebp priors shine! Here we sample and take 16 spiked vs. 17 non spiked.
 
 ## Subset data and prepare for simulations
 ```{r}
@@ -86,41 +122,94 @@ d_subset = d_p95[, meta_subset$run_accession]
 d_subset <- filter_by_presence(d_subset, min_nonzero = ceiling(max(sample_sz*0.1, 2)))
 
 d_subset = modify_metadata(d_subset, meta_subset)
+dim(d_subset)
 ```
 
-# fit ZIB weak prior
+## fit ZIB weak prior
 
-```{r}
-fit_zib_w <- glmZiBFit(d_subset,  design, nthreads=parallel::detectCores())
+```{r, fig.width=12}
+save_path = "output_rds/prior_zib_small_weak.rds"
+
+if(file.exists(save_path)){
+  fit_zib_w <- readRDS(save_path)
+} else {
+  system.time({
+    fit_zib_w <- glmZiBFit(d_subset,  design, nthreads=parallel::detectCores())
+  })
+  saveRDS(fit_zib_w, save_path)
+}
+
 head(top_hits(fit_zib_w))
 plot_manhattan(fit_zib_w, taxonomy = tax_95, aggregate_by_taxa = F)
-# edge cases
-plot_ani_dist(d_subset, phenotype = 'spiked', contigs = top_hits(fit_zib_w, alpha = 0.05)$Contig_name[1:5], drop_zeros = F, show_points = T, plot_type = 'box')
+
+# Plenty of edge cases
 plot_ani_dist(d_subset, phenotype = 'spiked', contigs = top_hits(fit_zib_w, alpha = 0.05)$Contig_name[1:15], drop_zeros = T, show_points = T, plot_type = 'box')
 ```
 
-# fit ZIB strong prior
-```{r}
-fit_zib_s <- glmZiBFit(d_subset,  design, nthreads=parallel::detectCores(), MAP_prior = "preset_strong")
+## fit ZIB strong prior
+
+```{r, fig.width=12}
+save_path = "output_rds/prior_zib_small_strong.rds"
+
+if(file.exists(save_path)){
+  fit_zib_s <- readRDS(save_path)
+} else {
+  system.time({
+    fit_zib_s <- glmZiBFit(d_subset,  design, nthreads=parallel::detectCores(), MAP_prior = "preset_strong")
+  })
+  saveRDS(fit_zib_s, save_path)
+}
+
 head(top_hits(fit_zib_s))
 plot_manhattan(fit_zib_s, taxonomy = tax_95, aggregate_by_taxa = F)
-# edge cases
-plot_ani_dist(d_subset, phenotype = 'spiked', contigs = top_hits(fit_zib_s, alpha = 0.05)$Contig_name[1:5], drop_zeros = F, show_points = T, plot_type = 'box')
+
+# Still edge cases
 plot_ani_dist(d_subset, phenotype = 'spiked', contigs = top_hits(fit_zib_s, alpha = 0.05)$Contig_name, drop_zeros = T, show_points = T, plot_type = 'box')
 ```
 
-# fit empirical prior
+### compare the two priors
+
 ```{r}
+# At a strong multiple testing correction, both priors pick the same edge cases, but in a different order
+all(top_hits(fit_zib_s, alpha = 0.05)$Contig_name %in% top_hits(fit_zib_w, alpha = 0.05)$Contig_name)
+plot(1:15, match(top_hits(fit_zib_s, alpha = 0.05)$Contig_name, top_hits(fit_zib_w, alpha = 0.05)$Contig_name))
+
+# But if we relax the multple correction method to BH, the weak prior has more false positives than the strong prior
+length(top_hits(fit_zib_w, alpha = 0.05, method = 'BH')$Contig_name)
+length(top_hits(fit_zib_s, alpha = 0.05, method = 'BH')$Contig_name) 
+# this is as expected
+
+```
+
+Both methods are not great for the small sample size.
+
+## fit empirical bayes prior
+```{r, fig.width=12}
 ebp = compute_eb_priors(d_subset, design = design, nthreads = parallel::detectCores(), low_cutoff = 0, high_cutoff = Inf)
+ebp
 plot_prior_bootstrap(ebp, "spikedTRUE")
 
-fit_zib_eb <- glmZiBFit(d_subset,  design, nthreads=parallel::detectCores(), MAP_prior = ebp)
+save_path = "output_rds/prior_zib_small_ebp.rds"
+
+if(file.exists(save_path)){
+  fit_zib_eb <- readRDS(save_path)
+} else {
+  system.time({
+    fit_zib_eb <- glmZiBFit(d_subset,  design, nthreads=parallel::detectCores(), MAP_prior = ebp)
+  })
+  saveRDS(fit_zib_eb, save_path)
+}
+
 
 head(top_hits(fit_zib_eb))
 plot_manhattan(fit_zib_eb, taxonomy = tax_95, aggregate_by_taxa = F)
+
+# We only have the ZI signal for E. coli now! 
 
 # valid case
 plot_ani_dist(d_subset, phenotype = 'spiked', contigs = top_hits(fit_zib_eb, alpha = 0.05)$Contig_name, drop_zeros = F, show_points = T, plot_type = 'box')
 plot_ani_dist(d_subset, phenotype = 'spiked', contigs = top_hits(fit_zib_eb, alpha = 0.05)$Contig_name, drop_zeros = T, show_points = T, plot_type = 'box')
 
 ```
+
+Using the eBayes prior fixed the false positives

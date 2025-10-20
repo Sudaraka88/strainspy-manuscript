@@ -1,8 +1,6 @@
 ---
 title: "Simulations with spiked E. coli strain analysed using Sylph Query"
-output:
-  html_document: default
-  pdf_document: default
+output: github_document
 date: "2025-06-17"
 editor_options:
   chunk_output_type: console
@@ -48,7 +46,7 @@ design <- as.formula(" ~ spiked")
 
 ### query 95
 
-```{r, fig.width=8, fig.asp=0.75, out.width='100%'}
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
 save_path = "output_rds/spike_ecoli_zib_q_95.rds"
 if(file.exists(save_path)){
   fit_zib_95 <- readRDS(save_path)
@@ -59,7 +57,7 @@ if(file.exists(save_path)){
   saveRDS(fit_zib_95, save_path)
 }
 
-plot_manhattan(fit_zib_95, taxonomy = tax_95, method = "HMP", tax_levels = c("Phylum", "Order", "Class", "Genus"))
+plot_manhattan(fit_zib_95, taxonomy = tax_95, method = "BH")
 plot_manhattan(fit_zib_95, taxonomy = tax_95, aggregate_by_taxa = F)
 plot_volcano(fit_zib_95, label = T)
 plot_ani_dist(d_q95, phenotype = 'spiked', contigs = top_hits(fit_zib_95)$Contig_name, drop_zeros = F, show_points = T, plot_type = 'violin')
@@ -68,7 +66,7 @@ plot_ani_dist(d_q95, phenotype = 'spiked', contigs = top_hits(fit_zib_95)$Contig
 
 ### query 98
 
-```{r, fig.width=8, fig.asp=0.75, out.width='100%'}
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
 save_path = "output_rds/spike_ecoli_zib_q_98.rds"
 if(file.exists(save_path)){
   fit_zib_98 <- readRDS(save_path)
@@ -80,7 +78,7 @@ if(file.exists(save_path)){
 }
 
 
-plot_manhattan(fit_zib_98, taxonomy = tax_98, method = "holm", tax_levels = c("Phylum", "Order", "Class", "Genus", "Species"))
+plot_manhattan(fit_zib_98, taxonomy = tax_98, method = "BH")
 plot_volcano(fit_zib_98, label = T)
 plot_ani_dist(d_q98, phenotype = 'spiked', contigs = top_hits(fit_zib_98, alpha = 0.05)$Contig_name)
 plot_ani_dist(d_q98, phenotype = 'spiked', contigs = top_hits(fit_zib_98, alpha = 0.05)$Contig_name, drop_zeros = T)
@@ -88,7 +86,7 @@ plot_ani_dist(d_q98, phenotype = 'spiked', contigs = top_hits(fit_zib_98, alpha 
 
 ### query 99
 
-```{r, fig.width=8, fig.asp=0.75, out.width='100%'}
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
 save_path = "output_rds/spike_ecoli_zib_q_99.rds"
 if(file.exists(save_path)){
   fit_zib_99 <- readRDS(save_path)
@@ -99,6 +97,7 @@ if(file.exists(save_path)){
   saveRDS(fit_zib_99, save_path)
 }
 
+plot_manhattan(fit_zib_99, taxonomy = tax_99, method = "BH")
 plot_manhattan(fit_zib_99, taxonomy = tax_99, aggregate_by_taxa = F)
 plot_volcano(fit_zib_99, label = T)
 plot_ani_dist(d_q99, phenotype = 'spiked', contigs = top_hits(fit_zib_99)$Contig_name)
@@ -110,7 +109,7 @@ plot_ani_dist(d_q99, phenotype = 'spiked', contigs = top_hits(fit_zib_99)$Contig
 
 ### query 95
 
-```{r, fig.width=8, fig.asp=0.75, out.width='100%'}
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
 save_path = "output_rds/spike_ecoli_ob_q_95.rds"
 if(file.exists(save_path)){
   fit_ob_95 <- readRDS(save_path)
@@ -130,7 +129,7 @@ plot_ani_dist(d_q95, phenotype = 'spiked', contigs = top_hits(fit_ob_95, alpha =
 
 ### query 98
 
-```{r}
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
 save_path = "output_rds/spike_ecoli_ob_q_98.rds"
 if(file.exists(save_path)){
   fit_ob_98 <- readRDS(save_path)
@@ -151,7 +150,7 @@ plot_ani_dist(d_q98, phenotype = 'spiked', contigs = top_hits(fit_ob_98, alpha =
 
 ### query 99
 
-```{r}
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
 save_path = "output_rds/spike_ecoli_ob_q_99.rds"
 if(file.exists(save_path)){
   fit_ob_99 <- readRDS(save_path)
