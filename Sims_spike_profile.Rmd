@@ -112,7 +112,7 @@ if(file.exists(save_path)){
   fit_ob_95 <- readRDS(save_path)
 } else {
   system.time({
-    fit_ob_95 <- glmFit(d_p95, design, nthreads = 10)
+    fit_ob_95 <- glmObFit(d_p95, design, nthreads = 10)
   })
   saveRDS(fit_ob_95, save_path)
 }
@@ -130,7 +130,7 @@ if(file.exists(save_path)){
   fit_ob_98 <- readRDS(save_path)
 } else {
   system.time({
-    fit_ob_98 <- glmFit(d_p98, design, nthreads = 10)
+    fit_ob_98 <- glmObFit(d_p98, design, nthreads = 10)
   })
   saveRDS(fit_ob_98, save_path)
 }
@@ -149,7 +149,7 @@ if(file.exists(save_path)){
   fit_ob_99 <- readRDS(save_path)
 } else {
   system.time({
-    fit_ob_99 <- glmFit(d_p99, design, nthreads = 10)
+    fit_ob_99 <- glmObFit(d_p99, design, nthreads = 10)
   })
   saveRDS(fit_ob_99, save_path)
 }
