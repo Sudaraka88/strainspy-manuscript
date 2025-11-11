@@ -301,6 +301,56 @@ plot_volcano(ZB_fit_inf, coef = 3, method = "BH")
 
 There are clear effects of antibiotic exposure post UTI - disappearance and replacement of butyrate produces such as *Blautia wexlerae* and the disappearance of Collinsella sp. and many Escherechia sp.
 
+## E. coli bloom capture pre-UTI
+```{r}
+sy_gut_ruti_ec = sy_gut_ruti[grep("Escherichia", rownames(sy_gut_ruti)),] # only 899 e coli samples here
+
+meta_ec <- meta_ruti
+sy_gut_ruti_ec = sy_gut_ruti_ec[, which(meta_ec$UMB == 8 | meta_ec$UMB == 12 | meta_ec$UMB == 20 | meta_ec$UMB == 23)]
+meta_ec = meta_ec[which(meta_ec$UMB == 8 | meta_ec$UMB == 12 | meta_ec$UMB == 20 | meta_ec$UMB == 23), ]
+
+meta_ec$window <- "baseline"
+
+# 2. pre_uti: within X days before UTI OR after UTI but before antibiotics
+meta_ec$window[(!is.na(meta_ec$time_before_uti) & abs(meta_ec$time_before_uti) <= 7)] <- "pre_uti"
+bl = which(meta_ec$window == "baseline")
+meta_ec$window[bl[meta_ec$time_since_ab[bl] < 21 & !is.na(meta_ec$time_since_ab[bl])]] <- "post_ab"
+
+meta_ec$sum_ec = colSums(assay(sy_gut_ruti_ec))
+
+meta_ec %>% group_by(UMB) %>%
+  summarise(sum(window == "pre_uti"))
+
+ggplot(meta_ec, aes(x = window, y = sum_ec, fill = window)) + 
+    geom_boxplot(outlier.shape = 21, alpha = 0.7) +
+    geom_jitter(width = 0.15, alpha = 0.5, size = 1, color = "black") +
+    theme_minimal(base_size = 14) +
+    labs(
+        x = "Window",
+        y = "Total ANI signal (sum across 899 strains)",
+        title = "Total E. coli ANI per sample across windows"
+    ) +
+    theme(
+        legend.position = "none",
+        plot.title = element_text(face = "bold", hjust = 0.5)
+    ) + 
+  facet_wrap(~UMB)
+
+design_ec = as.formula('~window + (1 | UMB)')
+sy_gut_ruti_ec = modify_metadata(sy_gut_ruti_ec, meta_ec, replace = T)
+
+save_path <- "output_rds/rUTI_infection_zib_q_99_ebp_ecoli.rds"
+# Run with ebp - this looks a bit less noisy
+if(file.exists(save_path)){
+  ZB_fit_ecoli <- readRDS(save_path)
+} else {
+  ebp = compute_eb_priors(sy_gut_ruti_ec, strainspy:::nobars_(design_ec), nthreads = parallel::detectCores(),low_cutoff = 0, high_cutoff = Inf)
+  ZB_fit_ecoli <- glmZiBFit(sy_gut_ruti_ec, design_ec, MAP_prior = ebp, nthreads = parallel::detectCores())
+  saveRDS(ZB_fit_ecoli, save_path)
+}
+
+```
+
 ## Closer investigation of the strains that disappear post infection
 ```{r}
 th_inf = strainspy:::add_tax2tophits(top_hits(ZB_fit_inf, coef = 3, method = "BH"), taxonomy, c("Family", "Species"))
@@ -343,8 +393,8 @@ if(length(no_match_idx) > 0){
 
 # --- 5. Combine indices ---
 th_inf_ec$final_idx <- ifelse(!is.na(th_inf_ec$direct_match_idx),
-                            th_inf_ec$direct_match_idx,
-                            th_inf_ec$fuzzy_match_idx)
+                              th_inf_ec$direct_match_idx,
+                              th_inf_ec$fuzzy_match_idx)
 
 # --- 6. Pull only Strain and Pathogenicity type ---
 th_inf_ec$Strain <- m1$Strain[th_inf_ec$final_idx]

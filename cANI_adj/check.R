@@ -183,14 +183,14 @@ fit_all <- function(df, dpoint){
 
 
 
-op = rbind(fit_all(df_crc, 'crc')
-  fit_all(df_tp, 'tp'),
+op = rbind(fit_all(df_crc, 'crc'),
+           fit_all(df_tp, 'tp'),
            fit_all(df_fp, 'fp'),
            fit_all(df_null, 'null'))
 
 
 op$log_vals <- with(op, ifelse(stat %in% c("p_beta", "z_p_beta"), -log10(vals), vals))
-op$dpoint = factor(op$dpoint, levels = c("tp", "fp","null"))
+op$dpoint = factor(op$dpoint, levels = c("tp", "fp","null", "crc"))
 op$model = factor(op$model, levels = c("zib", "ob","qb"))
 op$adj = factor(op$adj, levels = c("reset_1" , "squash", "offset", "map", "rescale"))
 

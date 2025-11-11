@@ -97,11 +97,14 @@ if(file.exists(save_path)){
   saveRDS(fit_zib_99, save_path)
 }
 
-plot_manhattan(fit_zib_99, taxonomy = tax_99, method = "BH")
+plot_manhattan(fit_zib_99, taxonomy = tax_99, method = "BH", tax_levels = c("Order", "Phylum", "Genus", "Species"))
 plot_manhattan(fit_zib_99, taxonomy = tax_99, aggregate_by_taxa = F)
 plot_volcano(fit_zib_99, label = T)
 plot_ani_dist(d_q99, phenotype = 'spiked', contigs = top_hits(fit_zib_99)$Contig_name)
-plot_ani_dist(d_q99, phenotype = 'spiked', contigs = top_hits(fit_zib_99)$Contig_name, drop_zeros = T)
+
+contigs_to_plot = top_hits(fit_zib_99)$Contig_name
+
+plot_ani_dist(d_q99, phenotype = 'spiked', contigs = top_hits(fit_zib_99)$Contig_name, drop_zeros = T, plot_type = 'box', show_points = T, contig_names = sub("NZ_", "", unname(sapply(contigs_to_plot, function(x) unlist(strsplit(x," "))[1])) ))
 
 ```
 
