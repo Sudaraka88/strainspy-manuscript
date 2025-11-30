@@ -1,0 +1,350 @@
+---
+title: "Analysis of Ash's pancancer and melanoma datasets together"
+output:
+  github_document
+date: "2025-11-06"
+editor_options:
+  chunk_output_type: console
+---
+## Load dependencies
+
+```{r, warning=FALSE, message=FALSE}
+library(strainspy)
+library(SummarizedExperiment)
+library(caret)
+library(glmnet) # elastic net
+library(ranger) # RF
+library(pROC)
+library(doParallel)
+library(foreach)
+library(parallel)
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+
+```
+
+## Load metadata 
+
+```{r}
+# WARNING! THIS INCLUDES UNPIBLISHED DATA
+meta_path <- "./data/ash_pancancer/metadata_full.tsv"
+meta_pan <- read.csv(meta_path, sep = '\t') 
+meta_pan = cbind(run_acc = meta_pan$run_accession, meta_pan)
+# From paper:
+# RvsP = CR or PR VS. PD or cPD - excluded patients with a BOR of stable disease (SD) (n=29)
+
+# Outcome
+meta_pan$RvsP = "R"
+meta_pan$RvsP[which(meta_pan$BOR == "PD" | meta_pan$BOR == "cPD")] = "NR" 
+meta_pan$RvsP = factor(meta_pan$RvsP, levels = c("NR", "R"))
+
+# Melanoma meta
+meta_m = read.csv("data/melanoma_pooled/Clean_metadata_Aug5_Allyson_match_2025.txt", sep = '\t')
+
+
+meta = rbind(data.frame(X = meta_pan$run_acc, c_type = "RARE", type = meta_pan$histology_cohort.x, RvsP = meta_pan$RvsP), 
+             data.frame(X = meta_m$X, c_type = "MEL", type = meta_m$Study_simplified, RvsP = meta_m$ORR))
+
+```
+
+## Load sylph outputs
+
+```{r}
+sy <- read_sylph("./data/ash_pancancer/merged_pan_melanoma.tsv.gz") # q99)
+# annoying renames to match meta V sylph file
+colnames(sy) <- gsub("_1", "", colnames(sy))
+colData(sy)$Sample_file <- gsub("_1", "", basename(colData(sy)$Sample_file))
+
+# Reorder meta 
+meta = meta[match(colnames(sy), meta$X), ]
+
+sy <- filter_by_presence(sy, min_nonzero = 53) # filter at 10%
+dim(sy)
+
+# Checks before merging metadata
+all(colnames(sy) %in% meta$X)
+all(meta$X %in% colnames(sy))
+
+sy = modify_metadata(sy, meta, replace = T)
+```
+
+## Fit the univariate model
+
+```{r}
+design <- as.formula("~ RvsP")
+
+save_path <- "output_rds/ASH+mela_zib_q_99_ebp.rds"
+
+if(file.exists(save_path)){
+  ZB_fit <- readRDS(save_path)
+} else {
+  # Run with weak prior for prediction
+  ebp = compute_eb_priors(sy, design, nthreads = 10L, low_cutoff = 0, high_cutoff = Inf)
+  ZB_fit <- glmZiBFit(sy, design, nthreads = parallel::detectCores(), MAP_prior = ebp)
+  saveRDS(ZB_fit, save_path)
+}
+
+```
+
+
+# Prediction
+
+## Using Elastic net
+
+### Set up pipeline
+```{r}
+
+run_enet <- function(train_idx, test_idx, meta, sy, feature_names, return_fit = F) {
+  
+  train_mx <- strainspy::prep_for_prediction(
+    sy[, train_idx],
+    'RvsP',
+    feature_names
+  )
+  
+  test_mx <- strainspy::prep_for_prediction(
+    sy[, test_idx],
+    'RvsP',
+    feature_names
+  )
+  
+  # Skip if test labels are all one class
+  if (length(unique(test_mx$RvsP)) < 2) {
+    return(NA)
+  }
+  
+  set.seed(1988)
+  fit <- caret::train(
+    RvsP ~ .,
+    data = train_mx,
+    method = "glmnet",
+    preProcess = c("center", "scale"),
+    metric = "ROC",
+    trControl = caret::trainControl(
+      method = "cv",
+      classProbs = TRUE,
+      summaryFunction = twoClassSummary,
+      savePredictions = "final"
+    )
+  )
+  
+  if(return_fit) {
+    return(fit)
+  }
+  
+  preds <- predict(fit, test_mx, type = "prob")$R
+  roc_obj <- roc(test_mx$RvsP, preds, levels = c("NR","R"))
+  as.numeric(auc(roc_obj))
+}
+
+print_auc <- function(boot_auc, ret = F){
+  point_est <- median(boot_auc)
+  ci_lower  <- quantile(boot_auc, 0.025)
+  ci_upper  <- quantile(boot_auc, 0.975)
+  
+  cat("AUC =", round(point_est, 3), "[95% CI:", round(ci_lower, 3), "-", round(ci_upper, 3), "]\n")
+  
+  if(ret){
+    return(c(point_est, ci_lower, ci_upper))
+  }
+}
+
+# Ordered top hits
+
+th = top_hits(ZB_fit, alpha = 1)
+th$min_p <- pmin(th$p_value, th$zi_p_value)
+th <- th[order(th$min_p), ]
+
+```
+
+## Train and test on random subsets
+
+```{r}
+f = 500 # subset of features to use
+s = 1988
+
+boot_auc_tRandpRand = c()
+
+for (i in 1:5){
+  set.seed(s+i)
+  train_idx = sample(nrow(meta), round(nrow(meta)*0.9))
+  test_idx = 1:nrow(meta)
+  mel_idx = test_idx[-train_idx]
+  
+  fit = run_enet(train_idx, mel_idx, meta, sy, th$Contig_name[1:f], return_fit = T)
+  
+  test_mx  <- strainspy::prep_for_prediction(sy[, mel_idx], 'RvsP', th$Contig_name[1:500])
+  pred_probs <- predict(fit, test_mx, type = "prob")$R
+  
+  B <- 200
+  set.seed(1988)
+  boot_auc <- replicate(B, {
+    boot_idx <- sample(seq_along(pred_probs), length(pred_probs), replace = TRUE)
+    
+    if(length(unique(test_mx$RvsP[boot_idx])) < 2) return(NA_real_)
+    
+    roc_obj <- roc(test_mx$RvsP[boot_idx], pred_probs[boot_idx], levels = c("NR","R"), 
+                   direction = "<")
+    as.numeric(auc(roc_obj))
+  })
+  
+  boot_auc_tRandpRand <- c(boot_auc_tRandpRand, boot_auc[!is.na(boot_auc)])
+}
+
+print_auc(boot_auc_tRandpRand)
+
+
+```
+
+
+## Train on rare cancers 
+
+### Predict all melanoma
+
+```{r}
+f = 500 # subset of features to use
+mel_idx <- which(meta$c_type == "MEL")
+train_idx <- which(meta$c_type == "RARE")
+
+fit = run_enet(train_idx, mel_idx, meta, sy, th$Contig_name[1:f], return_fit = T)
+
+test_mx  <- strainspy::prep_for_prediction(sy[, mel_idx], 'RvsP', th$Contig_name[1:500])
+pred_probs <- predict(fit, test_mx, type = "prob")$R
+
+B <- 1000
+set.seed(1988)
+boot_auc <- replicate(B, {
+  boot_idx <- sample(seq_along(pred_probs), length(pred_probs), replace = TRUE)
+  
+  if(length(unique(test_mx$RvsP[boot_idx])) < 2) return(NA_real_)
+  
+  roc_obj <- roc(test_mx$RvsP[boot_idx], pred_probs[boot_idx], levels = c("NR","R"), 
+                 direction = "<")
+  as.numeric(auc(roc_obj))
+})
+
+boot_auc_tRCpMel <- boot_auc[!is.na(boot_auc)]
+print_auc(boot_auc_tRCpMel)
+
+```
+
+### Predict each melanoma dataset
+
+```{r, warning=FALSE}
+f = 500 # subset of features to use
+
+mel_dset = c("Frankel", "Gopalakrishnan", "Lee", "Matson", "McCulloch", "Spencer")
+for(dset in mel_dset){
+  
+  cat(dset, ':')
+  mel_idx <- which(meta$type == dset)
+  train_idx <- which(meta$c_type == "RARE")
+  
+  fit = run_enet(train_idx, mel_idx, meta, sy, th$Contig_name[1:f], return_fit = T)
+  
+  test_mx  <- strainspy::prep_for_prediction(sy[, mel_idx], 'RvsP', th$Contig_name[1:500])
+  pred_probs <- predict(fit, test_mx, type = "prob")$R
+  
+  B <- 1000
+  set.seed(1988)
+  boot_auc <- replicate(B, {
+    boot_idx <- sample(seq_along(pred_probs), length(pred_probs), replace = TRUE)
+    
+    if(length(unique(test_mx$RvsP[boot_idx])) < 2) return(NA_real_)
+    
+    roc_obj <- roc(test_mx$RvsP[boot_idx], pred_probs[boot_idx], levels = c("NR","R"),
+                   direction = "<")
+    as.numeric(auc(roc_obj))
+  })
+  
+  boot_auc <- boot_auc[!is.na(boot_auc)]
+  print_auc(boot_auc) 
+}
+
+```
+
+
+## Train on melanoma
+
+### Predict all rare cancers
+```{r}
+f = 500 # subset of features to use
+mel_idx <- which(meta$c_type != "MEL")
+train_idx <- which(meta$c_type == "MEL")
+
+fit = run_enet(train_idx, mel_idx, meta, sy, th$Contig_name[1:f], return_fit = T)
+
+test_mx  <- strainspy::prep_for_prediction(sy[, mel_idx], 'RvsP', th$Contig_name[1:500])
+pred_probs <- predict(fit, test_mx, type = "prob")$R
+
+B <- 1000
+set.seed(1988)
+boot_auc <- replicate(B, {
+  boot_idx <- sample(seq_along(pred_probs), length(pred_probs), replace = TRUE)
+  
+  if(length(unique(test_mx$RvsP[boot_idx])) < 2) return(NA_real_)
+  
+  roc_obj <- roc(test_mx$RvsP[boot_idx], pred_probs[boot_idx], levels = c("NR","R"), 
+                 direction = "<")
+  as.numeric(auc(roc_obj))
+})
+
+boot_auc_tMelpRC <- boot_auc[!is.na(boot_auc)]
+print_auc(boot_auc_tMelpRC)
+
+```
+
+### Predict each rare cancer
+```{r, warning=FALSE}
+f = 500 # subset of features to use
+
+mel_dset = c("GYN", "NEN", "UGB")
+for(dset in mel_dset){
+  
+  cat(dset, ':')
+  mel_idx <- which(meta$type == dset)
+  train_idx <- which(meta$c_type == "MEL")
+  
+  fit = run_enet(train_idx, mel_idx, meta, sy, th$Contig_name[1:f], return_fit = T)
+  
+  test_mx  <- strainspy::prep_for_prediction(sy[, mel_idx], 'RvsP', th$Contig_name[1:500])
+  pred_probs <- predict(fit, test_mx, type = "prob")$R
+  
+  B <- 1000
+  set.seed(1988)
+  boot_auc <- replicate(B, {
+    boot_idx <- sample(seq_along(pred_probs), length(pred_probs), replace = TRUE)
+    
+    if(length(unique(test_mx$RvsP[boot_idx])) < 2) return(NA_real_)
+    
+    roc_obj <- roc(test_mx$RvsP[boot_idx], pred_probs[boot_idx], levels = c("NR","R"),
+                   direction = "<")
+    as.numeric(auc(roc_obj))
+  })
+  
+  boot_auc <- boot_auc[!is.na(boot_auc)]
+  print_auc(boot_auc) 
+}
+
+```
+
+# Viasualise
+
+```{r, fig.width=12}
+df_all <- bind_rows(
+  data.frame(AUC = boot_auc_tRandpRand, scenario = "T-Rand,P-Rand"),
+  data.frame(AUC = boot_auc_tRCpMel, scenario = "T-Rare,P-MEL"),
+  data.frame(AUC = boot_auc_tMelpRC, scenario = "T-MEL,P-RARE")
+)
+
+ggplot(df_all, aes(x = scenario, y = AUC, fill = scenario)) +
+  # geom_violin(alpha = 0.5) +
+  geom_boxplot(width = 0.1, outlier.shape = NA) +
+  stat_summary(fun = median, geom = "point", color = "red", size = 2) +
+  ylab("AUC") +
+  xlab("") +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "none")
+
+```

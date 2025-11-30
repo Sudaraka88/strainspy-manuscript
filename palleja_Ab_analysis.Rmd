@@ -70,7 +70,6 @@ viz = function(se, fit, tax){
     se,
     phenotype = 'days',
     contigs = top_hits(fit)$Contig_name[1:10],
-    drop_zeros = TRUE,
     show_points = TRUE,
     plot_type = 'box'
   )
@@ -115,7 +114,7 @@ if(file.exists(save_path)){
 }
 
 
-plot_ani_dist(se_p, 'days', pool_contigs(fit_zib_p), drop_zeros = T, show_points = T, plot_type = "box")
+plot_ani_dist(se_p, 'days', pool_contigs(fit_zib_p), show_points = T, plot_type = "box")
 viz(se_p, fit_zib_p, tax95)
 ```
 
@@ -154,11 +153,11 @@ se_p95_abund  = cleanup(read_sylph("data/palleja_ab_recovery/combined_p_95.tsv",
 
 bug = c("Veillonella", "Klebsiella pneumoniae", "Escherichia coli"); bug_i = 3
 
-p1 = plot_ani_dist(se_p95_abund, 'days',contigs = rownames(se_p95_abund)[grep(bug[bug_i], rownames(se_p95_abund))] ,drop_zeros = T,show_points = TRUE,plot_type = 'box')
+p1 = plot_ani_dist(se_p95_abund, 'days',contigs = rownames(se_p95_abund)[grep(bug[bug_i], rownames(se_p95_abund))] , show_points = TRUE,plot_type = 'box')
 
-p2 = plot_ani_dist(se_p, 'days',contigs = rownames(se_p)[grep(bug[bug_i], rownames(se_p))] ,drop_zeros = T,show_points = TRUE,plot_type = 'box')
+p2 = plot_ani_dist(se_p, 'days',contigs = rownames(se_p)[grep(bug[bug_i], rownames(se_p))] ,show_points = TRUE,plot_type = 'box')
 
-p1/p2
+p1-p2
 
 ```
 
@@ -208,7 +207,7 @@ As expected microbial load goes down after antibiotic exposure. Could the relati
 # Helper function
 generate_species_plot = function(fit_ab){
   # Pool the stains that are different at least one day compared to baseline
-  plt_dat = plot_ani_dist(se_p95_abund,phenotype = 'days',contigs = pool_contigs(fit_ab) ,drop_zeros = TRUE,show_points = TRUE,plot_type = 'box', plot = F)
+  plt_dat = plot_ani_dist(se_p95_abund,phenotype = 'days',contigs = pool_contigs(fit_ab) ,show_points = TRUE,plot_type = 'box', plot = F)
   plt_dat = plt_dat %>% 
     group_by(Contig, days) %>%
     summarise(mean_ANI = mean(ANI, na.rm = TRUE), median_ANI = median(ANI, na.rm = T), .groups = 'drop')
@@ -391,6 +390,99 @@ ggplot(opp_non_zeros, aes(x = days, y = mean_prop_zeros, color = Genus, group = 
     panel.grid.minor = element_blank(),
     plot.title = element_text(face = "bold")
   )
+
+```
+
+## Visualise as a heatmap
+
+```{r, fig.width=12}
+
+Butyrate_genera <- c(
+  "Faecalibacterium",  
+  "Anaerostipes",      
+  "Roseburia"
+)
+
+opp_genera = opportunistic_genera <- c(
+  "Clostridium",
+  "Klebsiella"
+)
+
+selected_genera = c(Butyrate_genera, opp_genera)
+
+# get genera counts in the database
+genus_totals <- tax99 %>%
+  filter(Genus %in% selected_genera) %>%
+  distinct(Genus, Genome) %>%    # unique strain × genus pairs
+  group_by(Genus) %>%
+  summarize(total_strains = n(), .groups = "drop") %>%
+  complete(Genus = selected_genera, fill = list(total_strains = 0))
+
+day_levels <- c("0","4","8","42","180") 
+
+presence_df <- ani_filtered %>%
+  filter(Genus %in% selected_genera) %>%
+  mutate(days = factor(as.character(days), levels = day_levels),
+         present = ANI > 95) %>%
+  # count unique contig names per Genus x subject x day where present == TRUE
+  group_by(Genus, subject, days) %>%
+  summarize(n_strains = n_distinct(Contig_name[present]), .groups = "drop")
+
+
+prop_df <- presence_df %>%
+  left_join(genus_totals, by = "Genus") %>%
+  mutate(
+    # avoid division by zero: if genus has zero total strains, produce NA
+    prop_of_genus = if_else(total_strains > 0,
+                            n_strains / total_strains,
+                            NA_real_)
+  )
+
+baseline <- prop_df %>%
+  group_by(Genus, subject) %>%
+  summarize(
+    prop0 = max(prop_of_genus, na.rm = TRUE),   # highest proportion across all days
+    .groups = "drop"
+  )
+
+prop_df2 <- prop_df %>%
+  left_join(baseline, by = c("Genus", "subject"))
+
+prop_df2 <- prop_df2 %>%
+    mutate(
+        ratio = if_else(!is.na(prop0) & prop0 > 0,
+                        prop_of_genus / prop0,
+                        NA_real_),      # baseline-0 subjects → NA
+        ratio = pmin(ratio, 1)   # cap at 1 so colour means "as present as baseline"
+    )
+summary_ratio <- prop_df2 %>%
+    group_by(Genus, days) %>%
+    summarize(
+        mean_ratio = mean(ratio, na.rm = TRUE),
+        se_ratio   = sd(ratio, na.rm = TRUE) / sqrt(sum(!is.na(ratio))),
+        n_subj     = sum(!is.na(ratio)),
+        .groups = "drop"
+    ) %>%
+    mutate(days = factor(as.character(days), levels = c("0","4","8","42","180")))
+
+# Order genera by effect (optional)
+order_genus <- summary_ratio %>% filter(days == "8") %>% arrange(mean_ratio) %>% pull(Genus) %>% unique()
+summary_ratio <- summary_ratio %>% mutate(Genus = factor(Genus, levels = rev(order_genus)))
+
+# Plot: white -> single colour; limits [0,1]; NA and 0 appear white
+ggplot(summary_ratio, aes(x = days, y = Genus, fill = mean_ratio)) +
+    geom_tile(color = "grey90", size = 0.3) +
+    scale_fill_gradient(
+        low = "white",
+        high = cols[2],    # pick a single strong colour
+        limits = c(0, 1),
+        na.value = "white",
+        name = "Strains Present"
+    ) +
+    labs(x = "Days", y = NULL) +
+    theme_minimal(base_size = 15) +
+    theme(panel.grid = element_blank(),
+          axis.text.x = element_text(angle = 45, hjust = 1))
 
 ```
 

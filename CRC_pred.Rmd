@@ -83,7 +83,7 @@ fit = readRDS("output_rds/CRC_zib_q_99_ebp.rds")
 ### Elastic net using FDR predictors
 
 ```{r}
-th = top_hits(fit, coef = 2, method = "BH")
+th = top_hits(fit, coef = 2, method = "BH", alpha = 1)
 
 sy_mx_BH = strainspy::prep_for_prediction(sy, 'disease', th$Contig_name)
 
@@ -264,7 +264,7 @@ Bonferroni predictors lose sensitivity, we'll use FDR (BH).
 ```{r}
 
 # Try to parallelise
-# registerDoParallel(cores = parallel::detectCores() - 1)
+registerDoParallel(cores = parallel::detectCores() - 1)
 
 # Let's do by meta$study
 meta = meta[match(colnames(sy), meta$run_accession), ]
@@ -275,7 +275,7 @@ dset = as.character(unique(meta$study))
 # There is no point in fitting the whole model for each training set, we'll use the global lot of predictors
 # We are biasing things a bit, but probably okay?
 
-th = top_hits(fit, coef = 2, method = "BH")
+th = top_hits(fit, coef = 2, method = "BH", alpha = 1)
 ```
 
 ### Estimate AUC
@@ -297,23 +297,28 @@ for(d in dset){
     enet_fit_lodo = readRDS(save_path)
   } else {
     
-    train_mx = strainspy::prep_for_prediction(train_sy, 'disease', th$Contig_name)
+    # train_mx = strainspy::prep_for_prediction(train_sy, 'disease', th$Contig_name)
+    
+    y <- factor(colData(train_sy)$disease, levels = c("None", "CRC"))
+    x = Matrix::t(SummarizedExperiment::assay(train_sy))  
     
     enet_fit_lodo <- caret::train(
-      disease ~ .,
-      data = train_mx,
+      x = x,
+      y = y,
+      # data = train_mx,
       method = 'glmnet',
-      preProcess = c("center", "scale"),
+      # preProcess = c("center", "scale"),
       metric = "ROC",
       trControl = caret::trainControl(
         method = "cv",
         classProbs = TRUE,
         summaryFunction = twoClassSummary,
-        index = groupKFold(train_meta$study, k = length(unique(train_meta$study))),
+        # index = groupKFold(train_meta$study, k = length(unique(train_meta$study))),
         savePredictions = "final",
         allowParallel = TRUE   # <- important
-      ),
-      weights = ifelse(train_mx$disease=="CRC", 2, 1))
+      )#,
+      #weights = ifelse(y=="CRC", 2, 1)
+      )
     
     
     saveRDS(enet_fit_lodo, save_path)
@@ -323,8 +328,8 @@ for(d in dset){
   
   if(length(unique(hold_out_mx$disease))  == 2){
     
-    pred_lodo <- predict(enet_fit_lodo, hold_out_mx, type = "prob")$CRC
-    roc_lodo <- roc(factor(hold_out_mx$disease, levels = c("None", "CRC")), pred_lodo, levels = c("None","CRC"))
+    pred_lodo <- predict(enet_fit_lodo, hold_out_mx , type = "prob")$CRC
+    roc_lodo <- roc(factor(colData(hold_out_sy)$disease, levels = c("None", "CRC")), pred_lodo, levels = c("None","CRC"))
     AUCs_enet[[d]] = auc(roc_lodo)
     cat('Done with', d, 'AUC = ', AUCs_enet[[d]], '\n')
   } else {
@@ -457,10 +462,10 @@ ggplot(plt_long, aes(x = dataset, y = AUC, fill = method)) +
 # plot
 ggplot(plt_long, aes(x = dataset, y = method, fill = AUC)) +
   geom_tile(color = "white", linewidth = 0.6) +
-  geom_text(aes(label = round(AUC, 2)), color = "black", size = 3.5) +
+  geom_text(aes(label = round(AUC, 2)), color = "black", size = 6) +
   scale_fill_gradient(low = "#FBE9E7", high = "#D84315", name = "AUC") +
   labs(x = NULL, y = NULL) +
-  theme_minimal(base_size = 13) +
+  theme_minimal(base_size = 20) +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
     axis.text.y = element_text(size = 12),

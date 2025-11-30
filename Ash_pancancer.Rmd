@@ -39,13 +39,14 @@ meta$RvsP = "R"
 meta$RvsP[which(meta$BOR == "PD" | meta$BOR == "cPD")] = "NR" 
 meta$RvsP = factor(meta$RvsP, levels = c("NR", "R"))
 
+# Melanoma meta
+meta_m = read.csv("data/melanoma_pooled/Clean_metadata_Aug5_Allyson_match_2025.txt", sep = '\t')
 ```
 
 ## Load sylph outputs
 
 ```{r}
 sy <- read_sylph("./data/ash_pancancer/combined_q_99.tsv.gz") # q99)
-
 # annoying renames to match meta V sylph file
 colnames(sy) <- gsub("_1", "", colnames(sy))
 colData(sy)$Sample_file <- gsub("_1", "", basename(colData(sy)$Sample_file))
