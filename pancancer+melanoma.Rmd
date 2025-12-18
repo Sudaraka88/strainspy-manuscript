@@ -161,7 +161,7 @@ th <- th[order(th$min_p), ]
 
 ## Train and test on random subsets
 
-```{r}
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
 f = 500 # subset of features to use
 s = 1988 # seed
 
@@ -203,7 +203,7 @@ print_auc(boot_auc_tRandpRand)
 
 ### Predict all melanoma
 
-```{r}
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
 f = 500 # subset of features to use
 mel_idx <- which(meta$c_type == "MEL")
 train_idx <- which(meta$c_type == "RARE")
@@ -232,7 +232,7 @@ print_auc(boot_auc_tRCpMel)
 
 ### Predict each melanoma dataset
 
-```{r, warning=FALSE}
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
 f = 500 # subset of features to use
 
 mel_dset = c("Frankel", "Gopalakrishnan", "Lee", "Matson", "McCulloch", "Spencer")
@@ -269,7 +269,7 @@ for(dset in mel_dset){
 ## Train on melanoma
 
 ### Predict all rare cancers
-```{r}
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
 f = 500 # subset of features to use
 mel_idx <- which(meta$c_type != "MEL")
 train_idx <- which(meta$c_type == "MEL")
@@ -297,7 +297,7 @@ print_auc(boot_auc_tMelpRC)
 ```
 
 ### Predict each rare cancer
-```{r, warning=FALSE}
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
 f = 500 # subset of features to use
 
 mel_dset = c("GYN", "NEN", "UGB")
@@ -354,7 +354,7 @@ ggplot(df_all, aes(x = scenario, y = AUC, fill = scenario)) +
 # Train and Test on each
 
 ## Logic
-```{r, warning=FALSE}
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
 f = 500 # subset of features to use
 
 test_dset = c("GYN", "NEN", "UGB", "Frankel", "Gopalakrishnan", "Lee", "Matson", "McCulloch", "Spencer", "", "")
@@ -434,7 +434,7 @@ for(dx in 1:length(test_dset)){ # Loop through everything
 
 
 ## Visualise
-```{r, warning=FALSE, fig.width=12}
+```{r, warning=FALSE, fig.width=12, fig.height=12}
 plot_df <- Op %>%
   mutate(
     Train_lab = ifelse(Train == "ALL", Ca_train, Train),
@@ -466,7 +466,7 @@ ggplot(plot_df, aes(x = Test_lab, y = Train_lab, fill = bmed)) +
 
 ## Logic
 
-```{r, warning=FALSE}
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
 f = 500 # subset of features to use
 
 test_dset = c("GYN", "NEN", "UGB", "Frankel", "Gopalakrishnan", "Lee", "Matson", "McCulloch", "Spencer", "", "")
@@ -575,7 +575,7 @@ ggplot(boot_df, aes(x = Test_lab, y = boot, fill = Ca_test)) +
 
 ### Forest plot - like
 
-```{r, warning=FALSE, fig.width=12}
+```{r, warning=FALSE, fig.width=12, fig.height=12}
 Op2$Label <- ifelse(Op2$Test == "ALL", Op2$Ca_test, Op2$Test)
 ggplot(Op2, aes(x = bmed, y = reorder(Label, bmed))) +
   geom_segment(aes(x = lci, xend = uci,
@@ -605,7 +605,7 @@ ggplot(Op2, aes(x = bmed, y = reorder(Label, bmed))) +
 
 ### Plot this on a tree
 
-```{r}
+```{r, fig.width=12, fig.height=12}
 tax = read_taxonomy("data/TAXONOMY/sylph_DB_taxonomy_99.tsv")
 th2 = strainspy:::add_tax2tophits(th, tax, columns = c("Phylum","Genus","Species"))
 
@@ -740,7 +740,7 @@ p
 
 ### Scatter plot with line to see the variation
 
-```{r}
+```{r, fig.width=12}
 df2 = df
 med_df <- df2 %>%
   filter(Genus != "Other") %>%

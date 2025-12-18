@@ -24,7 +24,6 @@ library(ggtree)
 ## Load metadata
 
 ``` r
-# WARNING! THIS INCLUDES UNPIBLISHED DATA
 meta_path <- "./data/ash_pancancer/metadata_full.tsv"
 meta_pan <- read.csv(meta_path, sep = '\t') 
 meta_pan = cbind(run_acc = meta_pan$run_accession, meta_pan)
@@ -183,200 +182,32 @@ th <- th[order(th$min_p), ]
 
 ## Train and test on random subsets
 
-``` r
-f = 500 # subset of features to use
-s = 1988
-
-boot_auc_tRandpRand = c()
-
-for (i in 1:5){
-  set.seed(s+i)
-  train_idx = sample(nrow(meta), round(nrow(meta)*0.9))
-  test_idx = 1:nrow(meta)
-  mel_idx = test_idx[-train_idx]
-  
-  fit = run_enet(train_idx, mel_idx, meta, sy, th$Contig_name[1:f], return_fit = T)
-  
-  test_mx  <- strainspy::prep_for_prediction(sy[, mel_idx], 'RvsP', th$Contig_name[1:500])
-  pred_probs <- predict(fit, test_mx, type = "prob")$R
-  
-  B <- 200
-  set.seed(1988)
-  boot_auc <- replicate(B, {
-    boot_idx <- sample(seq_along(pred_probs), length(pred_probs), replace = TRUE)
-    
-    if(length(unique(test_mx$RvsP[boot_idx])) < 2) return(NA_real_)
-    
-    roc_obj <- roc(test_mx$RvsP[boot_idx], pred_probs[boot_idx], levels = c("NR","R"), 
-                   direction = "<")
-    as.numeric(auc(roc_obj))
-  })
-  
-  boot_auc_tRandpRand <- c(boot_auc_tRandpRand, boot_auc[!is.na(boot_auc)])
-}
-```
-
-    ## Prepared data: 473 samples and 500 predictors.
-
-    ## Prepared data: 53 samples and 500 predictors.
-    ## Prepared data: 53 samples and 500 predictors.
-
-    ## Prepared data: 473 samples and 500 predictors.
-
-    ## Prepared data: 53 samples and 500 predictors.
-    ## Prepared data: 53 samples and 500 predictors.
-
-    ## Prepared data: 473 samples and 500 predictors.
-
-    ## Prepared data: 53 samples and 500 predictors.
-    ## Prepared data: 53 samples and 500 predictors.
-
-    ## Prepared data: 473 samples and 500 predictors.
-
-    ## Prepared data: 53 samples and 500 predictors.
-    ## Prepared data: 53 samples and 500 predictors.
-
-    ## Prepared data: 473 samples and 500 predictors.
-
-    ## Prepared data: 53 samples and 500 predictors.
-    ## Prepared data: 53 samples and 500 predictors.
-
-``` r
-print_auc(boot_auc_tRandpRand)
-```
-
     ## AUC = 0.644 [95% CI: 0.441 - 0.82 ]
 
 ## Train on rare cancers
 
 ### Predict all melanoma
 
-``` r
-f = 500 # subset of features to use
-mel_idx <- which(meta$c_type == "MEL")
-train_idx <- which(meta$c_type == "RARE")
-
-fit = run_enet(train_idx, mel_idx, meta, sy, th$Contig_name[1:f], return_fit = T)
-```
-
-    ## Prepared data: 106 samples and 500 predictors.
-
-    ## Prepared data: 420 samples and 500 predictors.
-
-    ## Warning in preProcess.default(thresh = 0.95, k = 5, freqCut = 19, uniqueCut =
-    ## 10, : These variables have zero variances: GCA_905373845.1
-    ## Warning in preProcess.default(thresh = 0.95, k = 5, freqCut = 19, uniqueCut =
-    ## 10, : These variables have zero variances: GCA_905373845.1
-    ## Warning in preProcess.default(thresh = 0.95, k = 5, freqCut = 19, uniqueCut =
-    ## 10, : These variables have zero variances: GCA_905373845.1
-
-``` r
-test_mx  <- strainspy::prep_for_prediction(sy[, mel_idx], 'RvsP', th$Contig_name[1:500])
-```
-
-    ## Prepared data: 420 samples and 500 predictors.
-
-``` r
-pred_probs <- predict(fit, test_mx, type = "prob")$R
-
-B <- 1000
-set.seed(1988)
-boot_auc <- replicate(B, {
-  boot_idx <- sample(seq_along(pred_probs), length(pred_probs), replace = TRUE)
-  
-  if(length(unique(test_mx$RvsP[boot_idx])) < 2) return(NA_real_)
-  
-  roc_obj <- roc(test_mx$RvsP[boot_idx], pred_probs[boot_idx], levels = c("NR","R"), 
-                 direction = "<")
-  as.numeric(auc(roc_obj))
-})
-
-boot_auc_tRCpMel <- boot_auc[!is.na(boot_auc)]
-print_auc(boot_auc_tRCpMel)
-```
-
     ## AUC = 0.637 [95% CI: 0.589 - 0.692 ]
 
 ### Predict each melanoma dataset
 
-``` r
-f = 500 # subset of features to use
-
-mel_dset = c("Frankel", "Gopalakrishnan", "Lee", "Matson", "McCulloch", "Spencer")
-for(dset in mel_dset){
-  
-  cat(dset, ':')
-  mel_idx <- which(meta$type == dset)
-  train_idx <- which(meta$c_type == "RARE")
-  
-  fit = run_enet(train_idx, mel_idx, meta, sy, th$Contig_name[1:f], return_fit = T)
-  
-  test_mx  <- strainspy::prep_for_prediction(sy[, mel_idx], 'RvsP', th$Contig_name[1:500])
-  pred_probs <- predict(fit, test_mx, type = "prob")$R
-  
-  B <- 1000
-  set.seed(1988)
-  boot_auc <- replicate(B, {
-    boot_idx <- sample(seq_along(pred_probs), length(pred_probs), replace = TRUE)
-    
-    if(length(unique(test_mx$RvsP[boot_idx])) < 2) return(NA_real_)
-    
-    roc_obj <- roc(test_mx$RvsP[boot_idx], pred_probs[boot_idx], levels = c("NR","R"),
-                   direction = "<")
-    as.numeric(auc(roc_obj))
-  })
-  
-  boot_auc <- boot_auc[!is.na(boot_auc)]
-  print_auc(boot_auc) 
-}
-```
-
     ## Frankel :
-
-    ## Prepared data: 106 samples and 500 predictors.
-
-    ## Prepared data: 34 samples and 500 predictors.
-    ## Prepared data: 34 samples and 500 predictors.
 
     ## AUC = 0.644 [95% CI: 0.425 - 0.84 ]
     ## Gopalakrishnan :
 
-    ## Prepared data: 106 samples and 500 predictors.
-
-    ## Prepared data: 25 samples and 500 predictors.
-    ## Prepared data: 25 samples and 500 predictors.
-
     ## AUC = 0.731 [95% CI: 0.5 - 0.927 ]
     ## Lee :
-
-    ## Prepared data: 106 samples and 500 predictors.
-
-    ## Prepared data: 92 samples and 500 predictors.
-    ## Prepared data: 92 samples and 500 predictors.
 
     ## AUC = 0.599 [95% CI: 0.47 - 0.72 ]
     ## Matson :
 
-    ## Prepared data: 106 samples and 500 predictors.
-
-    ## Prepared data: 39 samples and 500 predictors.
-    ## Prepared data: 39 samples and 500 predictors.
-
     ## AUC = 0.559 [95% CI: 0.359 - 0.74 ]
     ## McCulloch :
 
-    ## Prepared data: 106 samples and 500 predictors.
-
-    ## Prepared data: 63 samples and 500 predictors.
-    ## Prepared data: 63 samples and 500 predictors.
-
     ## AUC = 0.637 [95% CI: 0.493 - 0.772 ]
     ## Spencer :
-
-    ## Prepared data: 106 samples and 500 predictors.
-
-    ## Prepared data: 167 samples and 500 predictors.
-    ## Prepared data: 167 samples and 500 predictors.
 
     ## AUC = 0.611 [95% CI: 0.521 - 0.698 ]
 
@@ -384,101 +215,17 @@ for(dset in mel_dset){
 
 ### Predict all rare cancers
 
-``` r
-f = 500 # subset of features to use
-mel_idx <- which(meta$c_type != "MEL")
-train_idx <- which(meta$c_type == "MEL")
-
-fit = run_enet(train_idx, mel_idx, meta, sy, th$Contig_name[1:f], return_fit = T)
-```
-
-    ## Prepared data: 420 samples and 500 predictors.
-
-    ## Prepared data: 106 samples and 500 predictors.
-
-``` r
-test_mx  <- strainspy::prep_for_prediction(sy[, mel_idx], 'RvsP', th$Contig_name[1:500])
-```
-
-    ## Prepared data: 106 samples and 500 predictors.
-
-``` r
-pred_probs <- predict(fit, test_mx, type = "prob")$R
-
-B <- 1000
-set.seed(1988)
-boot_auc <- replicate(B, {
-  boot_idx <- sample(seq_along(pred_probs), length(pred_probs), replace = TRUE)
-  
-  if(length(unique(test_mx$RvsP[boot_idx])) < 2) return(NA_real_)
-  
-  roc_obj <- roc(test_mx$RvsP[boot_idx], pred_probs[boot_idx], levels = c("NR","R"), 
-                 direction = "<")
-  as.numeric(auc(roc_obj))
-})
-
-boot_auc_tMelpRC <- boot_auc[!is.na(boot_auc)]
-print_auc(boot_auc_tMelpRC)
-```
-
     ## AUC = 0.694 [95% CI: 0.58 - 0.79 ]
 
 ### Predict each rare cancer
 
-``` r
-f = 500 # subset of features to use
-
-mel_dset = c("GYN", "NEN", "UGB")
-for(dset in mel_dset){
-  
-  cat(dset, ':')
-  mel_idx <- which(meta$type == dset)
-  train_idx <- which(meta$c_type == "MEL")
-  
-  fit = run_enet(train_idx, mel_idx, meta, sy, th$Contig_name[1:f], return_fit = T)
-  
-  test_mx  <- strainspy::prep_for_prediction(sy[, mel_idx], 'RvsP', th$Contig_name[1:500])
-  pred_probs <- predict(fit, test_mx, type = "prob")$R
-  
-  B <- 1000
-  set.seed(1988)
-  boot_auc <- replicate(B, {
-    boot_idx <- sample(seq_along(pred_probs), length(pred_probs), replace = TRUE)
-    
-    if(length(unique(test_mx$RvsP[boot_idx])) < 2) return(NA_real_)
-    
-    roc_obj <- roc(test_mx$RvsP[boot_idx], pred_probs[boot_idx], levels = c("NR","R"),
-                   direction = "<")
-    as.numeric(auc(roc_obj))
-  })
-  
-  boot_auc <- boot_auc[!is.na(boot_auc)]
-  print_auc(boot_auc) 
-}
-```
-
     ## GYN :
-
-    ## Prepared data: 420 samples and 500 predictors.
-
-    ## Prepared data: 36 samples and 500 predictors.
-    ## Prepared data: 36 samples and 500 predictors.
 
     ## AUC = 0.747 [95% CI: 0.548 - 0.908 ]
     ## NEN :
 
-    ## Prepared data: 420 samples and 500 predictors.
-
-    ## Prepared data: 32 samples and 500 predictors.
-    ## Prepared data: 32 samples and 500 predictors.
-
     ## AUC = 0.648 [95% CI: 0.429 - 0.854 ]
     ## UGB :
-
-    ## Prepared data: 420 samples and 500 predictors.
-
-    ## Prepared data: 38 samples and 500 predictors.
-    ## Prepared data: 38 samples and 500 predictors.
 
     ## AUC = 0.705 [95% CI: 0.531 - 0.852 ]
 
@@ -507,743 +254,389 @@ ggplot(df_all, aes(x = scenario, y = AUC, fill = scenario)) +
 
 ## Logic
 
-``` r
-f = 500 # subset of features to use
-
-test_dset = c("GYN", "NEN", "UGB", "Frankel", "Gopalakrishnan", "Lee", "Matson", "McCulloch", "Spencer", "", "")
-test_c_dset = c("RARE", "RARE", "RARE", rep("MEL", 6), "RARE", "MEL")
-
-dummy_test_idx <- which(meta$type == dset) # This is just to get the model fitted
-
-Op = data.frame()
-
-for(dx in 1:length(test_dset)){ # Loop through everything
-  
-  if(test_dset[dx] == ""){
-    tmp_idx = which(meta$c_type == test_c_dset[dx])
-    # train_idx <- sample(tmp_idx, size = round(0.8*length(tmp_idx)))
-    train_idx = tmp_idx
-    cat("Training set:", test_c_dset[dx], "\n")
-    train_dset_nm = "ALL"
-    train_c_dset_nm = test_c_dset[dx]
-  } else {
-    train_idx <- which(meta$type == test_dset[dx])
-    cat("Training set:", test_c_dset[dx], "-", test_dset[dx], "\n")
-    train_dset_nm = test_dset[dx]
-    train_c_dset_nm = test_c_dset[dx]
-  }
-  
-  fit = run_enet(train_idx, dummy_test_idx, meta, sy, th$Contig_name[1:f], return_fit = T)
-  
-  # Predict through al of these
-  for(px in 1:length(test_dset)){
-    if(test_dset[px] == ""){
-      test_idx <- which(meta$c_type == test_c_dset[px])
-      cat("Testing set:", test_c_dset[px])
-      test_dset_nm = "ALL"
-      test_c_dset_nm = test_c_dset[px]
-    } else {
-      test_idx <- which(meta$type == test_dset[px])
-      cat("Testing set:", test_c_dset[px], "-", test_dset[px], "\n")
-      test_dset_nm = test_dset[px]
-      test_c_dset_nm = test_c_dset[px]
-    }
-    
-    test_mx  <- strainspy::prep_for_prediction(sy[, test_idx], 'RvsP', th$Contig_name[1:500])
-    
-    # Skip if test labels are all one class
-    if (length(unique(test_mx$RvsP)) < 2) {
-      warning("Test class only has one type of label")
-      next
-    }
-    
-    
-    pred_probs <- predict(fit, test_mx, type = "prob")$R
-    
-    B <- 1000
-    set.seed(1988)
-    boot_auc <- replicate(B, {
-      boot_idx <- sample(seq_along(pred_probs), length(pred_probs), replace = TRUE)
-      
-      if(length(unique(test_mx$RvsP[boot_idx])) < 2) return(NA_real_)
-      
-      roc_obj <- roc(test_mx$RvsP[boot_idx], pred_probs[boot_idx], levels = c("NR","R"),
-                     direction = "<")
-      as.numeric(auc(roc_obj))
-    })
-    
-    boot_auc <- boot_auc[!is.na(boot_auc)]
-    tmp = print_auc(boot_auc, ret = T)
-    
-    
-    Op = rbind(Op,
-               data.frame(Train = train_dset_nm, Ca_train = train_c_dset_nm,
-                          Test = test_dset_nm, Ca_test = test_c_dset_nm,
-                          bmed = tmp[1], lci = tmp[2], uci = tmp[3]))
-    
-  }
-}
-```
-
     ## Training set: RARE - GYN
-
-    ## Prepared data: 36 samples and 500 predictors.
-
-    ## Prepared data: 38 samples and 500 predictors.
 
     ## Testing set: RARE - GYN
 
-    ## Prepared data: 36 samples and 500 predictors.
-
     ## AUC = 1 [95% CI: 1 - 1 ]
     ## Testing set: RARE - NEN
-
-    ## Prepared data: 32 samples and 500 predictors.
 
     ## AUC = 0.584 [95% CI: 0.343 - 0.783 ]
     ## Testing set: RARE - UGB
 
-    ## Prepared data: 38 samples and 500 predictors.
-
     ## AUC = 0.72 [95% CI: 0.53 - 0.884 ]
     ## Testing set: MEL - Frankel
-
-    ## Prepared data: 34 samples and 500 predictors.
 
     ## AUC = 0.604 [95% CI: 0.38 - 0.813 ]
     ## Testing set: MEL - Gopalakrishnan
 
-    ## Prepared data: 25 samples and 500 predictors.
-
     ## AUC = 0.721 [95% CI: 0.486 - 0.93 ]
     ## Testing set: MEL - Lee
-
-    ## Prepared data: 92 samples and 500 predictors.
 
     ## AUC = 0.561 [95% CI: 0.438 - 0.691 ]
     ## Testing set: MEL - Matson
 
-    ## Prepared data: 39 samples and 500 predictors.
-
     ## AUC = 0.628 [95% CI: 0.441 - 0.804 ]
     ## Testing set: MEL - McCulloch
-
-    ## Prepared data: 63 samples and 500 predictors.
 
     ## AUC = 0.513 [95% CI: 0.363 - 0.653 ]
     ## Testing set: MEL - Spencer
 
-    ## Prepared data: 167 samples and 500 predictors.
-
     ## AUC = 0.591 [95% CI: 0.497 - 0.682 ]
     ## Testing set: RARE
-
-    ## Prepared data: 106 samples and 500 predictors.
 
     ## AUC = 0.795 [95% CI: 0.703 - 0.873 ]
     ## Testing set: MEL
 
-    ## Prepared data: 420 samples and 500 predictors.
-
     ## AUC = 0.61 [95% CI: 0.555 - 0.665 ]
     ## Training set: RARE - NEN
 
-    ## Prepared data: 32 samples and 500 predictors.
-    ## Prepared data: 38 samples and 500 predictors.
-
     ## Testing set: RARE - GYN
-
-    ## Prepared data: 36 samples and 500 predictors.
 
     ## AUC = 0.715 [95% CI: 0.521 - 0.881 ]
     ## Testing set: RARE - NEN
 
-    ## Prepared data: 32 samples and 500 predictors.
-
     ## AUC = 0.992 [95% CI: 0.94 - 1 ]
     ## Testing set: RARE - UGB
-
-    ## Prepared data: 38 samples and 500 predictors.
 
     ## AUC = 0.667 [95% CI: 0.474 - 0.82 ]
     ## Testing set: MEL - Frankel
 
-    ## Prepared data: 34 samples and 500 predictors.
-
     ## AUC = 0.672 [95% CI: 0.456 - 0.834 ]
     ## Testing set: MEL - Gopalakrishnan
-
-    ## Prepared data: 25 samples and 500 predictors.
 
     ## AUC = 0.67 [95% CI: 0.42 - 0.889 ]
     ## Testing set: MEL - Lee
 
-    ## Prepared data: 92 samples and 500 predictors.
-
     ## AUC = 0.501 [95% CI: 0.37 - 0.623 ]
     ## Testing set: MEL - Matson
-
-    ## Prepared data: 39 samples and 500 predictors.
 
     ## AUC = 0.495 [95% CI: 0.299 - 0.703 ]
     ## Testing set: MEL - McCulloch
 
-    ## Prepared data: 63 samples and 500 predictors.
-
     ## AUC = 0.605 [95% CI: 0.458 - 0.743 ]
     ## Testing set: MEL - Spencer
-
-    ## Prepared data: 167 samples and 500 predictors.
 
     ## AUC = 0.526 [95% CI: 0.423 - 0.617 ]
     ## Testing set: RARE
 
-    ## Prepared data: 106 samples and 500 predictors.
-
     ## AUC = 0.787 [95% CI: 0.699 - 0.872 ]
     ## Testing set: MEL
-
-    ## Prepared data: 420 samples and 500 predictors.
 
     ## AUC = 0.593 [95% CI: 0.54 - 0.647 ]
     ## Training set: RARE - UGB
 
-    ## Prepared data: 38 samples and 500 predictors.
-    ## Prepared data: 38 samples and 500 predictors.
-
     ## Testing set: RARE - GYN
-
-    ## Prepared data: 36 samples and 500 predictors.
 
     ## AUC = 0.762 [95% CI: 0.587 - 0.912 ]
     ## Testing set: RARE - NEN
 
-    ## Prepared data: 32 samples and 500 predictors.
-
     ## AUC = 0.528 [95% CI: 0.295 - 0.748 ]
     ## Testing set: RARE - UGB
 
-    ## Prepared data: 38 samples and 500 predictors.
-
     ## AUC = 1 [95% CI: 1 - 1 ]
     ## Testing set: MEL - Frankel
-
-    ## Prepared data: 34 samples and 500 predictors.
 
     ## AUC = 0.601 [95% CI: 0.393 - 0.793 ]
     ## Testing set: MEL - Gopalakrishnan
 
-    ## Prepared data: 25 samples and 500 predictors.
-
     ## AUC = 0.54 [95% CI: 0.312 - 0.772 ]
     ## Testing set: MEL - Lee
-
-    ## Prepared data: 92 samples and 500 predictors.
 
     ## AUC = 0.61 [95% CI: 0.484 - 0.727 ]
     ## Testing set: MEL - Matson
 
-    ## Prepared data: 39 samples and 500 predictors.
-
     ## AUC = 0.438 [95% CI: 0.242 - 0.646 ]
     ## Testing set: MEL - McCulloch
-
-    ## Prepared data: 63 samples and 500 predictors.
 
     ## AUC = 0.634 [95% CI: 0.495 - 0.763 ]
     ## Testing set: MEL - Spencer
 
-    ## Prepared data: 167 samples and 500 predictors.
-
     ## AUC = 0.594 [95% CI: 0.505 - 0.676 ]
     ## Testing set: RARE
-
-    ## Prepared data: 106 samples and 500 predictors.
 
     ## AUC = 0.824 [95% CI: 0.737 - 0.901 ]
     ## Testing set: MEL
 
-    ## Prepared data: 420 samples and 500 predictors.
-
     ## AUC = 0.6 [95% CI: 0.543 - 0.655 ]
     ## Training set: MEL - Frankel
 
-    ## Prepared data: 34 samples and 500 predictors.
-    ## Prepared data: 38 samples and 500 predictors.
-
     ## Testing set: RARE - GYN
-
-    ## Prepared data: 36 samples and 500 predictors.
 
     ## AUC = 0.505 [95% CI: 0.385 - 0.628 ]
     ## Testing set: RARE - NEN
 
-    ## Prepared data: 32 samples and 500 predictors.
-
     ## AUC = 0.688 [95% CI: 0.524 - 0.851 ]
     ## Testing set: RARE - UGB
-
-    ## Prepared data: 38 samples and 500 predictors.
 
     ## AUC = 0.563 [95% CI: 0.391 - 0.732 ]
     ## Testing set: MEL - Frankel
 
-    ## Prepared data: 34 samples and 500 predictors.
-
     ## AUC = 0.881 [95% CI: 0.729 - 0.975 ]
     ## Testing set: MEL - Gopalakrishnan
-
-    ## Prepared data: 25 samples and 500 predictors.
 
     ## AUC = 0.542 [95% CI: 0.5 - 0.65 ]
     ## Testing set: MEL - Lee
 
-    ## Prepared data: 92 samples and 500 predictors.
-
     ## AUC = 0.469 [95% CI: 0.35 - 0.59 ]
     ## Testing set: MEL - Matson
-
-    ## Prepared data: 39 samples and 500 predictors.
 
     ## AUC = 0.571 [95% CI: 0.417 - 0.717 ]
     ## Testing set: MEL - McCulloch
 
-    ## Prepared data: 63 samples and 500 predictors.
-
     ## AUC = 0.591 [95% CI: 0.449 - 0.727 ]
     ## Testing set: MEL - Spencer
-
-    ## Prepared data: 167 samples and 500 predictors.
 
     ## AUC = 0.505 [95% CI: 0.45 - 0.56 ]
     ## Testing set: RARE
 
-    ## Prepared data: 106 samples and 500 predictors.
-
     ## AUC = 0.6 [95% CI: 0.514 - 0.681 ]
     ## Testing set: MEL
-
-    ## Prepared data: 420 samples and 500 predictors.
 
     ## AUC = 0.597 [95% CI: 0.549 - 0.648 ]
     ## Training set: MEL - Gopalakrishnan
 
-    ## Prepared data: 25 samples and 500 predictors.
-    ## Prepared data: 38 samples and 500 predictors.
-
     ## Testing set: RARE - GYN
-
-    ## Prepared data: 36 samples and 500 predictors.
 
     ## AUC = 0.558 [95% CI: 0.353 - 0.746 ]
     ## Testing set: RARE - NEN
 
-    ## Prepared data: 32 samples and 500 predictors.
-
     ## AUC = 0.658 [95% CI: 0.425 - 0.844 ]
     ## Testing set: RARE - UGB
-
-    ## Prepared data: 38 samples and 500 predictors.
 
     ## AUC = 0.69 [95% CI: 0.498 - 0.878 ]
     ## Testing set: MEL - Frankel
 
-    ## Prepared data: 34 samples and 500 predictors.
-
     ## AUC = 0.806 [95% CI: 0.621 - 0.932 ]
     ## Testing set: MEL - Gopalakrishnan
 
-    ## Prepared data: 25 samples and 500 predictors.
-
     ## AUC = 1 [95% CI: 1 - 1 ]
     ## Testing set: MEL - Lee
-
-    ## Prepared data: 92 samples and 500 predictors.
 
     ## AUC = 0.454 [95% CI: 0.335 - 0.578 ]
     ## Testing set: MEL - Matson
 
-    ## Prepared data: 39 samples and 500 predictors.
-
     ## AUC = 0.474 [95% CI: 0.275 - 0.674 ]
     ## Testing set: MEL - McCulloch
-
-    ## Prepared data: 63 samples and 500 predictors.
 
     ## AUC = 0.703 [95% CI: 0.559 - 0.831 ]
     ## Testing set: MEL - Spencer
 
-    ## Prepared data: 167 samples and 500 predictors.
-
     ## AUC = 0.6 [95% CI: 0.507 - 0.684 ]
     ## Testing set: RARE
-
-    ## Prepared data: 106 samples and 500 predictors.
 
     ## AUC = 0.655 [95% CI: 0.547 - 0.753 ]
     ## Testing set: MEL
 
-    ## Prepared data: 420 samples and 500 predictors.
-
     ## AUC = 0.63 [95% CI: 0.581 - 0.685 ]
     ## Training set: MEL - Lee
 
-    ## Prepared data: 92 samples and 500 predictors.
-    ## Prepared data: 38 samples and 500 predictors.
-
     ## Testing set: RARE - GYN
-
-    ## Prepared data: 36 samples and 500 predictors.
 
     ## AUC = 0.616 [95% CI: 0.421 - 0.797 ]
     ## Testing set: RARE - NEN
 
-    ## Prepared data: 32 samples and 500 predictors.
-
     ## AUC = 0.422 [95% CI: 0.196 - 0.657 ]
     ## Testing set: RARE - UGB
-
-    ## Prepared data: 38 samples and 500 predictors.
 
     ## AUC = 0.557 [95% CI: 0.372 - 0.745 ]
     ## Testing set: MEL - Frankel
 
-    ## Prepared data: 34 samples and 500 predictors.
-
     ## AUC = 0.498 [95% CI: 0.311 - 0.692 ]
     ## Testing set: MEL - Gopalakrishnan
-
-    ## Prepared data: 25 samples and 500 predictors.
 
     ## AUC = 0.422 [95% CI: 0.182 - 0.667 ]
     ## Testing set: MEL - Lee
 
-    ## Prepared data: 92 samples and 500 predictors.
-
     ## AUC = 1 [95% CI: 1 - 1 ]
     ## Testing set: MEL - Matson
-
-    ## Prepared data: 39 samples and 500 predictors.
 
     ## AUC = 0.358 [95% CI: 0.184 - 0.546 ]
     ## Testing set: MEL - McCulloch
 
-    ## Prepared data: 63 samples and 500 predictors.
-
     ## AUC = 0.424 [95% CI: 0.29 - 0.574 ]
     ## Testing set: MEL - Spencer
-
-    ## Prepared data: 167 samples and 500 predictors.
 
     ## AUC = 0.446 [95% CI: 0.354 - 0.535 ]
     ## Testing set: RARE
 
-    ## Prepared data: 106 samples and 500 predictors.
-
     ## AUC = 0.516 [95% CI: 0.4 - 0.615 ]
     ## Testing set: MEL
-
-    ## Prepared data: 420 samples and 500 predictors.
 
     ## AUC = 0.604 [95% CI: 0.546 - 0.659 ]
     ## Training set: MEL - Matson
 
-    ## Prepared data: 39 samples and 500 predictors.
-    ## Prepared data: 38 samples and 500 predictors.
-
     ## Testing set: RARE - GYN
-
-    ## Prepared data: 36 samples and 500 predictors.
 
     ## AUC = 0.65 [95% CI: 0.452 - 0.831 ]
     ## Testing set: RARE - NEN
 
-    ## Prepared data: 32 samples and 500 predictors.
-
     ## AUC = 0.58 [95% CI: 0.312 - 0.8 ]
     ## Testing set: RARE - UGB
-
-    ## Prepared data: 38 samples and 500 predictors.
 
     ## AUC = 0.607 [95% CI: 0.4 - 0.806 ]
     ## Testing set: MEL - Frankel
 
-    ## Prepared data: 34 samples and 500 predictors.
-
     ## AUC = 0.619 [95% CI: 0.409 - 0.81 ]
     ## Testing set: MEL - Gopalakrishnan
-
-    ## Prepared data: 25 samples and 500 predictors.
 
     ## AUC = 0.575 [95% CI: 0.338 - 0.794 ]
     ## Testing set: MEL - Lee
 
-    ## Prepared data: 92 samples and 500 predictors.
-
     ## AUC = 0.499 [95% CI: 0.374 - 0.626 ]
     ## Testing set: MEL - Matson
 
-    ## Prepared data: 39 samples and 500 predictors.
-
     ## AUC = 1 [95% CI: 1 - 1 ]
     ## Testing set: MEL - McCulloch
-
-    ## Prepared data: 63 samples and 500 predictors.
 
     ## AUC = 0.54 [95% CI: 0.398 - 0.7 ]
     ## Testing set: MEL - Spencer
 
-    ## Prepared data: 167 samples and 500 predictors.
-
     ## AUC = 0.543 [95% CI: 0.446 - 0.627 ]
     ## Testing set: RARE
-
-    ## Prepared data: 106 samples and 500 predictors.
 
     ## AUC = 0.592 [95% CI: 0.479 - 0.697 ]
     ## Testing set: MEL
 
-    ## Prepared data: 420 samples and 500 predictors.
-
     ## AUC = 0.609 [95% CI: 0.553 - 0.664 ]
     ## Training set: MEL - McCulloch
 
-    ## Prepared data: 63 samples and 500 predictors.
-    ## Prepared data: 38 samples and 500 predictors.
-
     ## Testing set: RARE - GYN
-
-    ## Prepared data: 36 samples and 500 predictors.
 
     ## AUC = 0.279 [95% CI: 0.117 - 0.472 ]
     ## Testing set: RARE - NEN
 
-    ## Prepared data: 32 samples and 500 predictors.
-
     ## AUC = 0.688 [95% CI: 0.481 - 0.87 ]
     ## Testing set: RARE - UGB
-
-    ## Prepared data: 38 samples and 500 predictors.
 
     ## AUC = 0.491 [95% CI: 0.295 - 0.681 ]
     ## Testing set: MEL - Frankel
 
-    ## Prepared data: 34 samples and 500 predictors.
-
     ## AUC = 0.639 [95% CI: 0.443 - 0.806 ]
     ## Testing set: MEL - Gopalakrishnan
-
-    ## Prepared data: 25 samples and 500 predictors.
 
     ## AUC = 0.365 [95% CI: 0.14 - 0.639 ]
     ## Testing set: MEL - Lee
 
-    ## Prepared data: 92 samples and 500 predictors.
-
     ## AUC = 0.488 [95% CI: 0.371 - 0.612 ]
     ## Testing set: MEL - Matson
-
-    ## Prepared data: 39 samples and 500 predictors.
 
     ## AUC = 0.407 [95% CI: 0.219 - 0.598 ]
     ## Testing set: MEL - McCulloch
 
-    ## Prepared data: 63 samples and 500 predictors.
-
     ## AUC = 1 [95% CI: 1 - 1 ]
     ## Testing set: MEL - Spencer
-
-    ## Prepared data: 167 samples and 500 predictors.
 
     ## AUC = 0.429 [95% CI: 0.336 - 0.53 ]
     ## Testing set: RARE
 
-    ## Prepared data: 106 samples and 500 predictors.
-
     ## AUC = 0.501 [95% CI: 0.388 - 0.609 ]
     ## Testing set: MEL
-
-    ## Prepared data: 420 samples and 500 predictors.
 
     ## AUC = 0.524 [95% CI: 0.467 - 0.576 ]
     ## Training set: MEL - Spencer
 
-    ## Prepared data: 167 samples and 500 predictors.
-    ## Prepared data: 38 samples and 500 predictors.
-
     ## Testing set: RARE - GYN
-
-    ## Prepared data: 36 samples and 500 predictors.
 
     ## AUC = 0.751 [95% CI: 0.558 - 0.893 ]
     ## Testing set: RARE - NEN
 
-    ## Prepared data: 32 samples and 500 predictors.
-
     ## AUC = 0.68 [95% CI: 0.476 - 0.853 ]
     ## Testing set: RARE - UGB
-
-    ## Prepared data: 38 samples and 500 predictors.
 
     ## AUC = 0.72 [95% CI: 0.535 - 0.872 ]
     ## Testing set: MEL - Frankel
 
-    ## Prepared data: 34 samples and 500 predictors.
-
     ## AUC = 0.639 [95% CI: 0.414 - 0.807 ]
     ## Testing set: MEL - Gopalakrishnan
-
-    ## Prepared data: 25 samples and 500 predictors.
 
     ## AUC = 0.813 [95% CI: 0.603 - 0.96 ]
     ## Testing set: MEL - Lee
 
-    ## Prepared data: 92 samples and 500 predictors.
-
     ## AUC = 0.518 [95% CI: 0.395 - 0.636 ]
     ## Testing set: MEL - Matson
-
-    ## Prepared data: 39 samples and 500 predictors.
 
     ## AUC = 0.446 [95% CI: 0.245 - 0.651 ]
     ## Testing set: MEL - McCulloch
 
-    ## Prepared data: 63 samples and 500 predictors.
-
     ## AUC = 0.702 [95% CI: 0.554 - 0.837 ]
     ## Testing set: MEL - Spencer
-
-    ## Prepared data: 167 samples and 500 predictors.
 
     ## AUC = 0.916 [95% CI: 0.87 - 0.953 ]
     ## Testing set: RARE
 
-    ## Prepared data: 106 samples and 500 predictors.
-
     ## AUC = 0.718 [95% CI: 0.616 - 0.815 ]
     ## Testing set: MEL
-
-    ## Prepared data: 420 samples and 500 predictors.
 
     ## AUC = 0.712 [95% CI: 0.661 - 0.761 ]
     ## Training set: RARE
 
-    ## Prepared data: 106 samples and 500 predictors.
-    ## Prepared data: 38 samples and 500 predictors.
-
     ## Testing set: RARE - GYN
-
-    ## Prepared data: 36 samples and 500 predictors.
 
     ## AUC = 0.997 [95% CI: 0.974 - 1 ]
     ## Testing set: RARE - NEN
 
-    ## Prepared data: 32 samples and 500 predictors.
-
     ## AUC = 1 [95% CI: 1 - 1 ]
     ## Testing set: RARE - UGB
 
-    ## Prepared data: 38 samples and 500 predictors.
-
     ## AUC = 1 [95% CI: 1 - 1 ]
     ## Testing set: MEL - Frankel
-
-    ## Prepared data: 34 samples and 500 predictors.
 
     ## AUC = 0.644 [95% CI: 0.425 - 0.84 ]
     ## Testing set: MEL - Gopalakrishnan
 
-    ## Prepared data: 25 samples and 500 predictors.
-
     ## AUC = 0.731 [95% CI: 0.5 - 0.927 ]
     ## Testing set: MEL - Lee
-
-    ## Prepared data: 92 samples and 500 predictors.
 
     ## AUC = 0.599 [95% CI: 0.47 - 0.72 ]
     ## Testing set: MEL - Matson
 
-    ## Prepared data: 39 samples and 500 predictors.
-
     ## AUC = 0.559 [95% CI: 0.359 - 0.74 ]
     ## Testing set: MEL - McCulloch
-
-    ## Prepared data: 63 samples and 500 predictors.
 
     ## AUC = 0.637 [95% CI: 0.493 - 0.772 ]
     ## Testing set: MEL - Spencer
 
-    ## Prepared data: 167 samples and 500 predictors.
-
     ## AUC = 0.611 [95% CI: 0.521 - 0.698 ]
     ## Testing set: RARE
-
-    ## Prepared data: 106 samples and 500 predictors.
 
     ## AUC = 0.997 [95% CI: 0.99 - 1 ]
     ## Testing set: MEL
 
-    ## Prepared data: 420 samples and 500 predictors.
-
     ## AUC = 0.637 [95% CI: 0.589 - 0.692 ]
     ## Training set: MEL
 
-    ## Prepared data: 420 samples and 500 predictors.
-    ## Prepared data: 38 samples and 500 predictors.
-
     ## Testing set: RARE - GYN
-
-    ## Prepared data: 36 samples and 500 predictors.
 
     ## AUC = 0.747 [95% CI: 0.548 - 0.908 ]
     ## Testing set: RARE - NEN
 
-    ## Prepared data: 32 samples and 500 predictors.
-
     ## AUC = 0.648 [95% CI: 0.429 - 0.854 ]
     ## Testing set: RARE - UGB
-
-    ## Prepared data: 38 samples and 500 predictors.
 
     ## AUC = 0.705 [95% CI: 0.531 - 0.852 ]
     ## Testing set: MEL - Frankel
 
-    ## Prepared data: 34 samples and 500 predictors.
-
     ## AUC = 0.972 [95% CI: 0.902 - 1 ]
     ## Testing set: MEL - Gopalakrishnan
-
-    ## Prepared data: 25 samples and 500 predictors.
 
     ## AUC = 0.824 [95% CI: 0.64 - 0.972 ]
     ## Testing set: MEL - Lee
 
-    ## Prepared data: 92 samples and 500 predictors.
-
     ## AUC = 0.916 [95% CI: 0.846 - 0.968 ]
     ## Testing set: MEL - Matson
-
-    ## Prepared data: 39 samples and 500 predictors.
 
     ## AUC = 0.775 [95% CI: 0.6 - 0.932 ]
     ## Testing set: MEL - McCulloch
 
-    ## Prepared data: 63 samples and 500 predictors.
-
     ## AUC = 0.922 [95% CI: 0.834 - 0.976 ]
     ## Testing set: MEL - Spencer
-
-    ## Prepared data: 167 samples and 500 predictors.
 
     ## AUC = 0.84 [95% CI: 0.774 - 0.892 ]
     ## Testing set: RARE
 
-    ## Prepared data: 106 samples and 500 predictors.
-
     ## AUC = 0.694 [95% CI: 0.58 - 0.79 ]
     ## Testing set: MEL
-
-    ## Prepared data: 420 samples and 500 predictors.
 
     ## AUC = 0.872 [95% CI: 0.836 - 0.907 ]
 
@@ -1283,176 +676,37 @@ ggplot(plot_df, aes(x = Test_lab, y = Train_lab, fill = bmed)) +
 
 ## Logic
 
-``` r
-f = 500 # subset of features to use
-
-test_dset = c("GYN", "NEN", "UGB", "Frankel", "Gopalakrishnan", "Lee", "Matson", "McCulloch", "Spencer", "", "")
-test_c_dset = c("RARE", "RARE", "RARE", rep("MEL", 6), "RARE", "MEL")
-
-dummy_test_idx <- which(meta$type == dset) # This is just to get the model fitted
-
-Op2 = c()
-boot_df <- data.frame()
-
-for(dx in 1:length(test_dset)){ # Loop through everything
-  
-  if(test_dset[dx] == ""){
-    tmp_idx = which(meta$c_type == test_c_dset[dx])
-    test_idx = tmp_idx
-    cat("Testing set:", test_c_dset[dx], "\n")
-    test_dset_nm = "ALL"
-    test_c_dset_nm = test_c_dset[dx]
-  } else {
-    test_idx <- which(meta$type == test_dset[dx])
-    cat("Testing set:", test_c_dset[dx], "-", test_dset[dx], "\n")
-    test_dset_nm = test_dset[dx]
-    test_c_dset_nm = test_c_dset[dx]
-  }
-  
-  train_idx = 1:nrow(meta)
-  train_idx = train_idx[-test_idx]
-  
-  fit = run_enet(train_idx, dummy_test_idx, meta, sy, th$Contig_name[1:f], return_fit = T)
-  
-  test_mx  <- strainspy::prep_for_prediction(sy[, test_idx], 'RvsP', th$Contig_name[1:500])
-  
-  # Skip if test labels are all one class
-  if (length(unique(test_mx$RvsP)) < 2) {
-    warning("Test class only has one type of label")
-    next
-  }
-  
-  
-  pred_probs <- predict(fit, test_mx, type = "prob")$R
-  
-  B <- 1000
-  set.seed(1988)
-  boot_auc <- replicate(B, {
-    boot_idx <- sample(seq_along(pred_probs), length(pred_probs), replace = TRUE)
-    
-    if(length(unique(test_mx$RvsP[boot_idx])) < 2) return(NA_real_)
-    
-    roc_obj <- roc(test_mx$RvsP[boot_idx], pred_probs[boot_idx], levels = c("NR","R"),
-                   direction = "<")
-    as.numeric(auc(roc_obj))
-  })
-  
-  boot_auc <- boot_auc[!is.na(boot_auc)]
-  tmp = print_auc(boot_auc, ret = T)
-  
-  boot_df <- rbind(
-    boot_df,
-    data.frame(
-      Test = test_dset_nm,
-      Ca_test = test_c_dset_nm,
-      boot = boot_auc
-    )
-  )
-  
-  
-  
-  Op2 = rbind(Op2,
-              data.frame(Test = test_dset_nm, Ca_test = test_c_dset_nm,
-                         bmed = tmp[1], lci = tmp[2], uci = tmp[3]))
-  
-}
-```
-
     ## Testing set: RARE - GYN
-
-    ## Prepared data: 490 samples and 500 predictors.
-
-    ## Prepared data: 38 samples and 500 predictors.
-
-    ## Prepared data: 36 samples and 500 predictors.
 
     ## AUC = 0.752 [95% CI: 0.554 - 0.903 ]
     ## Testing set: RARE - NEN
 
-    ## Prepared data: 494 samples and 500 predictors.
-
-    ## Prepared data: 38 samples and 500 predictors.
-
-    ## Prepared data: 32 samples and 500 predictors.
-
     ## AUC = 0.665 [95% CI: 0.441 - 0.847 ]
     ## Testing set: RARE - UGB
-
-    ## Prepared data: 488 samples and 500 predictors.
-
-    ## Prepared data: 38 samples and 500 predictors.
-    ## Prepared data: 38 samples and 500 predictors.
 
     ## AUC = 0.739 [95% CI: 0.571 - 0.875 ]
     ## Testing set: MEL - Frankel
 
-    ## Prepared data: 492 samples and 500 predictors.
-    ## Prepared data: 38 samples and 500 predictors.
-
-    ## Prepared data: 34 samples and 500 predictors.
-
     ## AUC = 0.648 [95% CI: 0.461 - 0.83 ]
     ## Testing set: MEL - Gopalakrishnan
-
-    ## Prepared data: 501 samples and 500 predictors.
-
-    ## Prepared data: 38 samples and 500 predictors.
-
-    ## Prepared data: 25 samples and 500 predictors.
 
     ## AUC = 0.734 [95% CI: 0.519 - 0.916 ]
     ## Testing set: MEL - Lee
 
-    ## Prepared data: 434 samples and 500 predictors.
-
-    ## Prepared data: 38 samples and 500 predictors.
-
-    ## Prepared data: 92 samples and 500 predictors.
-
     ## AUC = 0.498 [95% CI: 0.375 - 0.628 ]
     ## Testing set: MEL - Matson
-
-    ## Prepared data: 487 samples and 500 predictors.
-
-    ## Prepared data: 38 samples and 500 predictors.
-
-    ## Prepared data: 39 samples and 500 predictors.
 
     ## AUC = 0.511 [95% CI: 0.311 - 0.698 ]
     ## Testing set: MEL - McCulloch
 
-    ## Prepared data: 463 samples and 500 predictors.
-
-    ## Prepared data: 38 samples and 500 predictors.
-
-    ## Prepared data: 63 samples and 500 predictors.
-
     ## AUC = 0.609 [95% CI: 0.455 - 0.754 ]
     ## Testing set: MEL - Spencer
-
-    ## Prepared data: 359 samples and 500 predictors.
-
-    ## Prepared data: 38 samples and 500 predictors.
-
-    ## Prepared data: 167 samples and 500 predictors.
 
     ## AUC = 0.638 [95% CI: 0.55 - 0.723 ]
     ## Testing set: RARE
 
-    ## Prepared data: 420 samples and 500 predictors.
-
-    ## Prepared data: 38 samples and 500 predictors.
-
-    ## Prepared data: 106 samples and 500 predictors.
-
     ## AUC = 0.694 [95% CI: 0.58 - 0.79 ]
     ## Testing set: MEL
-
-    ## Prepared data: 106 samples and 500 predictors.
-
-    ## Prepared data: 38 samples and 500 predictors.
-
-    ## Prepared data: 420 samples and 500 predictors.
 
     ## AUC = 0.637 [95% CI: 0.589 - 0.692 ]
 
