@@ -246,7 +246,7 @@ legend("bottomright",
          paste0("ENET Bonferroni CV: AUC=", round(auc(roc_Bonf_cv), 3))
          
        ),
-       col=c("blue","red","darkgreen", "cyan","magenta", "green"),
+       col=c("darkgreen", "blue","red", "green", "cyan","magenta"),
        lwd=2, lty=c(1,1,1,22,2))
 
 
@@ -275,7 +275,9 @@ dset = as.character(unique(meta$study))
 # There is no point in fitting the whole model for each training set, we'll use the global lot of predictors
 # We are biasing things a bit, but probably okay?
 
-th = top_hits(fit, coef = 2, method = "BH", alpha = 1)
+th = top_hits(fit, coef = 2, method = "BH", alpha = 0.01)
+# th = th[1:1000,] # This is what we did when there were no significant hits
+sy_mx_bf = strainspy::prep_for_prediction(sy, 'disease', th$Contig_name)
 ```
 
 ### Estimate AUC
@@ -285,13 +287,13 @@ for(d in dset){
   
   hold_out_idx = which(meta$study == d)
   hold_out_meta = meta[hold_out_idx, ]
-  hold_out_sy = sy[ ,hold_out_idx]
+  hold_out_sy = sy[,hold_out_idx]
   
   train_idx = which(meta$study != d)
   train_meta = meta[train_idx, ]
-  train_sy = sy[ ,train_idx]
+  train_sy = sy_mx_bf[train_idx,]
   
-  save_path = paste("output_rds/pred_enet_crc_q99_BH_lodo_", d ,".rds", collapse = "", sep = "")
+  save_path = paste("output_rds/pred_enet_crc_q99_BH_lodo_alpha0.05_", d ,".rds", collapse = "", sep = "")
   
   if(file.exists(save_path)) {
     enet_fit_lodo = readRDS(save_path)
@@ -299,8 +301,8 @@ for(d in dset){
     
     # train_mx = strainspy::prep_for_prediction(train_sy, 'disease', th$Contig_name)
     
-    y <- factor(colData(train_sy)$disease, levels = c("None", "CRC"))
-    x = Matrix::t(SummarizedExperiment::assay(train_sy))  
+    y <- factor(train_meta$disease, levels = c("None", "CRC"))
+    x = sparsevctrs::coerce_to_sparse_matrix(train_sy[,-1])
     
     enet_fit_lodo <- caret::train(
       x = x,
@@ -346,6 +348,7 @@ summary(unlist(AUCs_enet))
 ## Using RF
 
 ```{r}
+th = top_hits(fit, coef = 2, method = "BH")
 AUCs_RF =  list()
 for(d in dset){
   hold_out_idx = which(meta$study == d)

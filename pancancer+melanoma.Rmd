@@ -475,7 +475,7 @@ test_c_dset = c("RARE", "RARE", "RARE", rep("MEL", 6), "RARE", "MEL")
 dummy_test_idx <- which(meta$type == dset) # This is just to get the model fitted
 
 Op2 = c()
-boot_df <- data.frame()
+boot_df1 <- data.frame()
 
 for(dx in 1:length(test_dset)){ # Loop through everything
   
@@ -523,8 +523,8 @@ for(dx in 1:length(test_dset)){ # Loop through everything
   boot_auc <- boot_auc[!is.na(boot_auc)]
   tmp = print_auc(boot_auc, ret = T)
   
-  boot_df <- rbind(
-    boot_df,
+  boot_df1 <- rbind(
+    boot_df1,
     data.frame(
       Test = test_dset_nm,
       Ca_test = test_c_dset_nm,
@@ -546,19 +546,19 @@ for(dx in 1:length(test_dset)){ # Loop through everything
 
 ### Boxplot
 ```{r, warning=FALSE, fig.width=12}
-boot_df = boot_df %>%
+boot_df1 = boot_df1 %>%
   mutate(
     Test_lab = ifelse(Test == "ALL", Ca_test, Test),
     Test_lab = factor(Test_lab,
                       levels = unique(Test_lab))  # preserve ordering
   )
 
-boot_df$Ca_test[which(boot_df$Ca_test == "RARE" & boot_df$Test == "ALL")] = "ALL_RARE"
-boot_df$Ca_test[which(boot_df$Ca_test == "MEL" & boot_df$Test == "ALL")] = "ALL_MEL"
+boot_df1$Ca_test[which(boot_df1$Ca_test == "RARE" & boot_df1$Test == "ALL")] = "ALL_RARE"
+boot_df1$Ca_test[which(boot_df1$Ca_test == "MEL" & boot_df1$Test == "ALL")] = "ALL_MEL"
 
-boot_df$Test_lab = factor(boot_df$Test_lab, levels = c("ALL_RARE", "ALL_MEL", "GYN", "NEN", "UGB",  "Frankel", "Gopalakrishnan", "Lee", "Matson", "McCulloch", "Spencer"))
+boot_df1$Test_lab = factor(boot_df1$Test_lab, levels = c("ALL_RARE", "ALL_MEL", "GYN", "NEN", "UGB",  "Frankel", "Gopalakrishnan", "Lee", "Matson", "McCulloch", "Spencer"))
 
-ggplot(boot_df, aes(x = Test_lab, y = boot, fill = Ca_test)) +
+ggplot(boot_df1, aes(x = Test_lab, y = boot, fill = Ca_test)) +
   geom_boxplot(outlier.size = 0.5, alpha = 0.8) +
   scale_fill_manual(
     values = c(
@@ -712,7 +712,7 @@ p <- p +
 
 
 coef_cols <- scales::col_numeric(
-  palette = c("#2166ac", "white", "#b2182b"),
+  palette = c( "#b2182b", "white", "#2166ac"),
   domain  = range(df$Coef),
   na.color = "grey90"
 )
@@ -720,9 +720,9 @@ coef_cols <- scales::col_numeric(
 df_tmp = data.frame(Coef = df$Coef); rownames(df_tmp) = df$tip
 p = gheatmap(p, df_tmp, offset = 0, width = 0.05) +
   scale_fill_gradient2(
-    low = "#2166ac",
+    high = "#2166ac",
     mid = "white",
-    high = "#b2182b",
+    low = "#b2182b",
     midpoint = 0,
     name = "ENet coef"
   ) +
@@ -777,8 +777,9 @@ genus_order <- df2 %>%
   pull(Genus)
 
 
-df2$Genus <- factor(df2$Genus, levels = genus_order)
+
 med_df$Genus <- factor(med_df$Genus, levels = genus_order)
+df2$Genus <- factor(df2$Genus, levels = med_df$Genus[order(med_df$med_coef, decreasing = T)])
 
 fit <- lm(med_coef ~ as.numeric(factor(Genus, levels = med_df$Genus)), data = med_df)
 

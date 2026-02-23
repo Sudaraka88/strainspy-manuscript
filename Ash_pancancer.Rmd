@@ -38,9 +38,9 @@ meta = cbind(run_acc = meta$run_accession, meta)
 meta$RvsP = "R"
 meta$RvsP[which(meta$BOR == "PD" | meta$BOR == "cPD")] = "NR" 
 meta$RvsP = factor(meta$RvsP, levels = c("NR", "R"))
-
-# Melanoma meta
-meta_m = read.csv("data/melanoma_pooled/Clean_metadata_Aug5_Allyson_match_2025.txt", sep = '\t')
+# 
+# # Melanoma meta
+# meta_m = read.csv("data/melanoma_pooled/Clean_metadata_Aug5_Allyson_match_2025.txt", sep = '\t')
 ```
 
 ## Load sylph outputs
@@ -73,7 +73,7 @@ sy = modify_metadata(sy, meta)
 ## Fit the univariate model
 
 ```{r}
-design <- as.formula("~ RvsP + histology_cohort.x") # age + sex + BMI + ECOG_baseline + chemo_use + antibiotic_use + PPI_use +  + NLR + PLAT + ALB + LDH")
+design <- as.formula("~ RvsP + histology_cohort.x + age + sex + BMI") # age + sex + BMI + ECOG_baseline + chemo_use + antibiotic_use + PPI_use +  + NLR + PLAT + ALB + LDH")
 
 save_path <- "output_rds/ASH_zib_q_99_ebp.rds"
 
@@ -94,7 +94,7 @@ if(file.exists(save_path)){
 
 ### Set up pipeline
 ```{r}
-th = top_hits(ZB_fit, coef = 2, method = "BH", alpha = 0.5)
+th = top_hits(ZB_fit, coef = 2, method = "BH")
 
 # Follow the paper, do 5FCV x20
 AUCs_enet = list()

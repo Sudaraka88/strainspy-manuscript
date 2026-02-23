@@ -1,0 +1,220 @@
+---
+title: "Re-analysing pancancer dataset with dispersion priors"
+output:
+  github_document
+date: "2026-02-17"
+editor_options:
+  chunk_output_type: console
+---
+## Load dependencies
+
+```{r, warning=FALSE, message=FALSE}
+library(strainspy)
+library(SummarizedExperiment)
+library(caret)
+library(glmnet) # elastic net
+library(ranger) # RF
+library(pROC)
+library(doParallel)
+library(foreach)
+library(parallel)
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+
+```
+
+## Load metadata 
+
+```{r}
+# WARNING! THIS INCLUDES UNPIBLISHED DATA
+meta_path <- "./data/ash_pancancer/metadata_full.tsv"
+meta <- read.csv(meta_path, sep = '\t') 
+meta = cbind(run_acc = meta$run_accession, meta)
+# From paper:
+# RvsP = CR or PR VS. PD or cPD - excluded patients with a BOR of stable disease (SD) (n=29)
+
+# Outcome
+meta$RvsP = "R"
+meta$RvsP[which(meta$BOR == "PD" | meta$BOR == "cPD")] = "NR" 
+meta$RvsP = factor(meta$RvsP, levels = c("NR", "R"))
+```
+
+## Load sylph outputs
+
+```{r}
+sy <- read_sylph("./data/ash_pancancer/combined_q_99.tsv.gz") # q99)
+# annoying renames to match meta V sylph file
+colnames(sy) <- gsub("_1", "", colnames(sy))
+colData(sy)$Sample_file <- gsub("_1", "", basename(colData(sy)$Sample_file))
+
+# Reorder meta 
+meta = meta[match(colnames(sy), meta$run_accession), ]
+# get rid of SD
+rmidx = which(meta$BOR == "SD")
+if(length(rmidx) > 0){
+  meta = meta[-rmidx, ]
+  sy = sy[, -rmidx]
+}
+
+sy <- filter_by_presence(sy, min_nonzero = 8) # filter at 10%
+dim(sy)
+
+# Checks before merging metadata
+all(colnames(sy) %in% meta$run_accession)
+all(meta$run_accession %in% colnames(sy))
+
+sy = modify_metadata(sy, meta)
+```
+
+## Empirical Bayes priors without dispersion term
+
+```{r}
+design <- as.formula("~ RvsP + histology_cohort.x + age + sex + BMI") 
+
+save_path <- "output_rds/ASH_prior_analysis_zib_q_99_ebp.rds"
+
+if(file.exists(save_path)){
+  ZB_fit <- readRDS(save_path)
+} else {
+  ebp = compute_eb_priors(sy, design, nthreads = parallel::detectCores(), low_cutoff = 0,
+                          high_cutoff = Inf)
+  # Run with weak prior for prediction
+  ZB_fit <- glmZiBFit(sy, design, nthreads = parallel::detectCores(), MAP_prior = ebp)
+  saveRDS(ZB_fit, save_path)
+}
+```
+
+There are 167 top hits, some of them dodgy
+```{r}
+th = top_hits(ZB_fit) 
+
+# Looking at the first 10
+plot_ani_dist(sy, 'RvsP', th$Contig_name[1:10]) 
+
+```
+
+Clearly, at least *B. animalis* and *F. nucleatum* should not be picked...
+
+### Post-hoc testing
+
+```{r}
+th_ph = estimate_effect_sizes(sy, ZB_fit, th)
+
+table(th_ph$Comment, useNA = 'always') # now there are only 16 hits
+
+plot_ani_dist(sy, 'RvsP', th_ph$Contig_name[is.na(th_ph$Comment)]) 
+```
+
+## Empirical Bayes prior with dispersion terms
+
+### Weak
+```{r}
+save_path <- "output_rds/ASH_prior_analysis_zib_q_99_ebp_disp5.rds"
+ebp = ZB_fit@priors # priors are the same
+
+# manually add the dispersion parameter
+ebp@priors_df = rbind(ebp@priors_df, data.frame(prior = 'normal(0,5)', class = 'fixef_disp', coef = 1))
+
+ebp@priors_df
+
+if(file.exists(save_path)){
+  ZB_fit_d5 <- readRDS(save_path)
+} else {
+  ZB_fit_d5 <- glmZiBFit(sy, design, nthreads = parallel::detectCores(), MAP_prior = ebp)
+  saveRDS(ZB_fit_d5, save_path)
+}
+
+th_d5 = top_hits(ZB_fit_d5)
+
+```
+
+We still have 150 top hits, prior is likely too weak. Sensitivity analysis:
+
+```{r}
+plot_ani_dist(sy, 'RvsP', th_d5$Contig_name[1:20]) 
+```
+
+*B. animalis* is also still there...
+
+
+### Strong
+```{r}
+save_path <- "output_rds/ASH_prior_analysis_zib_q_99_ebp_disp1.rds"
+ebp = ZB_fit@priors # priors are the same
+
+# manually add the dispersion parameter
+ebp@priors_df = rbind(ebp@priors_df, data.frame(prior = 'normal(0,1)', class = 'fixef_disp', coef = 1))
+
+ebp@priors_df
+
+if(file.exists(save_path)){
+  ZB_fit_d1 <- readRDS(save_path)
+} else {
+  ZB_fit_d1 <- glmZiBFit(sy, design, nthreads = parallel::detectCores(), MAP_prior = ebp)
+  saveRDS(ZB_fit_d1, save_path)
+}
+
+th_d1 = top_hits(ZB_fit_d1)
+
+```
+
+Now there are no hits. This has killed all signal. Let's try with an empirical approach.
+
+### Ebp prior
+
+```{r}
+save_path <- "output_rds/ASH_prior_analysis_zib_q_99_ebp_disp_ebp.rds"
+ebp =  compute_eb_priors(sy, design, nthreads = parallel::detectCores(), low_cutoff = 0,
+                          high_cutoff = Inf, est_disperion_prior = T)
+
+plot_prior_bootstrap(ebp, 'dispersion')
+ebp@priors_df
+
+if(file.exists(save_path)){
+  ZB_fit_d_ebp <- readRDS(save_path)
+} else {
+  ZB_fit_d_ebp <- glmZiBFit(sy, design, nthreads = parallel::detectCores(), MAP_prior = ebp)
+  saveRDS(ZB_fit_d_ebp, save_path)
+}
+
+th_debp = top_hits(ZB_fit_d_ebp)
+
+```
+
+Down to 97 hits...
+
+```{r}
+plot_ani_dist(sy, 'RvsP', th_debp$Contig_name[1:20]) 
+```
+
+Not enough to kill *B. animalis* though...
+
+###  Post-hoc testing
+```{r}
+th_debp_ph = estimate_effect_sizes(sy, ZB_fit, th_debp)
+
+table(th_debp_ph$Comment, useNA = 'always') # now there are only 15 hits, one less from before
+
+plot_ani_dist(sy, 'RvsP', th_debp_ph$Contig_name[is.na(th_debp_ph$Comment)]) 
+```
+
+### Common/different hits
+```{r}
+
+disp_hits = th_debp_ph$Contig_name[is.na(th_debp_ph$Comment)]
+ndisp_hits = th_ph$Contig_name[is.na(th_ph$Comment)]
+
+# Common ones
+plot_ani_dist(sy, 'RvsP', intersect(disp_hits,ndisp_hits))
+
+# Only in model without dispersion prior:
+plot_ani_dist(sy, 'RvsP', setdiff(ndisp_hits, disp_hits))
+
+# Only in model WITH dispersion prior:
+plot_ani_dist(sy, 'RvsP', setdiff(disp_hits, ndisp_hits))
+
+
+```
+
+

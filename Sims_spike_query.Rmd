@@ -104,7 +104,7 @@ plot_ani_dist(d_q99, phenotype = 'spiked', contigs = top_hits(fit_zib_99)$Contig
 
 contigs_to_plot = top_hits(fit_zib_99)$Contig_name
 
-plot_ani_dist(d_q99, phenotype = 'spiked', contigs = top_hits(fit_zib_99)$Contig_name, drop_zeros = T, plot_type = 'box', show_points = T, contig_names = sub("NZ_", "", unname(sapply(contigs_to_plot, function(x) unlist(strsplit(x," "))[1])) ))
+plot_ani_dist(d_q99, phenotype = 'spiked', contigs = top_hits(fit_zib_99)$Contig_name, plot_type = 'box', show_points = T, contig_names = sub("NZ_", "", unname(sapply(contigs_to_plot, function(x) unlist(strsplit(x," "))[1])) ))
 
 ```
 
