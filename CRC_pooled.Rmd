@@ -424,7 +424,7 @@ Looks like it is mostly dominated by *Veillonella sp.* and *Pullichristensenella
 
 ## Cancer stage
 
-```{r}
+```{r, paged.print=FALSE, fig.width=12, fig.height=8}
 table(meta$tumour_stage_AJCC)
 
 # Directly compare left vs. right

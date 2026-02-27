@@ -817,7 +817,7 @@ summary_tbl <- th_stage %>%
   arrange(Min_adj_p)
 
 # Write as tsv for manual perusal
-write.table(summary_tbl, "output_tables/CRC_Z99_ebp_stage_hits_summary.tsv", sep = '\t', col.names = T, row.names = F, quote = F)
+# write.table(summary_tbl, "output_tables/CRC_Z99_ebp_stage_hits_summary.tsv", sep = '\t', col.names = T, row.names = F, quote = F)
 
 plot_ani_dist(sy, phenotype = 'tumour_stage_merged_early3Vlate', contigs = summary_tbl$Dominant_contig, plot_type = 'box', show_points = F, contig_names = strainspy:::clean_contig_names(summary_tbl$Species))
 ```
