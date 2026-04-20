@@ -1,0 +1,395 @@
+---
+title: "Simulations with spiked P. dis strain analysed using Sylph Query"
+output: github_document
+date: "2026-04-15"
+editor_options:
+  chunk_output_type: console
+---
+
+### Load data and prepare for testing
+
+```{r}
+library(strainspy)
+# Queries
+d_q99 <- read_sylph("p_distasonis_sims/pdis_q99.tsv")
+
+# spiked samples
+ss = readLines("p_distasonis_sims/spike_genome_ids.txt") # These are the baseline samples, not spiked
+ss_spikes = c(paste(ss, "_sx1", sep = ""), paste(ss, "_sx3", sep = ""), paste(ss, "_sx5", sep = "")) # These are the spikes
+
+# Remove _1 annoyance
+colnames(d_q99) = sub("_1", "", colnames(d_q99))
+d_q99@colData$Sample_file = sub("_1", "", colnames(d_q99))
+
+# add the metadata
+d_q99 = strainspy:::modify_metadata(se = d_q99, meta_data = data.frame(run_accession = colnames(d_q99),
+                                                                       spiked = as.factor(sapply(colnames(d_q99), function(x) x%in% c(ss, ss_spikes)))))
+
+# I am marking the baseline unspiked ones as spiked to show the null doesn't detect anything
+
+d_q99 <- filter_by_presence(d_q99, min_nonzero = 25)
+
+# taxonomies
+tax_99 = read_taxonomy("data/TAXONOMY/sylph_DB_taxonomy_99.tsv")
+
+design <- as.formula(" ~ spiked")
+
+```
+
+## Fit ZIB model
+
+### query 99, baseline (no signal)
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
+
+# This simulation does not have any signal, we shouldn't detect anything!
+
+# Subset
+dim(d_q99)
+rm_idx = grep("_sx", colnames(d_q99))
+d_q99_test = d_q99[,-rm_idx]
+dim(d_q99_test)
+
+# These TRUE = 20 are NOT spiked in, this is just to show there is no detectable signal
+table(d_q99_test@colData$spiked) 
+
+
+save_path = "output_rds/spike_pdis_zib_q_99_bl.rds"
+if(file.exists(save_path)){
+  fit_zib_99_bl <- readRDS(save_path)
+} else {
+  system.time({
+    ebp = compute_eb_priors(d_q99_test, design, nthreads = parallel::detectCores())
+    fit_zib_99_bl <- glmZiBFit(d_q99_test, design, nthreads = parallel::detectCores(), MAP_prior = ebp)
+  })
+  saveRDS(fit_zib_99_bl, save_path)
+}
+
+top_hits(fit_zib_99_bl) # no hits as expected
+```
+
+### query 99, cov1x
+
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
+
+# baseline false samples and higher coverage ones
+rm_idx = c(sapply(ss, function(x) which(colnames(d_q99) %in% x)), grep("_sx3", colnames(d_q99)), grep("_sx5", colnames(d_q99)))
+d_q99_test = d_q99[,-rm_idx]
+dim(d_q99_test)
+
+# These 20 are spiked ata coverage of 1x
+table(d_q99_test@colData$spiked) 
+
+save_path = "output_rds/spike_pdis_zib_q_99_cov1x.rds"
+if(file.exists(save_path)){
+  fit_zib_99_c1 <- readRDS(save_path)
+} else {
+  system.time({
+    ebp = compute_eb_priors(d_q99_test, design, nthreads = parallel::detectCores())
+    fit_zib_99_c1 <- glmZiBFit(d_q99_test, design, nthreads = parallel::detectCores(), MAP_prior = ebp)
+  })
+  saveRDS(fit_zib_99_c1, save_path)
+}
+
+th_c1 = strainspy:::add_tax2tophits(top_hits(fit_zib_99_c1), tax_99)
+
+# All 76 hits from the same species
+table(th_c1$Species)
+
+plot_manhattan(fit_zib_99_c1, taxonomy = tax_99, method = "BH", tax_levels = c("Order", "Phylum", "Genus", "Species"))
+plot_manhattan(fit_zib_99_c1, taxonomy = tax_99, aggregate_by_taxa = F)
+plot_volcano(fit_zib_99_c1, label = T)
+
+plot_ani_dist(d_q99, phenotype = 'spiked', contigs = th_c1$Contig_name[1:5], contig_names = th_c1$Genome_file[1:5])
+# Parabacteroides distasonis is in all samples, so, this can only be a beta hit!
+# GCF_024791025.1 is the top hit - it is the spiked strain. And for the spiked samples, the ANI is 100%
+
+
+```
+
+### query 99, cov3x
+
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
+
+# baseline false samples and higher coverage ones
+rm_idx = c(sapply(ss, function(x) which(colnames(d_q99) %in% x)), grep("_sx1", colnames(d_q99)), grep("_sx5", colnames(d_q99)))
+d_q99_test = d_q99[,-rm_idx]
+dim(d_q99_test)
+
+# These 20 are spiked ata coverage of 3x
+table(d_q99_test@colData$spiked) 
+
+save_path = "output_rds/spike_pdis_zib_q_99_cov3x.rds"
+if(file.exists(save_path)){
+  fit_zib_99_c3 <- readRDS(save_path)
+} else {
+  system.time({
+    ebp = compute_eb_priors(d_q99_test, design, nthreads = parallel::detectCores())
+    fit_zib_99_c3 <- glmZiBFit(d_q99_test, design, nthreads = parallel::detectCores(), MAP_prior = ebp)
+  })
+  saveRDS(fit_zib_99_c3, save_path)
+}
+
+th_c3 = strainspy:::add_tax2tophits(top_hits(fit_zib_99_c3), tax_99)
+
+# All 91 hits from the same species
+table(th_c3$Species)
+
+plot_manhattan(fit_zib_99_c3, taxonomy = tax_99, method = "BH", tax_levels = c("Order", "Phylum", "Genus", "Species"))
+plot_manhattan(fit_zib_99_c3, taxonomy = tax_99, aggregate_by_taxa = F)
+plot_volcano(fit_zib_99_c3, label = T)
+
+plot_ani_dist(d_q99, phenotype = 'spiked', contigs = th_c3$Contig_name[1:5], contig_names = th_c3$Genome_file[1:5])
+# Parabacteroides distasonis is in all samples, so, this can only be a beta hit!
+# GCF_024791025.1 is the top hit - it is the spiked strain. And for the spiked samples, the ANI is 100%
+
+
+```
+
+### query 99, cov5x
+
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
+
+# baseline false samples and higher coverage ones
+rm_idx = c(sapply(ss, function(x) which(colnames(d_q99) %in% x)), grep("_sx1", colnames(d_q99)), grep("_sx3", colnames(d_q99)))
+d_q99_test = d_q99[,-rm_idx]
+dim(d_q99_test)
+
+# These 20 are spiked ata coverage of 3x
+table(d_q99_test@colData$spiked) 
+
+save_path = "output_rds/spike_pdis_zib_q_99_cov5x.rds"
+if(file.exists(save_path)){
+  fit_zib_99_c5 <- readRDS(save_path)
+} else {
+  system.time({
+    ebp = compute_eb_priors(d_q99_test, design, nthreads = parallel::detectCores())
+    fit_zib_99_c5 <- glmZiBFit(d_q99_test, design, nthreads = parallel::detectCores(), MAP_prior = ebp)
+  })
+  saveRDS(fit_zib_99_c5, save_path)
+}
+
+th_c5 = strainspy:::add_tax2tophits(top_hits(fit_zib_99_c5), tax_99)
+
+# All 91 hits from the same species
+table(th_c5$Species)
+
+plot_manhattan(fit_zib_99_c5, taxonomy = tax_99, method = "BH", tax_levels = c("Order", "Phylum", "Genus", "Species"))
+plot_manhattan(fit_zib_99_c5, taxonomy = tax_99, aggregate_by_taxa = F)
+plot_volcano(fit_zib_99_c5, label = T)
+
+plot_ani_dist(d_q99, phenotype = 'spiked', contigs = th_c5$Contig_name[1:5], contig_names = th_c5$Genome_file[1:5])
+# Parabacteroides distasonis is in all samples, so, this can only be a beta hit!
+# GCF_024791025.1 is the top hit - it is the spiked strain. And for the spiked samples, the ANI is 100%
+
+
+```
+
+StrainSpy works regardless of coverage, now to test AnPan
+
+
+### Load data and prepare for testing
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
+library(anpan)
+library(ape)
+library(tibble)
+tree = read.tree("p_distasonis_sims/spiked_tree.tre")
+
+metadata = tibble(sample_id = tree$tip.label,
+                  spiked   = as.factor(sapply(tree$tip.label, function(x) x%in% c(ss, sub("_", "_1_", paste(ss_spikes, ".fastq", sep = "")) ))) )
+
+table(metadata$spiked)
+
+plot_outcome_tree(tree,
+                  metadata, 
+                  covariates = c(),
+                  outcome    = "spiked")
+
+```
+
+Looks like the left-most branch has a bunch of spiked ones, it'll be interesting to see variation with coverage
+
+## anPan PGLMM
+
+### baseline (no signal)
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
+
+# This simulation does not have any signal, we shouldn't detect anything!
+
+# Subset
+rm_idx = grep("_sx", metadata$sample_id)
+
+metadata_test = metadata[-rm_idx, ]
+table(metadata_test$spiked)
+# Only 76/100 samples had P. dist at a detectable level for strainphlan
+# These TRUE = 12 are NOT spiked in, this is just to show there is no detectable signal
+
+# Drop the same leaves from the tree
+tree_test = drop.tip(tree, metadata$sample_id[rm_idx])
+plot_outcome_tree(tree_test,
+                  metadata_test, 
+                  covariates = c(),
+                  outcome    = "spiked")
+
+# Clearly no signal
+
+save_path = "output_rds/spike_pdis_anpan_bl.rds"
+if(file.exists(save_path)){
+  anpan_res_bl <- readRDS(save_path)
+} else {
+  system.time({
+    anpan_res_bl = anpan_pglmm(meta_file       = metadata_test,
+                               tree_file       = tree_test,
+                               outcome         = "spiked",
+                               family          = "binomial",
+                               bug_name        = "Pdis",
+                               reg_noise       = TRUE,
+                               loo_comparison  = TRUE,
+                               run_diagnostics = FALSE,
+                               refresh         = 500,
+                               show_plot_tree  = FALSE,
+                               show_post       = FALSE)
+  })
+  saveRDS(anpan_res_bl, save_path)
+}
+
+anpan_res_bl$loo$comparison
+
+```
+
+Clearly no signal - confirmed by PGLMM
+
+### cov1x
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
+# Subset
+rm_idx = unlist(c(sapply(ss, function(x) which(metadata$sample_id %in% x)), grep("_sx3", metadata$sample_id), grep("_sx5", metadata$sample_id)))
+
+metadata_test = metadata[-rm_idx, ]
+table(metadata_test$spiked)
+# Only 20/20 spiked samples are now detected, but only non spiked are present - should be plenty 
+
+# Drop the same leaves from the tree
+tree_test = drop.tip(tree, metadata$sample_id[rm_idx])
+plot_outcome_tree(tree_test,
+                  metadata_test, 
+                  covariates = c(),
+                  outcome    = "spiked")
+
+# Signal is a bit weak
+
+save_path = "output_rds/spike_pdis_anpan_cov1x.rds"
+if(file.exists(save_path)){
+  anpan_res_c1 <- readRDS(save_path)
+} else {
+  system.time({
+    anpan_res_c1 = anpan_pglmm(meta_file       = metadata_test,
+                               tree_file       = tree_test,
+                               outcome         = "spiked",
+                               family          = "binomial",
+                               bug_name        = "Pdis",
+                               reg_noise       = TRUE,
+                               loo_comparison  = TRUE,
+                               run_diagnostics = FALSE,
+                               refresh         = 500,
+                               show_plot_tree  = FALSE,
+                               show_post       = FALSE)
+  })
+  saveRDS(anpan_res_c1, save_path)
+}
+
+anpan_res_c1$loo$comparison
+
+```
+
+The phylogenetic model seems to fit better, but the difference doesn't seem clear (less than 2 standard errors difference in ELPD).
+
+### cov3x
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
+
+# Subset
+rm_idx = unlist(c(sapply(ss, function(x) which(metadata$sample_id %in% x)), grep("_sx1", metadata$sample_id), grep("_sx5", metadata$sample_id)))
+
+metadata_test = metadata[-rm_idx, ]
+table(metadata_test$spiked)
+# Only 20/20 spiked samples are now detected, but only non spiked are present - should be plenty 
+
+# Drop the same leaves from the tree
+tree_test = drop.tip(tree, metadata$sample_id[rm_idx])
+plot_outcome_tree(tree_test,
+                  metadata_test, 
+                  covariates = c(),
+                  outcome    = "spiked")
+
+# Clearly signal is present
+
+save_path = "output_rds/spike_pdis_anpan_cov3x.rds"
+if(file.exists(save_path)){
+  anpan_res_c3 <- readRDS(save_path)
+} else {
+  system.time({
+    anpan_res_c3 = anpan_pglmm(meta_file       = metadata_test,
+                               tree_file       = tree_test,
+                               outcome         = "spiked",
+                               family          = "binomial",
+                               bug_name        = "Pdis",
+                               reg_noise       = TRUE,
+                               loo_comparison  = TRUE,
+                               run_diagnostics = FALSE,
+                               refresh         = 500,
+                               show_plot_tree  = FALSE,
+                               show_post       = FALSE)
+  })
+  saveRDS(anpan_res_c3, save_path)
+}
+
+anpan_res_c3$loo$comparison
+
+```
+
+The phylogenetic model seems to fit better, and the difference seems clear (more than 2 standard errors difference in ELPD).
+
+### cov5x
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
+# Subset
+rm_idx = unlist(c(sapply(ss, function(x) which(metadata$sample_id %in% x)), grep("_sx1", metadata$sample_id), grep("_sx3", metadata$sample_id)))
+
+metadata_test = metadata[-rm_idx, ]
+table(metadata_test$spiked)
+# Only 20/20 spiked samples are now detected, but only non spiked are present - should be plenty 
+
+# Drop the same leaves from the tree
+tree_test = drop.tip(tree, metadata$sample_id[rm_idx])
+plot_outcome_tree(tree_test,
+                  metadata_test, 
+                  covariates = c(),
+                  outcome    = "spiked")
+
+# Clearly dominant signal
+
+save_path = "output_rds/spike_pdis_anpan_cov5x.rds"
+if(file.exists(save_path)){
+  anpan_res_c5 <- readRDS(save_path)
+} else {
+  system.time({
+    anpan_res_c5 = anpan_pglmm(meta_file       = metadata_test,
+                               tree_file       = tree_test,
+                               outcome         = "spiked",
+                               family          = "binomial",
+                               bug_name        = "Pdis",
+                               reg_noise       = TRUE,
+                               loo_comparison  = TRUE,
+                               run_diagnostics = FALSE,
+                               refresh         = 500,
+                               show_plot_tree  = FALSE,
+                               show_post       = FALSE)
+  })
+  saveRDS(anpan_res_c5, save_path)
+}
+
+anpan_res_c5$loo$comparison
+
+```
+
+The phylogenetic model seems to fit better, and the difference seems clear (more than 2 standard errors difference in ELPD).
+
+
+AnPan works as well - when there is signal in the phylogeny, it can detect it accurately. However, building the tree can be tricky if the strain coverage is low. StrainSpy can work equally well in the lower coverage simulations as well, without requiring a phylogeny. 
