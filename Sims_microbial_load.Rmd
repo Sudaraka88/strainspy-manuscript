@@ -1,8 +1,7 @@
 ---
 title: "Sims_microbial_load"
 output:
-  html_document: default
-  pdf_document: default
+  github_document
 date: "2025-05-16"
 editor_options:
   chunk_output_type: console
@@ -88,7 +87,7 @@ ggplot(meta_long, aes(x = cohort, y = proportion, fill = cohort)) +
 ```{r, warning=FALSE}
 design <- as.formula("~ cohort + timepoint + age + BMI + gender + antibiotics + probiotics + yogurt + pain_meds + (1 + timepoint | patientID)")
 
-fit_ANI = glmFit(se_98_ANI, design, 10L)
+fit_ANI = glmZiBFit(se_98_ANI, design, nthreads = parallel::detectCores())
 top_hits(fit_ANI, coef = 2) # IBS-C compared to Healthy
 plot_manhattan(fit_ANI, coef = 2)
 
@@ -97,10 +96,8 @@ plot_manhattan(fit_ANI, coef = 3)
 # There are some 0 p-values, looking in to this soon...
 
 contigs = unique(c(top_hits(fit_ANI, 2)$Contig_name, top_hits(fit_ANI,3)$Contig_name)); 
-if(length(contigs) > 0) {
-  plot_violin(se_98_ANI, 'cohort', contigs, drop_zeros = T, contig_names = NULL)
-  plot_volcano(fit_ANI, label = T)
-}
+plot_ani_dist(se_98_ANI, 'cohort', contigs)
+  
 ```
 ### ZIB
 ```{r, warning=FALSE}

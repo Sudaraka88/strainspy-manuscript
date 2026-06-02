@@ -2,7 +2,7 @@
 title: "Prediction of immune therapy outcomes in pan cancer: pooling Ash's rare cancer and Kshitij's melanoma data"
 output:
   github_document
-date: "2025-12-18"
+date: "2026-04-27"
 editor_options:
   chunk_output_type: console
 ---
@@ -22,6 +22,7 @@ library(ggplot2)
 library(tidyr)
 library(dplyr)
 library(ggtree)
+library(ggsci)
 ```
 
 ## Load metadata 
@@ -553,8 +554,8 @@ boot_df1 = boot_df1 %>%
                       levels = unique(Test_lab))  # preserve ordering
   )
 
-boot_df1$Ca_test[which(boot_df1$Ca_test == "RARE" & boot_df1$Test == "ALL")] = "ALL_RARE"
-boot_df1$Ca_test[which(boot_df1$Ca_test == "MEL" & boot_df1$Test == "ALL")] = "ALL_MEL"
+# boot_df1$Ca_test[which(boot_df1$Ca_test == "RARE" & boot_df1$Test == "ALL")] = "ALL_RARE"
+# boot_df1$Ca_test[which(boot_df1$Ca_test == "MEL" & boot_df1$Test == "ALL")] = "ALL_MEL"
 
 boot_df1$Test_lab = factor(boot_df1$Test_lab, levels = c("ALL_RARE", "ALL_MEL", "GYN", "NEN", "UGB",  "Frankel", "Gopalakrishnan", "Lee", "Matson", "McCulloch", "Spencer"))
 
@@ -619,7 +620,7 @@ coefs <- coef(fit$finalModel, s = fit$bestTune$lambda); coefs = coefs[coefs[,1] 
 # tree
 
 tree = read.tree("data/ash_pancancer/tree.nwk")
-
+tree$tip.label = unname(sapply(tree$tip.label, function(x) paste(strsplit(x, "_")[[1]][1:2], collapse = "_")))
 tree = phytools::midpoint.root(tree)
 
 df <- th2 %>%
@@ -633,106 +634,87 @@ df <- th2 %>%
   ) %>%
   arrange(match(tip, tree$tip.label))  # order to match tree
 
+df = as.data.frame(df)
+
 rownames(df) = df$tip
 
 com_gen <- c(
-  # beneficial / SCFA
-  "Faecalibacterium",
   "Ruminococcus_B",
+  "Faecalibacterium",
   "Phascolarctobacterium",
-  "Gemmiger",
-  "Eubacterium_F",
-  "Bifidobacterium",
-  
-  # mixed / context-dependent
   "Bacteroides",
-  "Prevotella",
+  "Actinomyces",
   "Alistipes",
+  "Gemmiger",
   "Clostridium_A",
-  
-  # inflammatory / disease-leaning
   "Collinsella",
   "Veillonella",
-  "Streptococcus",
-  # "Bilophila",
-  "Sutterella"#,
-  
-  # special ecology
-  # "Methanobrevibacter_A"
+  "Streptococcus"
 )
+
+genus_cols <- c(
+  "#000000", "#f781bf", "#ff7f00",
+  "#009E73", "#984ea3", "#4daf4a",
+  "#ffff33", "#a65628", "#005999", 
+  "#377eb8", "#E41A1C", "#DDDDDD"
+)
+
+names(genus_cols) = c(com_gen, "Other")
 
 df$Genus[!df$Genus %in% com_gen] = "Other"
 
 df$Genus = factor(df$Genus, levels = c(com_gen, "Other"))
 
-genus_cols <- c(
-  # ---- Beneficial / SCFA producers ----
-  Faecalibacterium        = "#1b9e77",  # strong butyrate
-  Ruminococcus_B          = "#2ca25f",  # fibre degradation
-  Phascolarctobacterium   = "#33a02c",  # propionate
-  Gemmiger                = "#4daf4a",  # butyrate-associated
-  Eubacterium_F           = "#7fc97f",  # SCFA producers
-  Bifidobacterium         = "#50C878",  # probiotic-associated
-  
-  # ---- Mixed / context-dependent ----
-  Bacteroides             = "#91bfdb",  # diet-driven
-  Prevotella              = "#80b1d3",  # population-structured
-  Alistipes               = "#74add1",  # heterogeneous effects
-  Clostridium_A           = "#89CFF0",  # mixed commensals
-  
-  # ---- Inflammatory / disease-leaning ----
-  Collinsella             = "#d6350d",  # inflammatory signals
-  Veillonella             = "#d73027",  # disease-associated
-  Streptococcus           = "#D70040",  # opportunistic pathogen
-  # Bilophila               = "#DC143C",  # bile / inflammation
-  Sutterella              = "#9A2A2A",  # gut inflammation
-  Granulicatella          = "#800020",  # opportunistic
-  Hungatella              = "#C21E56",  # metabolic/inflammatory
-  
-  # ---- Special ecology ----
-  # Methanobrevibacter_A    = "#756bb1",  # archaeal methanogen
-  
-  # ---- Catch-all ----
-  Other                   = "#bdbdbd"   # de-emphasised
+
+df = df[rownames(df) %in% tree$tip.label,]
+tree = ape::keep.tip(tree,df$tip)
+
+p <- ggtree(tree, layout = "circular")
+p$data <- merge(
+  p$data,
+  df,
+  by.x = "label",
+  by.y = "tip",
+  all.x = TRUE
 )
-
-
-p <- ggtree(tree, layout = "circular") %<+% df
 
 p <- p +
   geom_tippoint(
     aes(color = Genus),
     size = 2
-  ) +
+  )  +
   scale_color_manual(
     values = genus_cols,
-    breaks = names(genus_cols),
     name = "Genus"
   )
 
 
-coef_cols <- scales::col_numeric(
-  palette = c( "#b2182b", "white", "#2166ac"),
-  domain  = range(df$Coef),
-  na.color = "grey90"
-)
 
-df_tmp = data.frame(Coef = df$Coef); rownames(df_tmp) = df$tip
-p = gheatmap(p, df_tmp, offset = 0, width = 0.05) +
+
+df_tmp <- data.frame(Coef = df$Coef)
+rownames(df_tmp) <- df$tip
+
+p <- gheatmap(
+  p,
+  df_tmp,
+  offset = 0,
+  width = 0.05,
+  colnames = FALSE
+) +
   scale_fill_gradient2(
-    high = "#2166ac",
+    high = "#084594",
     mid = "white",
-    low = "#b2182b",
+    low = "#99000D",
     midpoint = 0,
+    transform = "pseudo_log",
     name = "ENet coef"
   ) +
   theme(
-    text = element_text(size = 14),                # base text size
+    text = element_text(size = 14),
     legend.title = element_text(size = 14),
     legend.text = element_text(size = 12),
     axis.text = element_text(size = 12)
   )
-
 
 p
 

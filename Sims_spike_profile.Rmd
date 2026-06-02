@@ -59,7 +59,7 @@ if(file.exists(save_path)){
 
 plot_manhattan(fit_zib_95, taxonomy = tax_95, method = "HMP", tax_levels = c("Phylum", "Order", "Class", "Genus"))
 plot_volcano(fit_zib_95, label = T)
-plot_ani_dist(d_p95, phenotype = 'spiked', contigs = top_hits(fit_zib_95, alpha = 0.05)$Contig_name, drop_zeros = F, show_points = T, plot_type = 'violin')
+plot_ani_dist(d_p95, phenotype = 'spiked', contigs = top_hits(fit_zib_95, alpha = 0.05)$Contig_name, show_points = T, plot_type = 'violin')
 
 ```
 

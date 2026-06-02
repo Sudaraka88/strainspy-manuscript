@@ -2,7 +2,7 @@
 title: "Analysis of Ash's pancancer paper dataset"
 output:
   github_document
-date: "2025-11-06"
+date: "2026-04-23"
 editor_options:
   chunk_output_type: console
 ---
@@ -72,7 +72,7 @@ sy = modify_metadata(sy, meta)
 
 ## Fit the univariate model
 
-```{r}
+```{r, fig.width=12}
 design <- as.formula("~ RvsP + histology_cohort.x + age + sex + BMI") # age + sex + BMI + ECOG_baseline + chemo_use + antibiotic_use + PPI_use +  + NLR + PLAT + ALB + LDH")
 
 save_path <- "output_rds/ASH_zib_q_99_ebp.rds"
@@ -86,6 +86,20 @@ if(file.exists(save_path)){
   saveRDS(ZB_fit, save_path)
 }
 
+tax_99 = read_taxonomy("data/TAXONOMY/sylph_DB_taxonomy_99.tsv")
+th = strainspy:::add_tax2tophits(comp_ani_diff_and_posthoc_test(sy, ZB_fit, top_hits(ZB_fit, coef = 2)), taxonomy = tax_99, c("Genus", "Species"))
+
+# Looks like everything is a beta hit
+# Visualise the most contrasting hits
+th_valid = th[is.na(th$Comment), ]
+th_valid = th_valid[order(abs(th_valid$ANI_Difference), decreasing = T),]
+plot_ani_dist(sy, 'RvsP', contigs = th_valid$Contig_name[1:10])
+plot_ani_dist(sy, 'RvsP', contigs = th_valid$Contig_name[11:20])
+plot_ani_dist(sy, 'RvsP', contigs = th_valid$Contig_name[21:30])
+plot_ani_dist(sy, 'RvsP', contigs = th_valid$Contig_name[31:41])
+
+# Some of these look like different strains in R, but probably need more data points to be confident
+
 ```
 
 # Prediction
@@ -93,14 +107,14 @@ if(file.exists(save_path)){
 ## Using Elastic net
 
 ### Set up pipeline
-```{r}
-th = top_hits(ZB_fit, coef = 2, method = "BH")
+```{r, warning=FALSE, message=FALSE}
 
 # Follow the paper, do 5FCV x20
 AUCs_enet = list()
 
-set.seed(1988); seeds = sample(1000, 20)
-
+set.seed(1988); seeds = sample(1000, 100)
+contigs = th_valid$Contig_name # This is just 41 strains
+  
 for(s in seeds){
   
   set.seed(s); train_idx = as.vector(createDataPartition(y = meta$RvsP, p = 0.8, list = FALSE))
@@ -118,7 +132,7 @@ for(s in seeds){
     enet_fit_lodo = readRDS(save_path)
   } else {
     
-    train_mx = strainspy::prep_for_prediction(train_sy, 'RvsP', th$Contig_name, c("age", "sex", "BMI", "ECOG_baseline", "chemo_use", "antibiotic_use" ,"PPI_use", "histogroup"))
+    train_mx = strainspy::prep_for_prediction(train_sy, 'RvsP', contigs, c("age", "sex", "BMI", "ECOG_baseline", "chemo_use", "antibiotic_use" ,"PPI_use", "histogroup"))
     set.seed(1988)
     enet_fit_lodo <- caret::train(
       RvsP ~ .,
@@ -140,16 +154,16 @@ for(s in seeds){
     # saveRDS(enet_fit_lodo, save_path)
   }
   
-  hold_out_mx = strainspy::prep_for_prediction(hold_out_sy, 'RvsP', th$Contig_name, covariates = c("age", "sex", "BMI", "ECOG_baseline","chemo_use","antibiotic_use","PPI_use", "histogroup"))
+  hold_out_mx = strainspy::prep_for_prediction(hold_out_sy, 'RvsP', contigs, covariates = c("age", "sex", "BMI", "ECOG_baseline","chemo_use","antibiotic_use","PPI_use", "histogroup"))
   
   if(length(unique(hold_out_mx$RvsP))  == 2){
     
     pred_lodo <- predict(enet_fit_lodo, hold_out_mx, type = "prob")$R
     roc_lodo <- roc(factor(hold_out_mx$RvsP, levels = c("NR", "R")), pred_lodo, levels = c("NR","R"))
-    AUCs_enet[[s]] = auc(roc_lodo)
-    cat('Done with', s, 'AUC = ', AUCs_enet[[s]], '\n')
+    AUCs_enet[[as.character(s)]] = auc(roc_lodo)
+    # cat('Done with', s, 'AUC = ', AUCs_enet[[as.character(s)]], '\n')
   } else {
-    cat('Done with', d, 'cannot compute AUC, dataset is all:', as.character(unique(hold_out_mx$RvsP)), '\n')
+    # cat('Done with', d, 'cannot compute AUC, dataset is all:', as.character(unique(hold_out_mx$RvsP)), '\n')
   }
   
   
@@ -161,9 +175,11 @@ summary(unlist(AUCs_enet))
 
 ## Try a bootstrap
 
-```{r}
-B <- 10  # number of bootstrap iterations
+```{r, warning=FALSE, message=FALSE}
+B <- 100  # number of bootstrap iterations
 AUCs_boot <- numeric(B)
+
+contigs = th_valid$Contig_name # just 41 strains
 
 for (b in 1:B) {
 
@@ -182,13 +198,13 @@ for (b in 1:B) {
 
   #  Prepare matrices
   train_mx <- strainspy::prep_for_prediction(
-    train_sy, 'RvsP', th$Contig_name,
+    train_sy, 'RvsP', contigs,
     c("age","sex","BMI","ECOG_baseline","chemo_use",
       "antibiotic_use","PPI_use","histogroup")
   )
 
   hold_out_mx <- strainspy::prep_for_prediction(
-    hold_out_sy, 'RvsP', th$Contig_name,
+    hold_out_sy, 'RvsP', contigs,
     c("age","sex","BMI","ECOG_baseline","chemo_use",
       "antibiotic_use","PPI_use","histogroup")
   )
@@ -219,7 +235,7 @@ for (b in 1:B) {
   roc_obj <- roc(factor(hold_out_mx$RvsP, levels = c("NR","R")), pred)
   AUCs_boot[b] <- auc(roc_obj)
 
-  cat("Bootstrap", b, "AUC =", AUCs_boot[b], "\n")
+  # cat("Bootstrap", b, "AUC =", AUCs_boot[b], "\n")
 }
 
 # ⃣ Summarize results

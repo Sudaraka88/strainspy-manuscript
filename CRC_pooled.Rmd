@@ -2,7 +2,7 @@
 title: "Analysis of 3414 pooled colorectal cancer metagenomes"
 output:
   github_document
-date: "2025-08-27"
+date: "2026-04-23"
 editor_options:
   chunk_output_type: console
 ---
@@ -23,6 +23,8 @@ library(dplyr)
 library(ggplot2)
 library(ggvenn)
 library(stringr)
+library(tidyverse)
+library(tidyr)
 ```
 
 ## Load metadata 
@@ -123,26 +125,14 @@ Looks like there are many hits.
 ## Build a summary from top hits
 
 ```{r}
-ZIB_th_path = "output_rds/CRC_zib_q_99_ebp_th_filtered.rds"
-if(file.exists(ZIB_th_path)){
-  th = readRDS(ZIB_th_path)
-} else {
-  th = top_hits(ZB_fit, coef = 2)
-  
-  # Do the posthoc test
-  # Assumption: A strain is different if their ANI to a given ref is >1.5% different
-  th_ph = estimate_effect_sizes(sy, ZB_fit, th, beta_min_ani_diff = 1.5e-3, 
-                                nthreads = parallel::detectCores()) 
-  
-  # contigs with good effect size and enough non-zero samples in Control-CRC groups
-  good_contigs = unique(th_ph$Contig_name[is.na(th_ph$Comment) & th_ph$Contrast == "Control - CRC"])
-  
-  th = th[th$Contig_name %in% good_contigs,]
-  
-  th$Species = taxonomy$Species[match(th$Genome_file, taxonomy$Genome)]
-  saveRDS(th, ZIB_th_path)
-  
-}
+th = comp_ani_diff_and_posthoc_test(se = sy, fit = ZB_fit, th = top_hits(ZB_fit, coef = 2))
+th = th[is.na(th$Comment), ]
+th = strainspy:::add_tax2tophits(th, taxonomy)
+
+# Remove the weakly separated beta hits (somewhat arbitrary 5.75% - somewhat arbitrary, but no way around manual checks to see separations
+rmidx = which(abs(th$ANI_Difference) < 0.0575)
+if(length(rmidx) > 0) th = th[-rmidx, ]
+
 # Signals detected from 70 species
 length(sort(table(th$Species), decreasing = T))
 
@@ -208,7 +198,7 @@ zi_summary <- summary_tbl %>%
 
 ggplot(zi_summary, aes(x = Dominant_coef, y = Species, color = Trend)) +
   geom_point(aes(size = N_hits)) +
-  geom_errorbarh(aes(xmin = CI_low, xmax = CI_high), height = 0.2) +
+  geom_errorbar(aes(xmin = CI_low, xmax = CI_high), width = 0.2) +
   geom_vline(xintercept = 0, linetype = "dashed") +
   scale_color_manual(values = c("\u2191 CRC" = "red", "\u2193 CRC" = "blue")) +
   scale_size_continuous(
@@ -250,7 +240,7 @@ beta_summary <- summary_tbl %>%
 
 ggplot(beta_summary, aes(x = Dominant_coef, y = Species, color = Trend)) +
   geom_point(aes(size = N_hits)) +
-  geom_errorbarh(aes(xmin = CI_low, xmax = CI_high), height = 0.2) +
+  geom_errorbarh(aes(xmin = CI_low, xmax = CI_high), width = 0.2) +
   geom_vline(xintercept = 0, linetype = "dashed") +
   scale_color_manual(values = c("\u2191 CRC (similar)" = "red",
                                 "\u2193 CRC (divergent)" = "blue")) +
@@ -268,12 +258,22 @@ ggplot(beta_summary, aes(x = Dominant_coef, y = Species, color = Trend)) +
   theme_minimal(base_size = 16)
 ```
 
-## ANI distribution of the top strain of each beta detected species 
+## ANI distributions of the top strain of each beta detected species 
+
+### Paper Figures
 
 ```{r, fig.width=12}
 plot_ani_dist(sy, phenotype = 'disease', contigs = beta_summary$Dominant_contig, 
               show_points = T, plot_type = 'box', 
               contig_names = as.character(beta_summary$Species))
+
+
+# E coli
+plot_histogram(sy, phenotype = 'disease', contig = "NZ_CAACXL010000001.1 Escherichia coli strain 13591 isolate 13591, whole genome shotgun sequence", drop_zeros = T, show_quantiles = F, fit_spline = T, bins = 40, fit_control = 100)
+
+# F prausnitzii
+plot_histogram(sy, phenotype = 'disease', contig = "CATXFM010000001.1 MAG TPA_asm: Faecalibacterium prausnitzii isolate SRR17798033_bin.2_MetaWRAP_v1.3_MAG genome assembly, contig: ERZ18698391.52, whole genome shotgun sequence", drop_zeros = T, show_quantiles = F, fit_spline = T, bins = 40, fit_control = 100)
+
 
 ```
 
@@ -487,7 +487,7 @@ top_hits(ZB_fit_stage_full, coef = 5, method = "BH")
 meta_stage$tumour_stage_merged = sapply(as.character(meta_stage$tumour_stage_AJCC), function(x) ifelse( (x=='0'|x=='I'), 'Early', x)) 
 meta_stage$tumour_stage_merged = factor(as.character(meta_stage$tumour_stage_merged), levels = c('Early', 'II', 'III', 'IV'))
 
-save_path <- "output_rds/with_intercept/CRC_zib_q_99_ebp_tumour_stage_early0Iv.rds"
+save_path <- "output_rds/CRC_zib_q_99_ebp_tumour_stage_early0Iv.rds"
 design <- as.formula('~tumour_stage_merged + age + sex + BMI + (1 | study)')
 sy = modify_metadata(sy, meta_stage)
 # Run with ebp
@@ -586,3 +586,361 @@ plot_ani_dist(sy, phenotype = 'tumour_stage_merged_early3Vlate', contigs = summa
 ```
 
 In short, it looks like species such as *Fusobacterium animalis*, *Peptostreptococcus stomatis* and *Allisonella pneumosintes* grow in prevalence as CRC progresses from very early stages and remains stable. Beneficial species such as *Agathobacter faecis* seems to get replaced by other different strains at later stages - possibly consistent with treatment intensity.
+
+
+## Paper figures
+```{r}
+
+# For CRC ZI signals, let's show the presence absence (<95% ANI) as a tile plot
+zi_summary$Dominant_contig[order(abs(zi_summary$Dominant_coef), decreasing = T)[1:5]]
+
+# Which ones to use:
+# Dialister pneumosintes - NZ_CP017037.1
+# Peptostreptococcus stomatis - NZ_ADGQ01000074.1
+# Gemella morbillorum - NZ_LS483440.1
+# Parvimonas micra - NZ_LR134472.1
+# Fusobacterium animalis - NZ_CP071098.1
+
+# Roseburia rectibacter - NZ_CP092473.1
+
+zib_contigs = c("NZ_CP017037.1", "NZ_ADGQ01000074.1", "NZ_LS483440.1", "NZ_LR134472.1", "NZ_CP071098.1", 
+                "CAKRCB010000001.1", "CABUSM010000001.1", "CAKRGY010000001.1", "CAUDRE010000001.1", "NZ_QUJS01000001.1")
+sy_ss = sy[sapply(zib_contigs, function(x) grep(x, rownames(sy))),]
+
+prev_ = list()
+for(i in c("CRC", "Control")){
+  sy_ss_t = as.matrix(assay(subset(sy_ss, select = colData(sy_ss)$disease  %in% i)))
+  prev_[[i]] = apply(sy_ss_t, 1, function(x) sum(x >= 95)/ncol(sy_ss_t))
+}
+prev_df = data.frame(do.call(cbind, prev_))
+prev_df$Species = c("Dialister pneumosintes", 
+                    "Peptostreptococcus stomatis",
+                    "Gemella morbillorum",
+                    "Parvimonas micra",
+                    "Fusobacterium animalis",
+                    "Lachnospira sp.",
+                    "Faecalibacterium sp.",
+                    "Butyribacter hominis",
+                    "Faecalibacterium prausnitzii",
+                    "Butyribacter intestini")
+
+
+prev_df <- prev_df %>%
+  mutate(
+    log2FC = log2(CRC / Control),
+    direction = ifelse(log2FC > 0, "Enriched in CRC", "Depleted in CRC")
+  )
+
+# explicit ordering: CRC group first (high to low), then Control group
+crc_df <- prev_df %>%
+  filter(direction == "Enriched in CRC") %>%
+  arrange(desc(CRC))
+
+ctrl_df <- prev_df %>%
+  filter(direction == "Depleted in CRC") %>%
+  arrange(CRC)
+
+prev_df$Species <- factor(
+  prev_df$Species,
+  levels = c(ctrl_df$Species, crc_df$Species)
+)
+
+ggplot(prev_df, aes(y = Species)) +
+  
+  geom_segment(
+    aes(x = Control, xend = CRC, yend = Species, color = direction),
+    linewidth = 1.2
+  ) +
+  
+  geom_point(aes(x = Control, color = direction),
+             shape = 21, fill = "white", size = 3) +
+  
+  geom_point(aes(x = CRC, color = direction),
+             shape = 21, fill = "black", size = 3) +
+  
+  scale_color_manual(values = c(
+    "Enriched in CRC" = "#d73027",
+    "Depleted in CRC" = "#4575b4"
+  )) +
+  
+  labs(x = "Prevalence", y = NULL, color = NULL) +
+  
+  theme_classic(base_size = 16) +   # 👈 main change
+  
+  theme(
+    axis.text.y = element_text(size = 14),
+    axis.text.x = element_text(size = 13),
+    axis.title.x = element_text(size = 15, face = "bold"),
+    
+    legend.position = "top",
+    legend.text = element_text(size = 13),
+    
+    axis.line = element_line(linewidth = 0.7)
+  )
+
+#####################################
+do_lolipop = function(th_sp){
+  
+  library(dplyr)
+  library(tidyr)
+  library(ggplot2)
+  
+  ## =========================================================
+  ## species name
+  ## =========================================================
+  
+  species_name = unique(th_sp$Species)
+  
+  ## =========================================================
+  ## get submatrices
+  ## =========================================================
+  
+  sy_ec = sy[
+    sapply(
+      th_sp$Contig_name,
+      function(x) which(rownames(sy) %in% x)
+    ),
+  ]
+  
+  sy_ec_crc = as.matrix(
+    assay(
+      subset(
+        sy_ec,
+        select = colData(sy_ec)$disease %in% "CRC"
+      )
+    )
+  )
+  
+  sy_ec_ctr = as.matrix(
+    assay(
+      subset(
+        sy_ec,
+        select = colData(sy_ec)$disease %in% "Control"
+      )
+    )
+  )
+  
+  ## =========================================================
+  ## mean ANI per strain
+  ## =========================================================
+  
+  crc_mean <- apply(
+    sy_ec_crc,
+    1,
+    function(x)
+      mean(x[x > 0], na.rm = TRUE)
+  )
+  
+  ## reconstruct HC from model-estimated contrast
+  hc_mean <- crc_mean - th_sp$ANI_Difference
+  
+  ## =========================================================
+  ## plotting dataframe
+  ## =========================================================
+  
+  df_plot <- data.frame(
+    strain = names(hc_mean),
+    HC = hc_mean,
+    CRC = crc_mean,
+    effect = th_sp$ANI_Difference,
+    padj = th_sp$p_adjust
+  )
+  
+  ## direction
+  df_plot$direction <- df_plot$CRC > df_plot$HC
+  
+  ## WLS weights
+  df_plot$weights <- -log10(df_plot$padj + 1e-10)
+  
+  ## avoid zero / inf weirdness
+  df_plot$weights[!is.finite(df_plot$weights)] <- max(
+    df_plot$weights[is.finite(df_plot$weights)],
+    na.rm = TRUE
+  )
+  
+  ## =========================================================
+  ## long format
+  ## =========================================================
+  
+  plot_long <- df_plot %>%
+    pivot_longer(
+      cols = c(HC, CRC),
+      names_to = "group",
+      values_to = "ANI"
+    ) %>%
+    left_join(
+      df_plot %>%
+        select(
+          strain,
+          direction,
+          weights
+        ),
+      by = "strain"
+    )
+  
+  ## =========================================================
+  ## weighted overall ANI shift
+  ## =========================================================
+  
+  overall_shift <- weighted.mean(
+    df_plot$effect,
+    w = df_plot$weights,
+    na.rm = TRUE
+  )
+  
+  ## =========================================================
+  ## plot
+  ## =========================================================
+  cat(min(plot_long$ANI))
+  cat(max(plot_long$ANI))
+  
+  p = ggplot(
+    plot_long,
+    aes(
+      x = group,
+      y = ANI,
+      group = strain
+    )
+  ) +
+    
+    ## strain trajectories
+    geom_line(
+      aes(
+        colour = direction.x
+      ),
+      alpha = 0.55,
+      linewidth = 0.7
+    ) +
+    
+    ## endpoints
+    geom_point(
+      size = 1.8,
+      colour = "black",
+      alpha = 0.8
+    )
+  
+  ## only add trend if >1 strain
+  if(nrow(th_sp) > 1){
+    
+    p = p +
+      
+      geom_smooth(
+        aes(
+          group = 1,
+          weight = weights.x
+        ),
+        method = "lm",
+        se = FALSE,
+        linewidth = 1.2,
+        linetype = "dashed",
+        colour = "grey30"
+      )
+  }
+  
+  p = p +
+    
+    scale_colour_manual(
+      values = c(
+        "TRUE"  = "#d95f5f",
+        "FALSE" = "#5f8fd9"
+      ),
+      guide = "none"
+    ) +
+    
+    coord_cartesian(
+      ylim = c(96.5, 98.75)
+    ) +
+    
+    labs(
+      title = species_name,
+      subtitle = paste0(
+        "Weighted mean ΔANI (CRC − HC) = ",
+        round(overall_shift, 4)
+      ),
+      x = NULL,
+      y = "Mean ANI"
+    ) +
+    
+    theme_classic() +
+    
+    theme(
+      
+      plot.title = element_text(
+        face = "italic",
+        size = 16
+      ),
+      
+      plot.subtitle = element_text(
+        size = 16,
+        colour = "grey30"
+      ),
+      
+      axis.text = element_text(
+        size = 16
+      ),
+      
+      axis.title.y = element_text(
+        size = 16
+      ),
+      
+      legend.position = "none"
+    )
+  
+  return(p)
+}
+
+th_beta = th[th$hit_component=="beta",]
+th_beta = th_beta[order(abs(th_beta$ANI_Difference), decreasing = T),]
+
+# species_name <- "Roseburia sp019411365"
+# th_sp <- th_beta %>%
+#   filter(Species == species_name)
+# do_lolipop(th_sp)
+
+# These effect sizes are too small
+# species_name <- "Blautia_A wexlerae"
+# th_sp <- th_beta %>%
+#   filter(Species == species_name)
+# do_lolipop(th_sp)
+# 
+# 
+# species_name <- "Fusicatenibacter saccharivorans"
+# th_sp <- th_beta %>%
+#   filter(Species == species_name)
+# do_lolipop(th_sp)
+
+# Just a single strain, probably not good coverage in GTDB
+# species_name <- "Bacteroides fragilis"
+# th_sp <- th_beta %>%
+#   filter(Species == species_name)
+# do_lolipop(th_sp)
+
+# Two opportunists
+# Pick this one, 0.07 difference!
+
+species_name <- "Escherichia coli"
+th_sp <- th_beta %>%
+  filter(Species == species_name)
+p1 = do_lolipop(th_sp)
+
+species_name <- "Streptococcus vestibularis"
+th_sp <- th_beta %>%
+  filter(Species == species_name)
+p2 = do_lolipop(th_sp)
+
+# Two good ones
+species_name <- "Faecalibacterium prausnitzii_D"
+th_sp <- th_beta %>%
+  filter(Species == species_name)
+p3 = do_lolipop(th_sp)
+
+species_name <- "Faecalibacterium longum"
+th_sp <- th_beta %>%
+  filter(Species == species_name)
+p4 = do_lolipop(th_sp)
+
+p1 + p2 + p3 + p4
+
+
+
+```

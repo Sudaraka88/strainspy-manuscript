@@ -69,3 +69,11 @@ GCF*
 
 # Simulation outputs
 *txt
+
+# Unnecessary Folders
+OLD
+.positai
+
+
+output_rds
+Paper_Figures

@@ -19,6 +19,7 @@ library(ggplot2)
 library(tidyr)
 library(dplyr)
 library(ggtree)
+library(ggsci)
 ```
 
 ## Load metadata
@@ -173,7 +174,7 @@ print_auc <- function(boot_auc, ret = F){
 th = top_hits(ZB_fit, alpha = 1)
 ```
 
-    ## Getting tophits for RvsPR
+    ## Found 19691 tophits for RvsPR at alpha = 1 using holm
 
 ``` r
 th$min_p <- pmin(th$p_value, th$zi_p_value)
@@ -182,52 +183,52 @@ th <- th[order(th$min_p), ]
 
 ## Train and test on random subsets
 
-    ## AUC = 0.644 [95% CI: 0.441 - 0.82 ]
+    ## AUC = 0.635 [95% CI: 0.43 - 0.797 ]
 
 ## Train on rare cancers
 
 ### Predict all melanoma
 
-    ## AUC = 0.637 [95% CI: 0.589 - 0.692 ]
+    ## AUC = 0.634 [95% CI: 0.584 - 0.69 ]
 
 ### Predict each melanoma dataset
 
     ## Frankel :
 
-    ## AUC = 0.644 [95% CI: 0.425 - 0.84 ]
+    ## AUC = 0.778 [95% CI: 0.595 - 0.918 ]
     ## Gopalakrishnan :
 
-    ## AUC = 0.731 [95% CI: 0.5 - 0.927 ]
+    ## AUC = 0.66 [95% CI: 0.419 - 0.896 ]
     ## Lee :
 
-    ## AUC = 0.599 [95% CI: 0.47 - 0.72 ]
+    ## AUC = 0.605 [95% CI: 0.47 - 0.726 ]
     ## Matson :
 
-    ## AUC = 0.559 [95% CI: 0.359 - 0.74 ]
+    ## AUC = 0.468 [95% CI: 0.269 - 0.659 ]
     ## McCulloch :
 
-    ## AUC = 0.637 [95% CI: 0.493 - 0.772 ]
+    ## AUC = 0.642 [95% CI: 0.499 - 0.764 ]
     ## Spencer :
 
-    ## AUC = 0.611 [95% CI: 0.521 - 0.698 ]
+    ## AUC = 0.612 [95% CI: 0.521 - 0.701 ]
 
 ## Train on melanoma
 
 ### Predict all rare cancers
 
-    ## AUC = 0.694 [95% CI: 0.58 - 0.79 ]
+    ## AUC = 0.722 [95% CI: 0.614 - 0.818 ]
 
 ### Predict each rare cancer
 
     ## GYN :
 
-    ## AUC = 0.747 [95% CI: 0.548 - 0.908 ]
+    ## AUC = 0.685 [95% CI: 0.481 - 0.851 ]
     ## NEN :
 
-    ## AUC = 0.648 [95% CI: 0.429 - 0.854 ]
+    ## AUC = 0.777 [95% CI: 0.596 - 0.922 ]
     ## UGB :
 
-    ## AUC = 0.705 [95% CI: 0.531 - 0.852 ]
+    ## AUC = 0.761 [95% CI: 0.571 - 0.92 ]
 
 ## Viasualise
 
@@ -261,104 +262,104 @@ ggplot(df_all, aes(x = scenario, y = AUC, fill = scenario)) +
     ## AUC = 1 [95% CI: 1 - 1 ]
     ## Testing set: RARE - NEN
 
-    ## AUC = 0.584 [95% CI: 0.343 - 0.783 ]
+    ## AUC = 0.555 [95% CI: 0.299 - 0.783 ]
     ## Testing set: RARE - UGB
 
-    ## AUC = 0.72 [95% CI: 0.53 - 0.884 ]
+    ## AUC = 0.771 [95% CI: 0.607 - 0.901 ]
     ## Testing set: MEL - Frankel
 
-    ## AUC = 0.604 [95% CI: 0.38 - 0.813 ]
+    ## AUC = 0.66 [95% CI: 0.444 - 0.839 ]
     ## Testing set: MEL - Gopalakrishnan
 
-    ## AUC = 0.721 [95% CI: 0.486 - 0.93 ]
+    ## AUC = 0.675 [95% CI: 0.429 - 0.891 ]
     ## Testing set: MEL - Lee
 
-    ## AUC = 0.561 [95% CI: 0.438 - 0.691 ]
+    ## AUC = 0.552 [95% CI: 0.431 - 0.675 ]
     ## Testing set: MEL - Matson
 
-    ## AUC = 0.628 [95% CI: 0.441 - 0.804 ]
+    ## AUC = 0.512 [95% CI: 0.328 - 0.695 ]
     ## Testing set: MEL - McCulloch
 
-    ## AUC = 0.513 [95% CI: 0.363 - 0.653 ]
+    ## AUC = 0.583 [95% CI: 0.434 - 0.721 ]
     ## Testing set: MEL - Spencer
 
-    ## AUC = 0.591 [95% CI: 0.497 - 0.682 ]
+    ## AUC = 0.573 [95% CI: 0.486 - 0.666 ]
     ## Testing set: RARE
 
-    ## AUC = 0.795 [95% CI: 0.703 - 0.873 ]
+    ## AUC = 0.813 [95% CI: 0.726 - 0.891 ]
     ## Testing set: MEL
 
-    ## AUC = 0.61 [95% CI: 0.555 - 0.665 ]
+    ## AUC = 0.599 [95% CI: 0.542 - 0.653 ]
     ## Training set: RARE - NEN
 
     ## Testing set: RARE - GYN
 
-    ## AUC = 0.715 [95% CI: 0.521 - 0.881 ]
+    ## AUC = 0.513 [95% CI: 0.309 - 0.7 ]
     ## Testing set: RARE - NEN
 
-    ## AUC = 0.992 [95% CI: 0.94 - 1 ]
+    ## AUC = 1 [95% CI: 1 - 1 ]
     ## Testing set: RARE - UGB
 
-    ## AUC = 0.667 [95% CI: 0.474 - 0.82 ]
+    ## AUC = 0.637 [95% CI: 0.446 - 0.812 ]
     ## Testing set: MEL - Frankel
 
-    ## AUC = 0.672 [95% CI: 0.456 - 0.834 ]
+    ## AUC = 0.751 [95% CI: 0.552 - 0.901 ]
     ## Testing set: MEL - Gopalakrishnan
 
-    ## AUC = 0.67 [95% CI: 0.42 - 0.889 ]
+    ## AUC = 0.726 [95% CI: 0.487 - 0.921 ]
     ## Testing set: MEL - Lee
 
-    ## AUC = 0.501 [95% CI: 0.37 - 0.623 ]
+    ## AUC = 0.584 [95% CI: 0.454 - 0.701 ]
     ## Testing set: MEL - Matson
 
-    ## AUC = 0.495 [95% CI: 0.299 - 0.703 ]
+    ## AUC = 0.543 [95% CI: 0.329 - 0.76 ]
     ## Testing set: MEL - McCulloch
 
-    ## AUC = 0.605 [95% CI: 0.458 - 0.743 ]
+    ## AUC = 0.604 [95% CI: 0.465 - 0.748 ]
     ## Testing set: MEL - Spencer
 
-    ## AUC = 0.526 [95% CI: 0.423 - 0.617 ]
+    ## AUC = 0.602 [95% CI: 0.507 - 0.691 ]
     ## Testing set: RARE
 
-    ## AUC = 0.787 [95% CI: 0.699 - 0.872 ]
+    ## AUC = 0.744 [95% CI: 0.641 - 0.831 ]
     ## Testing set: MEL
 
-    ## AUC = 0.593 [95% CI: 0.54 - 0.647 ]
+    ## AUC = 0.638 [95% CI: 0.586 - 0.696 ]
     ## Training set: RARE - UGB
 
     ## Testing set: RARE - GYN
 
-    ## AUC = 0.762 [95% CI: 0.587 - 0.912 ]
+    ## AUC = 0.766 [95% CI: 0.591 - 0.911 ]
     ## Testing set: RARE - NEN
 
-    ## AUC = 0.528 [95% CI: 0.295 - 0.748 ]
+    ## AUC = 0.552 [95% CI: 0.295 - 0.775 ]
     ## Testing set: RARE - UGB
 
     ## AUC = 1 [95% CI: 1 - 1 ]
     ## Testing set: MEL - Frankel
 
-    ## AUC = 0.601 [95% CI: 0.393 - 0.793 ]
+    ## AUC = 0.608 [95% CI: 0.395 - 0.804 ]
     ## Testing set: MEL - Gopalakrishnan
 
-    ## AUC = 0.54 [95% CI: 0.312 - 0.772 ]
+    ## AUC = 0.594 [95% CI: 0.372 - 0.831 ]
     ## Testing set: MEL - Lee
 
-    ## AUC = 0.61 [95% CI: 0.484 - 0.727 ]
+    ## AUC = 0.599 [95% CI: 0.479 - 0.715 ]
     ## Testing set: MEL - Matson
 
-    ## AUC = 0.438 [95% CI: 0.242 - 0.646 ]
+    ## AUC = 0.4 [95% CI: 0.222 - 0.59 ]
     ## Testing set: MEL - McCulloch
 
-    ## AUC = 0.634 [95% CI: 0.495 - 0.763 ]
+    ## AUC = 0.61 [95% CI: 0.47 - 0.749 ]
     ## Testing set: MEL - Spencer
 
-    ## AUC = 0.594 [95% CI: 0.505 - 0.676 ]
+    ## AUC = 0.609 [95% CI: 0.52 - 0.693 ]
     ## Testing set: RARE
 
-    ## AUC = 0.824 [95% CI: 0.737 - 0.901 ]
+    ## AUC = 0.836 [95% CI: 0.758 - 0.911 ]
     ## Testing set: MEL
 
-    ## AUC = 0.6 [95% CI: 0.543 - 0.655 ]
+    ## AUC = 0.604 [95% CI: 0.548 - 0.659 ]
     ## Training set: MEL - Frankel
 
     ## Testing set: RARE - GYN
@@ -398,182 +399,182 @@ ggplot(df_all, aes(x = scenario, y = AUC, fill = scenario)) +
 
     ## Testing set: RARE - GYN
 
-    ## AUC = 0.558 [95% CI: 0.353 - 0.746 ]
+    ## AUC = 0.559 [95% CI: 0.35 - 0.746 ]
     ## Testing set: RARE - NEN
 
-    ## AUC = 0.658 [95% CI: 0.425 - 0.844 ]
+    ## AUC = 0.713 [95% CI: 0.464 - 0.9 ]
     ## Testing set: RARE - UGB
 
-    ## AUC = 0.69 [95% CI: 0.498 - 0.878 ]
+    ## AUC = 0.65 [95% CI: 0.461 - 0.844 ]
     ## Testing set: MEL - Frankel
 
-    ## AUC = 0.806 [95% CI: 0.621 - 0.932 ]
+    ## AUC = 0.803 [95% CI: 0.628 - 0.936 ]
     ## Testing set: MEL - Gopalakrishnan
 
     ## AUC = 1 [95% CI: 1 - 1 ]
     ## Testing set: MEL - Lee
 
-    ## AUC = 0.454 [95% CI: 0.335 - 0.578 ]
+    ## AUC = 0.402 [95% CI: 0.284 - 0.523 ]
     ## Testing set: MEL - Matson
 
-    ## AUC = 0.474 [95% CI: 0.275 - 0.674 ]
+    ## AUC = 0.517 [95% CI: 0.325 - 0.707 ]
     ## Testing set: MEL - McCulloch
 
-    ## AUC = 0.703 [95% CI: 0.559 - 0.831 ]
+    ## AUC = 0.68 [95% CI: 0.532 - 0.812 ]
     ## Testing set: MEL - Spencer
 
-    ## AUC = 0.6 [95% CI: 0.507 - 0.684 ]
+    ## AUC = 0.613 [95% CI: 0.519 - 0.698 ]
     ## Testing set: RARE
 
-    ## AUC = 0.655 [95% CI: 0.547 - 0.753 ]
+    ## AUC = 0.659 [95% CI: 0.55 - 0.764 ]
     ## Testing set: MEL
 
-    ## AUC = 0.63 [95% CI: 0.581 - 0.685 ]
+    ## AUC = 0.631 [95% CI: 0.579 - 0.682 ]
     ## Training set: MEL - Lee
 
     ## Testing set: RARE - GYN
 
-    ## AUC = 0.616 [95% CI: 0.421 - 0.797 ]
+    ## AUC = 0.712 [95% CI: 0.519 - 0.873 ]
     ## Testing set: RARE - NEN
 
-    ## AUC = 0.422 [95% CI: 0.196 - 0.657 ]
+    ## AUC = 0.345 [95% CI: 0.142 - 0.577 ]
     ## Testing set: RARE - UGB
 
-    ## AUC = 0.557 [95% CI: 0.372 - 0.745 ]
+    ## AUC = 0.536 [95% CI: 0.346 - 0.722 ]
     ## Testing set: MEL - Frankel
 
-    ## AUC = 0.498 [95% CI: 0.311 - 0.692 ]
+    ## AUC = 0.404 [95% CI: 0.223 - 0.597 ]
     ## Testing set: MEL - Gopalakrishnan
 
-    ## AUC = 0.422 [95% CI: 0.182 - 0.667 ]
+    ## AUC = 0.442 [95% CI: 0.218 - 0.674 ]
     ## Testing set: MEL - Lee
 
     ## AUC = 1 [95% CI: 1 - 1 ]
     ## Testing set: MEL - Matson
 
-    ## AUC = 0.358 [95% CI: 0.184 - 0.546 ]
+    ## AUC = 0.411 [95% CI: 0.225 - 0.592 ]
     ## Testing set: MEL - McCulloch
 
-    ## AUC = 0.424 [95% CI: 0.29 - 0.574 ]
+    ## AUC = 0.494 [95% CI: 0.358 - 0.64 ]
     ## Testing set: MEL - Spencer
 
-    ## AUC = 0.446 [95% CI: 0.354 - 0.535 ]
+    ## AUC = 0.489 [95% CI: 0.408 - 0.583 ]
     ## Testing set: RARE
 
-    ## AUC = 0.516 [95% CI: 0.4 - 0.615 ]
+    ## AUC = 0.509 [95% CI: 0.397 - 0.621 ]
     ## Testing set: MEL
 
-    ## AUC = 0.604 [95% CI: 0.546 - 0.659 ]
+    ## AUC = 0.624 [95% CI: 0.567 - 0.681 ]
     ## Training set: MEL - Matson
 
     ## Testing set: RARE - GYN
 
-    ## AUC = 0.65 [95% CI: 0.452 - 0.831 ]
+    ## AUC = 0.67 [95% CI: 0.48 - 0.84 ]
     ## Testing set: RARE - NEN
 
-    ## AUC = 0.58 [95% CI: 0.312 - 0.8 ]
+    ## AUC = 0.672 [95% CI: 0.447 - 0.864 ]
     ## Testing set: RARE - UGB
 
-    ## AUC = 0.607 [95% CI: 0.4 - 0.806 ]
+    ## AUC = 0.455 [95% CI: 0.276 - 0.662 ]
     ## Testing set: MEL - Frankel
 
-    ## AUC = 0.619 [95% CI: 0.409 - 0.81 ]
+    ## AUC = 0.568 [95% CI: 0.378 - 0.768 ]
     ## Testing set: MEL - Gopalakrishnan
 
-    ## AUC = 0.575 [95% CI: 0.338 - 0.794 ]
+    ## AUC = 0.707 [95% CI: 0.478 - 0.889 ]
     ## Testing set: MEL - Lee
 
-    ## AUC = 0.499 [95% CI: 0.374 - 0.626 ]
+    ## AUC = 0.451 [95% CI: 0.328 - 0.573 ]
     ## Testing set: MEL - Matson
 
     ## AUC = 1 [95% CI: 1 - 1 ]
     ## Testing set: MEL - McCulloch
 
-    ## AUC = 0.54 [95% CI: 0.398 - 0.7 ]
+    ## AUC = 0.489 [95% CI: 0.345 - 0.638 ]
     ## Testing set: MEL - Spencer
 
-    ## AUC = 0.543 [95% CI: 0.446 - 0.627 ]
+    ## AUC = 0.548 [95% CI: 0.456 - 0.64 ]
     ## Testing set: RARE
 
-    ## AUC = 0.592 [95% CI: 0.479 - 0.697 ]
+    ## AUC = 0.593 [95% CI: 0.476 - 0.689 ]
     ## Testing set: MEL
 
-    ## AUC = 0.609 [95% CI: 0.553 - 0.664 ]
+    ## AUC = 0.587 [95% CI: 0.527 - 0.637 ]
     ## Training set: MEL - McCulloch
 
     ## Testing set: RARE - GYN
 
-    ## AUC = 0.279 [95% CI: 0.117 - 0.472 ]
+    ## AUC = 0.342 [95% CI: 0.176 - 0.539 ]
     ## Testing set: RARE - NEN
 
-    ## AUC = 0.688 [95% CI: 0.481 - 0.87 ]
+    ## AUC = 0.686 [95% CI: 0.453 - 0.891 ]
     ## Testing set: RARE - UGB
 
-    ## AUC = 0.491 [95% CI: 0.295 - 0.681 ]
+    ## AUC = 0.439 [95% CI: 0.244 - 0.625 ]
     ## Testing set: MEL - Frankel
 
-    ## AUC = 0.639 [95% CI: 0.443 - 0.806 ]
+    ## AUC = 0.498 [95% CI: 0.282 - 0.692 ]
     ## Testing set: MEL - Gopalakrishnan
 
-    ## AUC = 0.365 [95% CI: 0.14 - 0.639 ]
+    ## AUC = 0.533 [95% CI: 0.292 - 0.772 ]
     ## Testing set: MEL - Lee
 
-    ## AUC = 0.488 [95% CI: 0.371 - 0.612 ]
+    ## AUC = 0.505 [95% CI: 0.374 - 0.635 ]
     ## Testing set: MEL - Matson
 
-    ## AUC = 0.407 [95% CI: 0.219 - 0.598 ]
+    ## AUC = 0.414 [95% CI: 0.229 - 0.599 ]
     ## Testing set: MEL - McCulloch
 
     ## AUC = 1 [95% CI: 1 - 1 ]
     ## Testing set: MEL - Spencer
 
-    ## AUC = 0.429 [95% CI: 0.336 - 0.53 ]
+    ## AUC = 0.421 [95% CI: 0.326 - 0.517 ]
     ## Testing set: RARE
 
-    ## AUC = 0.501 [95% CI: 0.388 - 0.609 ]
+    ## AUC = 0.5 [95% CI: 0.387 - 0.609 ]
     ## Testing set: MEL
 
-    ## AUC = 0.524 [95% CI: 0.467 - 0.576 ]
+    ## AUC = 0.515 [95% CI: 0.459 - 0.571 ]
     ## Training set: MEL - Spencer
 
     ## Testing set: RARE - GYN
 
-    ## AUC = 0.751 [95% CI: 0.558 - 0.893 ]
+    ## AUC = 0.77 [95% CI: 0.588 - 0.901 ]
     ## Testing set: RARE - NEN
 
-    ## AUC = 0.68 [95% CI: 0.476 - 0.853 ]
+    ## AUC = 0.752 [95% CI: 0.519 - 0.938 ]
     ## Testing set: RARE - UGB
 
-    ## AUC = 0.72 [95% CI: 0.535 - 0.872 ]
+    ## AUC = 0.775 [95% CI: 0.585 - 0.92 ]
     ## Testing set: MEL - Frankel
 
-    ## AUC = 0.639 [95% CI: 0.414 - 0.807 ]
+    ## AUC = 0.639 [95% CI: 0.439 - 0.824 ]
     ## Testing set: MEL - Gopalakrishnan
 
-    ## AUC = 0.813 [95% CI: 0.603 - 0.96 ]
+    ## AUC = 0.793 [95% CI: 0.574 - 0.935 ]
     ## Testing set: MEL - Lee
 
-    ## AUC = 0.518 [95% CI: 0.395 - 0.636 ]
+    ## AUC = 0.541 [95% CI: 0.423 - 0.672 ]
     ## Testing set: MEL - Matson
 
-    ## AUC = 0.446 [95% CI: 0.245 - 0.651 ]
+    ## AUC = 0.459 [95% CI: 0.247 - 0.66 ]
     ## Testing set: MEL - McCulloch
 
-    ## AUC = 0.702 [95% CI: 0.554 - 0.837 ]
+    ## AUC = 0.679 [95% CI: 0.527 - 0.807 ]
     ## Testing set: MEL - Spencer
 
-    ## AUC = 0.916 [95% CI: 0.87 - 0.953 ]
+    ## AUC = 0.867 [95% CI: 0.806 - 0.912 ]
     ## Testing set: RARE
 
-    ## AUC = 0.718 [95% CI: 0.616 - 0.815 ]
+    ## AUC = 0.778 [95% CI: 0.691 - 0.859 ]
     ## Testing set: MEL
 
-    ## AUC = 0.712 [95% CI: 0.661 - 0.761 ]
+    ## AUC = 0.704 [95% CI: 0.656 - 0.755 ]
     ## Training set: RARE
 
     ## Testing set: RARE - GYN
 
-    ## AUC = 0.997 [95% CI: 0.974 - 1 ]
+    ## AUC = 1 [95% CI: 0.981 - 1 ]
     ## Testing set: RARE - NEN
 
     ## AUC = 1 [95% CI: 1 - 1 ]
@@ -582,63 +583,63 @@ ggplot(df_all, aes(x = scenario, y = AUC, fill = scenario)) +
     ## AUC = 1 [95% CI: 1 - 1 ]
     ## Testing set: MEL - Frankel
 
-    ## AUC = 0.644 [95% CI: 0.425 - 0.84 ]
+    ## AUC = 0.778 [95% CI: 0.595 - 0.918 ]
     ## Testing set: MEL - Gopalakrishnan
 
-    ## AUC = 0.731 [95% CI: 0.5 - 0.927 ]
+    ## AUC = 0.66 [95% CI: 0.419 - 0.896 ]
     ## Testing set: MEL - Lee
 
-    ## AUC = 0.599 [95% CI: 0.47 - 0.72 ]
+    ## AUC = 0.605 [95% CI: 0.47 - 0.726 ]
     ## Testing set: MEL - Matson
 
-    ## AUC = 0.559 [95% CI: 0.359 - 0.74 ]
+    ## AUC = 0.468 [95% CI: 0.269 - 0.659 ]
     ## Testing set: MEL - McCulloch
 
-    ## AUC = 0.637 [95% CI: 0.493 - 0.772 ]
+    ## AUC = 0.642 [95% CI: 0.499 - 0.764 ]
     ## Testing set: MEL - Spencer
 
-    ## AUC = 0.611 [95% CI: 0.521 - 0.698 ]
+    ## AUC = 0.612 [95% CI: 0.521 - 0.701 ]
     ## Testing set: RARE
 
-    ## AUC = 0.997 [95% CI: 0.99 - 1 ]
+    ## AUC = 0.999 [95% CI: 0.994 - 1 ]
     ## Testing set: MEL
 
-    ## AUC = 0.637 [95% CI: 0.589 - 0.692 ]
+    ## AUC = 0.634 [95% CI: 0.584 - 0.69 ]
     ## Training set: MEL
 
     ## Testing set: RARE - GYN
 
-    ## AUC = 0.747 [95% CI: 0.548 - 0.908 ]
+    ## AUC = 0.685 [95% CI: 0.481 - 0.851 ]
     ## Testing set: RARE - NEN
 
-    ## AUC = 0.648 [95% CI: 0.429 - 0.854 ]
+    ## AUC = 0.777 [95% CI: 0.596 - 0.922 ]
     ## Testing set: RARE - UGB
 
-    ## AUC = 0.705 [95% CI: 0.531 - 0.852 ]
+    ## AUC = 0.761 [95% CI: 0.571 - 0.92 ]
     ## Testing set: MEL - Frankel
 
-    ## AUC = 0.972 [95% CI: 0.902 - 1 ]
+    ## AUC = 0.969 [95% CI: 0.902 - 1 ]
     ## Testing set: MEL - Gopalakrishnan
 
-    ## AUC = 0.824 [95% CI: 0.64 - 0.972 ]
+    ## AUC = 0.895 [95% CI: 0.736 - 1 ]
     ## Testing set: MEL - Lee
 
-    ## AUC = 0.916 [95% CI: 0.846 - 0.968 ]
+    ## AUC = 0.904 [95% CI: 0.833 - 0.96 ]
     ## Testing set: MEL - Matson
 
-    ## AUC = 0.775 [95% CI: 0.6 - 0.932 ]
+    ## AUC = 0.812 [95% CI: 0.65 - 0.949 ]
     ## Testing set: MEL - McCulloch
 
-    ## AUC = 0.922 [95% CI: 0.834 - 0.976 ]
+    ## AUC = 0.879 [95% CI: 0.77 - 0.949 ]
     ## Testing set: MEL - Spencer
 
-    ## AUC = 0.84 [95% CI: 0.774 - 0.892 ]
+    ## AUC = 0.823 [95% CI: 0.752 - 0.882 ]
     ## Testing set: RARE
 
-    ## AUC = 0.694 [95% CI: 0.58 - 0.79 ]
+    ## AUC = 0.722 [95% CI: 0.614 - 0.818 ]
     ## Testing set: MEL
 
-    ## AUC = 0.872 [95% CI: 0.836 - 0.907 ]
+    ## AUC = 0.864 [95% CI: 0.83 - 0.9 ]
 
 ## Visualise
 
@@ -678,56 +679,56 @@ ggplot(plot_df, aes(x = Test_lab, y = Train_lab, fill = bmed)) +
 
     ## Testing set: RARE - GYN
 
-    ## AUC = 0.752 [95% CI: 0.554 - 0.903 ]
+    ## AUC = 0.696 [95% CI: 0.505 - 0.857 ]
     ## Testing set: RARE - NEN
 
-    ## AUC = 0.665 [95% CI: 0.441 - 0.847 ]
+    ## AUC = 0.71 [95% CI: 0.493 - 0.879 ]
     ## Testing set: RARE - UGB
 
-    ## AUC = 0.739 [95% CI: 0.571 - 0.875 ]
+    ## AUC = 0.697 [95% CI: 0.51 - 0.85 ]
     ## Testing set: MEL - Frankel
 
-    ## AUC = 0.648 [95% CI: 0.461 - 0.83 ]
+    ## AUC = 0.644 [95% CI: 0.44 - 0.843 ]
     ## Testing set: MEL - Gopalakrishnan
 
-    ## AUC = 0.734 [95% CI: 0.519 - 0.916 ]
+    ## AUC = 0.74 [95% CI: 0.519 - 0.917 ]
     ## Testing set: MEL - Lee
 
-    ## AUC = 0.498 [95% CI: 0.375 - 0.628 ]
+    ## AUC = 0.466 [95% CI: 0.346 - 0.588 ]
     ## Testing set: MEL - Matson
 
-    ## AUC = 0.511 [95% CI: 0.311 - 0.698 ]
+    ## AUC = 0.554 [95% CI: 0.356 - 0.741 ]
     ## Testing set: MEL - McCulloch
 
-    ## AUC = 0.609 [95% CI: 0.455 - 0.754 ]
+    ## AUC = 0.644 [95% CI: 0.496 - 0.781 ]
     ## Testing set: MEL - Spencer
 
-    ## AUC = 0.638 [95% CI: 0.55 - 0.723 ]
+    ## AUC = 0.643 [95% CI: 0.554 - 0.729 ]
     ## Testing set: RARE
 
-    ## AUC = 0.694 [95% CI: 0.58 - 0.79 ]
+    ## AUC = 0.722 [95% CI: 0.614 - 0.818 ]
     ## Testing set: MEL
 
-    ## AUC = 0.637 [95% CI: 0.589 - 0.692 ]
+    ## AUC = 0.634 [95% CI: 0.584 - 0.69 ]
 
 ## Visualise
 
 ### Boxplot
 
 ``` r
-boot_df = boot_df %>%
+boot_df1 = boot_df1 %>%
   mutate(
     Test_lab = ifelse(Test == "ALL", Ca_test, Test),
     Test_lab = factor(Test_lab,
                       levels = unique(Test_lab))  # preserve ordering
   )
 
-boot_df$Ca_test[which(boot_df$Ca_test == "RARE" & boot_df$Test == "ALL")] = "ALL_RARE"
-boot_df$Ca_test[which(boot_df$Ca_test == "MEL" & boot_df$Test == "ALL")] = "ALL_MEL"
+# boot_df1$Ca_test[which(boot_df1$Ca_test == "RARE" & boot_df1$Test == "ALL")] = "ALL_RARE"
+# boot_df1$Ca_test[which(boot_df1$Ca_test == "MEL" & boot_df1$Test == "ALL")] = "ALL_MEL"
 
-boot_df$Test_lab = factor(boot_df$Test_lab, levels = c("ALL_RARE", "ALL_MEL", "GYN", "NEN", "UGB",  "Frankel", "Gopalakrishnan", "Lee", "Matson", "McCulloch", "Spencer"))
+boot_df1$Test_lab = factor(boot_df1$Test_lab, levels = c("ALL_RARE", "ALL_MEL", "GYN", "NEN", "UGB",  "Frankel", "Gopalakrishnan", "Lee", "Matson", "McCulloch", "Spencer"))
 
-ggplot(boot_df, aes(x = Test_lab, y = boot, fill = Ca_test)) +
+ggplot(boot_df1, aes(x = Test_lab, y = boot, fill = Ca_test)) +
   geom_boxplot(outlier.size = 0.5, alpha = 0.8) +
   scale_fill_manual(
     values = c(
@@ -791,6 +792,10 @@ fit = run_enet(train_idx = 1:dim(sy)[2], test_idx = dummy_test_idx, return_fit =
 
     ## Prepared data: 38 samples and 500 predictors.
 
+    ## Warning: from glmnet C++ code (error code -4); Convergence for 4th lambda value
+    ## not reached after maxit=100000 iterations; solutions for larger lambdas
+    ## returned
+
 ``` r
 coefs <- coef(fit$finalModel, s = fit$bestTune$lambda); coefs = coefs[coefs[,1] != 0,]; coefs = coefs[-1]
 
@@ -799,7 +804,7 @@ coefs <- coef(fit$finalModel, s = fit$bestTune$lambda); coefs = coefs[coefs[,1] 
 # tree
 
 tree = read.tree("data/ash_pancancer/tree.nwk")
-
+tree$tip.label = unname(sapply(tree$tip.label, function(x) paste(strsplit(x, "_")[[1]][1:2], collapse = "_")))
 tree = phytools::midpoint.root(tree)
 
 df <- th2 %>%
@@ -813,110 +818,91 @@ df <- th2 %>%
   ) %>%
   arrange(match(tip, tree$tip.label))  # order to match tree
 
+df = as.data.frame(df)
+
 rownames(df) = df$tip
-```
 
-    ## Warning: Setting row names on a tibble is deprecated.
-
-``` r
 com_gen <- c(
-  # beneficial / SCFA
-  "Faecalibacterium",
   "Ruminococcus_B",
+  "Faecalibacterium",
   "Phascolarctobacterium",
-  "Gemmiger",
-  "Eubacterium_F",
-  "Bifidobacterium",
-  
-  # mixed / context-dependent
   "Bacteroides",
-  "Prevotella",
+  "Actinomyces",
   "Alistipes",
+  "Gemmiger",
   "Clostridium_A",
-  
-  # inflammatory / disease-leaning
   "Collinsella",
   "Veillonella",
-  "Streptococcus",
-  # "Bilophila",
-  "Sutterella"#,
-  
-  # special ecology
-  # "Methanobrevibacter_A"
+  "Streptococcus"
 )
+
+genus_cols <- c(
+  "#000000", "#f781bf", "#ff7f00",
+  "#009E73", "#984ea3", "#4daf4a",
+  "#ffff33", "#a65628", "#005999", 
+  "#377eb8", "#E41A1C", "#DDDDDD"
+)
+
+names(genus_cols) = c(com_gen, "Other")
 
 df$Genus[!df$Genus %in% com_gen] = "Other"
 
 df$Genus = factor(df$Genus, levels = c(com_gen, "Other"))
 
-genus_cols <- c(
-  # ---- Beneficial / SCFA producers ----
-  Faecalibacterium        = "#1b9e77",  # strong butyrate
-  Ruminococcus_B          = "#2ca25f",  # fibre degradation
-  Phascolarctobacterium   = "#33a02c",  # propionate
-  Gemmiger                = "#4daf4a",  # butyrate-associated
-  Eubacterium_F           = "#7fc97f",  # SCFA producers
-  Bifidobacterium         = "#50C878",  # probiotic-associated
-  
-  # ---- Mixed / context-dependent ----
-  Bacteroides             = "#91bfdb",  # diet-driven
-  Prevotella              = "#80b1d3",  # population-structured
-  Alistipes               = "#74add1",  # heterogeneous effects
-  Clostridium_A           = "#89CFF0",  # mixed commensals
-  
-  # ---- Inflammatory / disease-leaning ----
-  Collinsella             = "#d6350d",  # inflammatory signals
-  Veillonella             = "#d73027",  # disease-associated
-  Streptococcus           = "#D70040",  # opportunistic pathogen
-  # Bilophila               = "#DC143C",  # bile / inflammation
-  Sutterella              = "#9A2A2A",  # gut inflammation
-  Granulicatella          = "#800020",  # opportunistic
-  Hungatella              = "#C21E56",  # metabolic/inflammatory
-  
-  # ---- Special ecology ----
-  # Methanobrevibacter_A    = "#756bb1",  # archaeal methanogen
-  
-  # ---- Catch-all ----
-  Other                   = "#bdbdbd"   # de-emphasised
+
+df = df[rownames(df) %in% tree$tip.label,]
+tree = ape::keep.tip(tree,df$tip)
+
+p <- ggtree(tree, layout = "circular")
+p$data <- merge(
+  p$data,
+  df,
+  by.x = "label",
+  by.y = "tip",
+  all.x = TRUE
 )
-
-
-p <- ggtree(tree, layout = "circular") %<+% df
 
 p <- p +
   geom_tippoint(
     aes(color = Genus),
     size = 2
-  ) +
+  )  +
   scale_color_manual(
     values = genus_cols,
-    breaks = names(genus_cols),
     name = "Genus"
   )
 
 
-coef_cols <- scales::col_numeric(
-  palette = c("#2166ac", "white", "#b2182b"),
-  domain  = range(df$Coef),
-  na.color = "grey90"
-)
 
-df_tmp = data.frame(Coef = df$Coef); rownames(df_tmp) = df$tip
-p = gheatmap(p, df_tmp, offset = 0, width = 0.05) +
+
+df_tmp <- data.frame(Coef = df$Coef)
+rownames(df_tmp) <- df$tip
+
+p <- gheatmap(
+  p,
+  df_tmp,
+  offset = 0,
+  width = 0.05,
+  colnames = FALSE
+) +
   scale_fill_gradient2(
-    low = "#2166ac",
+    high = "#084594",
     mid = "white",
-    high = "#b2182b",
+    low = "#99000D",
     midpoint = 0,
+    transform = "pseudo_log",
     name = "ENet coef"
   ) +
   theme(
-    text = element_text(size = 14),                # base text size
+    text = element_text(size = 14),
     legend.title = element_text(size = 14),
     legend.text = element_text(size = 12),
     axis.text = element_text(size = 12)
   )
 ```
+
+    ## Scale for y is already present.
+    ## Adding another scale for y, which will replace the existing scale.
 
     ## Scale for fill is already present.
     ## Adding another scale for fill, which will replace the existing scale.
@@ -966,8 +952,9 @@ genus_order <- df2 %>%
   pull(Genus)
 
 
-df2$Genus <- factor(df2$Genus, levels = genus_order)
+
 med_df$Genus <- factor(med_df$Genus, levels = genus_order)
+df2$Genus <- factor(df2$Genus, levels = med_df$Genus[order(med_df$med_coef, decreasing = T)])
 
 fit <- lm(med_coef ~ as.numeric(factor(Genus, levels = med_df$Genus)), data = med_df)
 
@@ -976,9 +963,9 @@ coef(fit)
 ```
 
     ##                                      (Intercept) 
-    ##                                      0.023859570 
+    ##                                      0.018040411 
     ## as.numeric(factor(Genus, levels = med_df$Genus)) 
-    ##                                     -0.005564849
+    ##                                     -0.004202066
 
 ``` r
 ggplot(df2, aes(x = Genus, y = Coef, color = Genus, colour = genus_cols)) +

@@ -1,24 +1,28 @@
----
-title: Logistic Regression Model"
-output:
-  github_document
-date: "2026-14-23"
-editor_options:
-  chunk_output_type: console
----
+Logistic Regression Model”
+================
+2026-14-23
 
+Logistic Regression (`caseControlFit()`) is susceptible to choice of
+identity threshold (`min_identity`). \### Load data and prepare for
+simulations
 
-Logistic Regression (`caseControlFit()`) is susceptible to choice of identity threshold (`min_identity`).
-### Load data and prepare for simulations
-
-```{r}
+``` r
 library(strainspy)
 
 # Load Zeevi the GTDB 99% identity dataset
 # data <- read_sylph("~/Documents/strainspy_manuscript/zeevi/zeevi_PRJEB11532_query_gtdb_220_id99.tsv.gz")
 data <- read_sylph("TEST_DATA/zeevi/zeevi_PRJEB11532_query_gtdb_220_id99.tsv.gz")
-data <- filter_by_presence(data, min_nonzero = 150)
+```
 
+    ## Detected Sylph query output file.
+
+``` r
+data <- filter_by_presence(data, min_nonzero = 150)
+```
+
+    ## Retained 5628 rows after filtering
+
+``` r
 # Get the ids of cases after a random split
 set.seed(789)
 cascon = rbinom(round(SummarizedExperiment::ncol(data)),  1, 0.5)
@@ -33,7 +37,8 @@ data = strainspy:::modify_metadata(se = data, meta_data = meta_data)
 ```
 
 ## Sensitivity Analysis
-```{r}
+
+``` r
 # randomly select 100 features (contigs) to rescale abundance - ensure omit NA from cascon model
 fit_cascon_null = readRDS("TEST_DATA/zeevi/TEMP_FITS/null_cascon.rds")
 set.seed(789)
@@ -42,11 +47,40 @@ contigs = data@elementMetadata$Contig_name[sel]
 ```
 
 ### Functions to generate plots and heatmaps
-```{r}
+
+``` r
 library(ggplot2)
+```
+
+    ## Warning: package 'ggplot2' was built under R version 4.4.3
+
+``` r
 library(dplyr)
+```
+
+    ## Warning: package 'dplyr' was built under R version 4.4.3
+
+    ## 
+    ## Attaching package: 'dplyr'
+
+    ## The following objects are masked from 'package:stats':
+    ## 
+    ##     filter, lag
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
+
+``` r
 library(tidyr)
 library(viridis)
+```
+
+    ## Loading required package: viridisLite
+
+    ## Warning: package 'viridisLite' was built under R version 4.4.3
+
+``` r
 library(patchwork)
 
 gg_facet_plot <- function(op, title = NULL){
@@ -125,7 +159,8 @@ gg_facet_plot <- function(op, title = NULL){
 ```
 
 ### Simulate changes in identity
-```{r}
+
+``` r
 save_path = "output_rds/logi_sim_id.rds"
 if(file.exists(save_path)){
   op_id = readRDS(save_path)
@@ -176,8 +211,11 @@ if(file.exists(save_path)){
 gg_facet_plot(op_id, "Variation in feature identity")
 ```
 
+![](logistic_ID_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
 ### Simulate changes in presence/absence
-```{r}
+
+``` r
 save_path = "output_rds/logi_sim_pa.rds"
 if(file.exists(save_path)){
   op_pa = readRDS(save_path)
@@ -225,5 +263,12 @@ if(file.exists(save_path)){
 }
 
 gg_facet_plot(op_pa, "Variation in feature presence/absence")
-
 ```
+
+    ## Warning: Removed 4 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+    ## Warning: Removed 4 rows containing missing values or values outside the scale range
+    ## (`geom_line()`).
+
+![](logistic_ID_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->

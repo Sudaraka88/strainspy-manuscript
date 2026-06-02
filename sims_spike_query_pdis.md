@@ -142,33 +142,8 @@ table(th_c1$Species)
 plot_manhattan(fit_zib_99_c1, taxonomy = tax_99, method = "BH", tax_levels = c("Order", "Phylum", "Genus", "Species"))
 ```
 
-    ## Warning: `aes_()` was deprecated in ggplot2 3.0.0.
-    ## ℹ Please use tidy evaluation idioms with `aes()`
-    ## ℹ The deprecated feature was likely used in the ggtree package.
-    ##   Please report the issue at <https://github.com/YuLab-SMU/ggtree/issues>.
-    ## This warning is displayed once per session.
-    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-    ## generated.
-
-    ## Warning in fortify(data, ...): Arguments in `...` must be used.
-    ## ✖ Problematic arguments:
-    ## • as.Date = as.Date
-    ## • yscale_mapping = yscale_mapping
-    ## • branch.length = branch.length
-    ## • hang = hang
-    ## ℹ Did you misspell an argument name?
-
     ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
     ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
-
-    ## Warning in fortify(data, ...): Arguments in `...` must be used.
-    ## ✖ Problematic arguments:
-    ## • as.Date = as.Date
-    ## • yscale_mapping = yscale_mapping
-    ## • branch.length = branch.length
-    ## • hang = hang
-    ## ℹ Did you misspell an argument name?
-
     ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
     ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
 
@@ -180,70 +155,20 @@ plot_manhattan(fit_zib_99_c1, taxonomy = tax_99, method = "BH", tax_levels = c("
     ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
     ## generated.
 
-    ## Warning: The `size` argument of `element_line()` is deprecated as of ggplot2 3.4.0.
-    ## ℹ Please use the `linewidth` argument instead.
-    ## ℹ The deprecated feature was likely used in the ggthemes package.
-    ##   Please report the issue at <https://github.com/jrnold/ggthemes/issues>.
-    ## This warning is displayed once per session.
-    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-    ## generated.
-
-<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-3-1.png" width="100%" />
+<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-3-1.png" alt="" width="100%" />
 
 ``` r
 plot_manhattan(fit_zib_99_c1, taxonomy = tax_99, aggregate_by_taxa = F)
 ```
 
-    ## Warning in fortify(data, ...): Arguments in `...` must be used.
-    ## ✖ Problematic arguments:
-    ## • as.Date = as.Date
-    ## • yscale_mapping = yscale_mapping
-    ## • branch.length = branch.length
-    ## • hang = hang
-    ## ℹ Did you misspell an argument name?
-
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
     ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
     ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
 
-    ## Warning in fortify(data, ...): Arguments in `...` must be used.
-    ## ✖ Problematic arguments:
-    ## • as.Date = as.Date
-    ## • yscale_mapping = yscale_mapping
-    ## • branch.length = branch.length
-    ## • hang = hang
-    ## ℹ Did you misspell an argument name?
-
-    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
-    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
-
-    ## Warning in fortify(data, ...): Arguments in `...` must be used.
-    ## ✖ Problematic arguments:
-    ## • as.Date = as.Date
-    ## • yscale_mapping = yscale_mapping
-    ## • branch.length = branch.length
-    ## • hang = hang
-    ## ℹ Did you misspell an argument name?
-
-    ## Warning in fortify(data, ...): Arguments in `...` must be used.
-    ## ✖ Problematic arguments:
-    ## • as.Date = as.Date
-    ## • yscale_mapping = yscale_mapping
-    ## • branch.length = branch.length
-    ## • hang = hang
-    ## ℹ Did you misspell an argument name?
-
-    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
-    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
-
-    ## Warning in fortify(data, ...): Arguments in `...` must be used.
-    ## ✖ Problematic arguments:
-    ## • as.Date = as.Date
-    ## • yscale_mapping = yscale_mapping
-    ## • branch.length = branch.length
-    ## • hang = hang
-    ## ℹ Did you misspell an argument name?
-
-<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-3-2.png" width="100%" />
+<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-3-2.png" alt="" width="100%" />
 
 ``` r
 plot_volcano(fit_zib_99_c1, label = T)
@@ -251,13 +176,13 @@ plot_volcano(fit_zib_99_c1, label = T)
 
     ## Found 16081 tophits for spikedTRUE at alpha = 1 using holm
 
-<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-3-3.png" width="100%" />
+<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-3-3.png" alt="" width="100%" />
 
 ``` r
 plot_ani_dist(d_q99, phenotype = 'spiked', contigs = th_c1$Contig_name[1:5], contig_names = th_c1$Genome_file[1:5])
 ```
 
-<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-3-4.png" width="100%" />
+<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-3-4.png" alt="" width="100%" />
 
 ``` r
 # Parabacteroides distasonis is in all samples, so, this can only be a beta hit!
@@ -314,83 +239,25 @@ table(th_c3$Species)
 plot_manhattan(fit_zib_99_c3, taxonomy = tax_99, method = "BH", tax_levels = c("Order", "Phylum", "Genus", "Species"))
 ```
 
-    ## Warning in fortify(data, ...): Arguments in `...` must be used.
-    ## ✖ Problematic arguments:
-    ## • as.Date = as.Date
-    ## • yscale_mapping = yscale_mapping
-    ## • branch.length = branch.length
-    ## • hang = hang
-    ## ℹ Did you misspell an argument name?
-
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
     ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
     ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
 
-    ## Warning in fortify(data, ...): Arguments in `...` must be used.
-    ## ✖ Problematic arguments:
-    ## • as.Date = as.Date
-    ## • yscale_mapping = yscale_mapping
-    ## • branch.length = branch.length
-    ## • hang = hang
-    ## ℹ Did you misspell an argument name?
-
-    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
-    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
-
-<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-4-1.png" width="100%" />
+<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-4-1.png" alt="" width="100%" />
 
 ``` r
 plot_manhattan(fit_zib_99_c3, taxonomy = tax_99, aggregate_by_taxa = F)
 ```
 
-    ## Warning in fortify(data, ...): Arguments in `...` must be used.
-    ## ✖ Problematic arguments:
-    ## • as.Date = as.Date
-    ## • yscale_mapping = yscale_mapping
-    ## • branch.length = branch.length
-    ## • hang = hang
-    ## ℹ Did you misspell an argument name?
-
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
     ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
     ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
 
-    ## Warning in fortify(data, ...): Arguments in `...` must be used.
-    ## ✖ Problematic arguments:
-    ## • as.Date = as.Date
-    ## • yscale_mapping = yscale_mapping
-    ## • branch.length = branch.length
-    ## • hang = hang
-    ## ℹ Did you misspell an argument name?
-
-    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
-    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
-
-    ## Warning in fortify(data, ...): Arguments in `...` must be used.
-    ## ✖ Problematic arguments:
-    ## • as.Date = as.Date
-    ## • yscale_mapping = yscale_mapping
-    ## • branch.length = branch.length
-    ## • hang = hang
-    ## ℹ Did you misspell an argument name?
-    ## Arguments in `...` must be used.
-    ## ✖ Problematic arguments:
-    ## • as.Date = as.Date
-    ## • yscale_mapping = yscale_mapping
-    ## • branch.length = branch.length
-    ## • hang = hang
-    ## ℹ Did you misspell an argument name?
-
-    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
-    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
-
-    ## Warning in fortify(data, ...): Arguments in `...` must be used.
-    ## ✖ Problematic arguments:
-    ## • as.Date = as.Date
-    ## • yscale_mapping = yscale_mapping
-    ## • branch.length = branch.length
-    ## • hang = hang
-    ## ℹ Did you misspell an argument name?
-
-<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-4-2.png" width="100%" />
+<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-4-2.png" alt="" width="100%" />
 
 ``` r
 plot_volcano(fit_zib_99_c3, label = T)
@@ -398,13 +265,13 @@ plot_volcano(fit_zib_99_c3, label = T)
 
     ## Found 16081 tophits for spikedTRUE at alpha = 1 using holm
 
-<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-4-3.png" width="100%" />
+<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-4-3.png" alt="" width="100%" />
 
 ``` r
 plot_ani_dist(d_q99, phenotype = 'spiked', contigs = th_c3$Contig_name[1:5], contig_names = th_c3$Genome_file[1:5])
 ```
 
-<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-4-4.png" width="100%" />
+<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-4-4.png" alt="" width="100%" />
 
 ``` r
 # Parabacteroides distasonis is in all samples, so, this can only be a beta hit!
@@ -461,83 +328,25 @@ table(th_c5$Species)
 plot_manhattan(fit_zib_99_c5, taxonomy = tax_99, method = "BH", tax_levels = c("Order", "Phylum", "Genus", "Species"))
 ```
 
-    ## Warning in fortify(data, ...): Arguments in `...` must be used.
-    ## ✖ Problematic arguments:
-    ## • as.Date = as.Date
-    ## • yscale_mapping = yscale_mapping
-    ## • branch.length = branch.length
-    ## • hang = hang
-    ## ℹ Did you misspell an argument name?
-
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
     ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
     ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
 
-    ## Warning in fortify(data, ...): Arguments in `...` must be used.
-    ## ✖ Problematic arguments:
-    ## • as.Date = as.Date
-    ## • yscale_mapping = yscale_mapping
-    ## • branch.length = branch.length
-    ## • hang = hang
-    ## ℹ Did you misspell an argument name?
-
-    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
-    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
-
-<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-5-1.png" width="100%" />
+<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-5-1.png" alt="" width="100%" />
 
 ``` r
 plot_manhattan(fit_zib_99_c5, taxonomy = tax_99, aggregate_by_taxa = F)
 ```
 
-    ## Warning in fortify(data, ...): Arguments in `...` must be used.
-    ## ✖ Problematic arguments:
-    ## • as.Date = as.Date
-    ## • yscale_mapping = yscale_mapping
-    ## • branch.length = branch.length
-    ## • hang = hang
-    ## ℹ Did you misspell an argument name?
-
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
+    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
     ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
     ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
 
-    ## Warning in fortify(data, ...): Arguments in `...` must be used.
-    ## ✖ Problematic arguments:
-    ## • as.Date = as.Date
-    ## • yscale_mapping = yscale_mapping
-    ## • branch.length = branch.length
-    ## • hang = hang
-    ## ℹ Did you misspell an argument name?
-
-    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
-    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
-
-    ## Warning in fortify(data, ...): Arguments in `...` must be used.
-    ## ✖ Problematic arguments:
-    ## • as.Date = as.Date
-    ## • yscale_mapping = yscale_mapping
-    ## • branch.length = branch.length
-    ## • hang = hang
-    ## ℹ Did you misspell an argument name?
-    ## Arguments in `...` must be used.
-    ## ✖ Problematic arguments:
-    ## • as.Date = as.Date
-    ## • yscale_mapping = yscale_mapping
-    ## • branch.length = branch.length
-    ## • hang = hang
-    ## ℹ Did you misspell an argument name?
-
-    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
-    ## ! # Invaild edge matrix for <phylo>. A <tbl_df> is returned.
-
-    ## Warning in fortify(data, ...): Arguments in `...` must be used.
-    ## ✖ Problematic arguments:
-    ## • as.Date = as.Date
-    ## • yscale_mapping = yscale_mapping
-    ## • branch.length = branch.length
-    ## • hang = hang
-    ## ℹ Did you misspell an argument name?
-
-<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-5-2.png" width="100%" />
+<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-5-2.png" alt="" width="100%" />
 
 ``` r
 plot_volcano(fit_zib_99_c5, label = T)
@@ -545,13 +354,13 @@ plot_volcano(fit_zib_99_c5, label = T)
 
     ## Found 16081 tophits for spikedTRUE at alpha = 1 using holm
 
-<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-5-3.png" width="100%" />
+<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-5-3.png" alt="" width="100%" />
 
 ``` r
 plot_ani_dist(d_q99, phenotype = 'spiked', contigs = th_c5$Contig_name[1:5], contig_names = th_c5$Genome_file[1:5])
 ```
 
-<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-5-4.png" width="100%" />
+<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-5-4.png" alt="" width="100%" />
 
 ``` r
 # Parabacteroides distasonis is in all samples, so, this can only be a beta hit!
@@ -575,11 +384,6 @@ library(anpan)
 ``` r
 library(ape)
 library(tibble)
-```
-
-    ## Warning: package 'tibble' was built under R version 4.4.3
-
-``` r
 tree = read.tree("p_distasonis_sims/spiked_tree.tre")
 
 metadata = tibble(sample_id = tree$tip.label,
@@ -608,7 +412,7 @@ plot_outcome_tree(tree,
     ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
     ## generated.
 
-<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-6-1.png" width="100%" />
+<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-6-1.png" alt="" width="100%" />
 
 Looks like the left-most branch has a bunch of spiked ones, it’ll be
 interesting to see variation with coverage
@@ -643,7 +447,7 @@ plot_outcome_tree(tree_test,
                   outcome    = "spiked")
 ```
 
-<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-7-1.png" width="100%" />
+<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-7-1.png" alt="" width="100%" />
 
 ``` r
 # Clearly no signal
@@ -707,7 +511,7 @@ plot_outcome_tree(tree_test,
                   outcome    = "spiked")
 ```
 
-<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-8-1.png" width="100%" />
+<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-8-1.png" alt="" width="100%" />
 
 ``` r
 # Signal is a bit weak
@@ -772,7 +576,7 @@ plot_outcome_tree(tree_test,
                   outcome    = "spiked")
 ```
 
-<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-9-1.png" width="100%" />
+<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-9-1.png" alt="" width="100%" />
 
 ``` r
 # Clearly signal is present
@@ -837,7 +641,7 @@ plot_outcome_tree(tree_test,
                   outcome    = "spiked")
 ```
 
-<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-10-1.png" width="100%" />
+<img src="sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-10-1.png" alt="" width="100%" />
 
 ``` r
 # Clearly dominant signal
@@ -881,3 +685,262 @@ AnPan works as well - when there is signal in the phylogeny, it can
 detect it accurately. However, building the tree can be tricky if the
 strain coverage is low. StrainSpy can work equally well in the lower
 coverage simulations as well, without requiring a phylogeny.
+
+## Figure for paper
+
+``` r
+library(ggplot2)
+library(dplyr)
+```
+
+    ## 
+    ## Attaching package: 'dplyr'
+
+    ## The following object is masked from 'package:ape':
+    ## 
+    ##     where
+
+    ## The following objects are masked from 'package:stats':
+    ## 
+    ##     filter, lag
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
+
+``` r
+library(ggrepel)
+
+# strainspy result
+
+spike = "GCF_024791025.1"
+
+th_plt = rbind(cbind(th_c1, coverage = "x1"),
+               cbind(th_c3, coverage = "x3"),
+               cbind(th_c5, coverage =  "x5"))
+
+th_plt[nrow(th_plt)+1, ] = th_plt[nrow(th_plt),]
+# manually add the baseline hits (there are none!)
+th_plt$coefficient[nrow(th_plt)] = 0 
+th_plt$p_adjust[nrow(th_plt)] = 1
+th_plt$coverage[nrow(th_plt)] = "Null"
+th_plt$Contig_name[nrow(th_plt)] = ""
+
+
+th_plt$neglog_p = -log10(th_plt$p_adjust)
+
+label_df <- th_plt %>%
+  group_by(coverage) %>%
+  arrange(p_adjust, .by_group = TRUE) %>%
+  slice_head(n = 5) %>%
+  ungroup()
+
+# No label needed for the fake point
+rmidx = which(label_df$coverage == "Null")
+if(length(rmidx) > 0) label_df = label_df[-rmidx, ]
+
+top1 <- th_plt %>%
+  group_by(coverage) %>%
+  arrange(p_adjust) %>%
+  slice(1)
+
+ggplot(th_plt, aes(x = coefficient, y = neglog_p)) +
+  geom_point(
+    data = subset(th_plt, Genome_file != spike),
+    aes(color = "other"),
+    size = 1,
+    alpha = 0.5
+  ) +
+  geom_point(
+    data = subset(th_plt, Genome_file == spike),
+    color = "red",
+    size = 2.5,
+    stroke = 1.2
+  ) +
+  geom_text_repel(
+    data = label_df,
+    aes(label = Genome_file),
+    size = 4.5,
+    fontface = "bold",
+    box.padding = 0.4,
+    point.padding = 0.3,
+    segment.color = "grey50",
+    max.overlaps = Inf
+  ) + 
+  
+  scale_color_manual(values = c("grey70", "red")) +
+  facet_wrap(~coverage, nrow = 1) +
+  theme_classic() +
+  labs(
+    x = "Effect size (coefficient)",
+    y = expression(-log[10](adjusted~p))
+  ) +
+  guides(color = "none") + 
+  geom_vline(xintercept = 0, linetype = "dashed", alpha = 0.3) +
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed", alpha = 0.3) +
+  theme_classic(base_size = 16) +
+  theme(
+    strip.background = element_rect(fill = "grey95"),
+    strip.text = element_text(face = "bold"),
+    panel.spacing = unit(1, "lines")
+  )
+```
+
+![](sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+``` r
+# anpan result
+
+## Null model
+rm_idx = rm_idx = grep("_sx", metadata$sample_id)
+metadata_test = metadata[-rm_idx, ]
+
+# Drop the same leaves from the tree
+tree_test = drop.tip(tree, metadata$sample_id[rm_idx])
+tp_null = plot_outcome_tree(tree_test,
+                        metadata_test, 
+                        covariates = c(),
+                        outcome    = "spiked", return_tree_df = T)
+
+tp_null$tree_plot + theme_classic(base_size = 16) +
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank()
+  )
+```
+
+![](sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-11-2.png)<!-- -->
+
+``` r
+## Coverage 1 
+rm_idx = unlist(c(sapply(ss, function(x) which(metadata$sample_id %in% x)), grep("_sx3", metadata$sample_id), grep("_sx5", metadata$sample_id)))
+metadata_test = metadata[-rm_idx, ]
+
+# Drop the same leaves from the tree
+tree_test = drop.tip(tree, metadata$sample_id[rm_idx])
+tp1 = plot_outcome_tree(tree_test,
+                        metadata_test, 
+                        covariates = c(),
+                        outcome    = "spiked", return_tree_df = T)
+
+tp1$tree_plot + theme_classic(base_size = 16) +
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank()
+  )
+```
+
+![](sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-11-3.png)<!-- -->
+
+``` r
+## Coverage 3 
+rm_idx = unlist(c(sapply(ss, function(x) which(metadata$sample_id %in% x)), grep("_sx1", metadata$sample_id), grep("_sx5", metadata$sample_id)))
+metadata_test = metadata[-rm_idx, ]
+
+# Drop the same leaves from the tree
+tree_test = drop.tip(tree, metadata$sample_id[rm_idx])
+tp3 = plot_outcome_tree(tree_test,
+                        metadata_test, 
+                        covariates = c(),
+                        outcome    = "spiked", return_tree_df = T)
+
+tp3$tree_plot + theme_classic(base_size = 16) +
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank()
+  )
+```
+
+![](sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-11-4.png)<!-- -->
+
+``` r
+## Coverage 5
+rm_idx = unlist(c(sapply(ss, function(x) which(metadata$sample_id %in% x)), grep("_sx1", metadata$sample_id), grep("_sx3", metadata$sample_id)))
+metadata_test = metadata[-rm_idx, ]
+
+# Drop the same leaves from the tree
+tree_test = drop.tip(tree, metadata$sample_id[rm_idx])
+tp5 = plot_outcome_tree(tree_test,
+                        metadata_test, 
+                        covariates = c(),
+                        outcome    = "spiked", return_tree_df = T)
+
+tp5$tree_plot + theme_classic(base_size = 16) +
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank()
+  )
+```
+
+![](sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-11-5.png)<!-- -->
+
+``` r
+# Results summary plot
+anpan_summary <- tibble(
+  coverage = c("Null", "x1", "x3", "x5"),
+  
+  elpd_diff = -c(
+    anpan_res_bl$loo$comparison["pglmm_fit", "elpd_diff"],
+    anpan_res_c1$loo$comparison["base_fit", "elpd_diff"],
+    anpan_res_c3$loo$comparison["base_fit", "elpd_diff"],
+    anpan_res_c5$loo$comparison["base_fit", "elpd_diff"]
+  ),
+  
+  se_diff = c(
+    anpan_res_bl$loo$comparison["pglmm_fit", "se_diff"],
+    anpan_res_c1$loo$comparison["base_fit", "se_diff"],
+    anpan_res_c3$loo$comparison["base_fit", "se_diff"],
+    anpan_res_c5$loo$comparison["base_fit", "se_diff"]
+  )
+) %>%
+  mutate(
+    abs_elpd = abs(elpd_diff),
+    z_score = abs_elpd / se_diff
+  )
+
+anpan_summary$coverage <- factor(anpan_summary$coverage,
+                                 levels = c("Null", "x1","x3","x5"))
+
+anpan_summary <- anpan_summary %>%
+  mutate(
+    x = as.numeric(coverage),
+    signal = abs(elpd_diff) / se_diff
+  )
+
+ggplot(anpan_summary, aes(x = x, y = elpd_diff, group = 1)) +
+  
+  # uncertainty
+  geom_errorbar(
+    aes(
+      ymin = elpd_diff - se_diff,
+      ymax = elpd_diff + se_diff
+    ),
+    width = 0.1
+  ) +
+  
+  # trajectory
+  geom_line(linewidth = 1) +
+  
+  # points
+  geom_point(size = 4) +
+  
+  # reference line
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  
+  # threshold (your rule)
+  geom_hline(yintercept = 2, linetype = "dotted", color = "red") +
+  
+  scale_x_continuous(
+    breaks = 1:4,
+    labels = c("Null", "1x","3x","5x")
+  ) +
+  
+  theme_classic(base_size = 16) +
+  
+  labs(
+    x = "Coverage",
+    y = expression(Delta~ELPD~abs(phylogeny - base))
+  )
+```
+
+![](sims_spike_query_pdis_files/figure-gfm/unnamed-chunk-11-6.png)<!-- -->

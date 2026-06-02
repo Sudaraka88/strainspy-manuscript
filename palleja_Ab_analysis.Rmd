@@ -1,7 +1,7 @@
 ---
 title: "Analysis of Palleja Antibiotic Exposure data"
 output: github_document
-date: "2025-07-28"
+date: "2026-04-24"
 editor_options: 
   chunk_output_type: console
 ---
@@ -31,6 +31,8 @@ library(stringr)
 library(SummarizedExperiment)
 library(ggplot2)
 library(ggsci)
+library(dplyr)
+library(tidyr)
 ```
 
 ## Load metadata and tax
@@ -43,7 +45,7 @@ meta$load = log(meta$g_load) # This is probably better representative given gut 
 conv_design = as.formula('~days + (1 | subject)') # conventional without load adjustment
 design = as.formula('~ days + (1|subject) + load')
 
-tax95 = read_taxonomy(system.file("extdata", "example_taxonomy.tsv.gz", package = "strainspy"))
+# tax95 = read_taxonomy(system.file("extdata", "example_taxonomy.tsv.gz", package = "strainspy"))
 tax99 = read_taxonomy("data/TAXONOMY/sylph_DB_taxonomy_99.tsv")
 
 ```
@@ -98,26 +100,6 @@ se_q = cleanup(read_sylph("data/palleja_ab_recovery/combined_q_99.tsv"), meta)
 
 ```
 
-## Fit to profile 
-
-```{r, fig.width=12}
-
-save_path <- "output_rds/palleja_zib_p_95.rds"
-if(file.exists(save_path)){
-  fit_zib_p <- readRDS(save_path)
-} else {
-  ebp_p = compute_eb_priors(se = se_p, design = as.formula('~ days'), 
-                            nthreads = parallel::detectCores(), low_cutoff = 0, high_cutoff = Inf)
-  
-  fit_zib_p = glmZiBFit(se_p, conv_design, nthreads = parallel::detectCores(), MAP_prior = ebp_p)
-  saveRDS(fit_zib_p, save_path)
-}
-
-
-plot_ani_dist(se_p, 'days', pool_contigs(fit_zib_p), show_points = T, plot_type = "box")
-viz(se_p, fit_zib_p, tax95)
-```
-
 ## Fit to query
 
 ```{r, fig.width=12}
@@ -133,11 +115,25 @@ if(file.exists(save_path)){
   saveRDS(fit_zib_q, save_path)
 }
 
+# Day 0 to day 8
+th_q0 = top_hits(fit_zib_q, 3)
+th_q0 = comp_ani_diff_and_posthoc_test(se = se_q, fit = fit_zib_q, th = th_q0)
+th_q = th_q0[is.na(th_q0$Comment), ]
 
-viz(se_q, fit_zib_q, tax99)
+# Reorder so that the highest ani difference ones come on top
+
+th_q <- th_q %>%
+  dplyr::arrange(
+    desc(abs(ANI_Difference))
+  )
+
+th_q = strainspy:::add_tax2tophits(th_q, tax99)
+plt_idx = c(1,11,14,35, 62, 169) # Picking different species
+
+plot_ani_dist(se_q, 'days', th_q$Contig_name[plt_idx])
 
 # Nice signal here:
-# Veillonella parvula - 00100
+# Veillonella sp. - 00100
 # Faecalibacterium prausnitzii - 0-1-3-20
 
 
@@ -161,7 +157,7 @@ p1-p2
 
 ```
 
-It seems that relative abundance does have the trend mentioned in the paper, but ANI is stable.
+It seems that relative abundance does have the trend mentioned in the paper, but ANI is unchanged. 
 
 ## Check microbial load vs reported enriched low abundance commensals
 ```{r, fig.width=12}
@@ -173,13 +169,13 @@ summary_df <- meta %>%
   )
 
 ggplot() +
-  geom_line(data = meta, aes(x = as.numeric(days), y = log(g_load), group = subject, color = subject), size = 0.8, alpha = 0.5) +
+  geom_line(data = meta, aes(x = as.numeric(days), y = log(g_load), group = subject, color = subject), linewidth = 0.8, alpha = 0.5) +
   geom_point(data = meta, aes(x = as.numeric(days), y = log(g_load), color = subject), size = 3, alpha = 0.8) +
-  geom_line(data = summary_df, aes(x = as.numeric(days), y = mean_log_gload), size = 1.2, color = "black") +
+  geom_line(data = summary_df, aes(x = as.numeric(days), y = mean_log_gload), linewidth = 1.2, color = "black") +
   geom_ribbon(data = summary_df, aes(x = as.numeric(days), ymin = mean_log_gload - se_log_gload, ymax = mean_log_gload + se_log_gload), alpha = 0.3, fill = "grey") +
   xlab("Days") +
   ylab("Predicted log microbial load (Galaxy model)") +
-   scale_color_manual(values =  c(
+  scale_color_manual(values =  c(
     "#D55E00", # reddish-orange  
     "#0072B2", # deep blue  
     "#009E73", # teal/green  
@@ -205,9 +201,9 @@ As expected microbial load goes down after antibiotic exposure. Could the relati
 ```{r, fig.width=12}
 
 # Helper function
-generate_species_plot = function(fit_ab){
+generate_species_plot = function(fit_){
   # Pool the stains that are different at least one day compared to baseline
-  plt_dat = plot_ani_dist(se_p95_abund,phenotype = 'days',contigs = pool_contigs(fit_ab) ,show_points = TRUE,plot_type = 'box', plot = F)
+  plt_dat = plot_ani_dist(se_p95_abund,phenotype = 'days',contigs = pool_contigs(fit_) ,show_points = TRUE,plot_type = 'box', plot = F)
   plt_dat = plt_dat %>% 
     group_by(Contig, days) %>%
     summarise(mean_ANI = mean(ANI, na.rm = TRUE), median_ANI = median(ANI, na.rm = T), .groups = 'drop')
@@ -263,20 +259,95 @@ if(file.exists(save_path)){
 generate_species_plot(fit_ab_load)
 ```
 
+No *E. coli&* detected in either case, and the number of species detected is stable with and without including load as a covariate. 
+
+### ANI model without load adjustment
+```{r, fig.width=12, fig.height=24}
+save_path <- "output_rds/palleja_fit_p_95_conv.rds"
+if(file.exists(save_path)){
+  fit_zib_p <- readRDS(save_path)
+} else {
+  fit_zib_p = glmZiBFit(se = se_p, design = conv_design, nthreads = parallel::detectCores())
+  saveRDS(fit_zib_p, save_path)
+}
+
+generate_species_plot(fit_zib_p)
+```
+
+### ANI model with load adjustment
+```{r, fig.width=12, fig.height=24}
+save_path <- "output_rds/palleja_fit_p_95_load_adj.rds"
+if(file.exists(save_path)){
+  fit_zib_p_load <- readRDS(save_path)
+} else {
+  fit_zib_p_load = glmZiBFit(se = se_p, design = design, nthreads = parallel::detectCores())
+  saveRDS(fit_zib_p_load, save_path)
+}
+
+generate_species_plot(fit_zib_p_load)
+```
+
 After adjusting for load, we lose many top hits, including *E. coli*. These were all likely driven by the reduction of overall microbial load.
 
 # Paper Figure
 
 ## Strain emergence or disappearance
 
-Pool top hits with BH at `alpha = 0.05`.
+Let's redo top hist using very permissive settings, i.e., use `BH` and `alpha = 0.05`. After all, these are still significant after correcting for multiple testing. 
 
 ```{r}
 
-top_hits = rbind( data.frame(strainspy:::add_tax2tophits(top_hits(fit_zib_q, coef = 2, method = "BH"), tax99, columns = c("Phylum", "Genus", "Species")), day = 4), # day 4
-                  data.frame(strainspy:::add_tax2tophits(top_hits(fit_zib_q, coef = 3, method = "BH"), tax99, columns = c("Phylum", "Genus", "Species")), day = 8), # day 8
-                  data.frame(strainspy:::add_tax2tophits(top_hits(fit_zib_q, coef = 4, method = "BH"), tax99, columns = c("Phylum", "Genus", "Species")), day = 42), # day 42
-                  data.frame(strainspy:::add_tax2tophits(top_hits(fit_zib_q, coef = 5, method = "BH"), tax99, columns = c("Phylum", "Genus", "Species")), day = 180)) # day 180
+th2 = top_hits(fit_zib_q, coef = 2, method = "BH")
+th2_ph = comp_ani_diff_and_posthoc_test(se_q, fit_zib_q, th2, nthreads = parallel::detectCores())
+th2 = th2_ph[is.na(th2_ph$Comment) | th2_ph$hit_component == "both",,]; rownames(th2) = NULL
+th2 = strainspy:::add_tax2tophits(th2, tax99, columns = c("Phylum", "Genus", "Species"))
+
+th3 = top_hits(fit_zib_q, coef = 3, method = "BH")
+th3_ph = comp_ani_diff_and_posthoc_test(se_q, fit_zib_q, th3, nthreads = parallel::detectCores())
+th3 = th3_ph[is.na(th3_ph$Comment) | th3_ph$hit_component == "both",,]
+th3 = strainspy:::add_tax2tophits(th3, tax99, columns = c("Phylum", "Genus", "Species"))
+
+th4 = top_hits(fit_zib_q, coef = 4, method = "BH")
+th4_ph = comp_ani_diff_and_posthoc_test(se_q, fit_zib_q, th4, nthreads = parallel::detectCores())
+th4 = th4_ph[is.na(th4_ph$Comment) | th4_ph$hit_component == "both",]
+th4 = strainspy:::add_tax2tophits(th4, tax99, columns = c("Phylum", "Genus", "Species"))
+
+th5 = top_hits(fit_zib_q, coef = 5, method = "BH")
+th5_ph = comp_ani_diff_and_posthoc_test(se_q, fit_zib_q, th5, nthreads = parallel::detectCores())
+th5 = th5_ph[is.na(th5_ph$Comment) | th5_ph$hit_component == "both",,]
+th5 = strainspy:::add_tax2tophits(th5, tax99, columns = c("Phylum", "Genus", "Species"))
+
+top_hits = rbind( data.frame(strainspy:::add_tax2tophits(th2, tax99, columns = c("Phylum", "Genus", "Species")), day = 4),   # day 4
+                  data.frame(strainspy:::add_tax2tophits(th3, tax99, columns = c("Phylum", "Genus", "Species")), day = 8),   # day 8
+                  data.frame(strainspy:::add_tax2tophits(th4, tax99, columns = c("Phylum", "Genus", "Species")), day = 42),  # day 42
+                  data.frame(strainspy:::add_tax2tophits(th5, tax99, columns = c("Phylum", "Genus", "Species")), day = 180)) # day 180
+
+
+#### Some stats for the paper results ###
+
+# Depletion counts right after exposure
+th_depletion = rbind(th2[th2$hit_component == "zi" | th2$hit_component ==  "both",],
+                     th3[th3$hit_component == "zi" | th3$hit_component ==  "both",] )
+length(unique(th_depletion$Species))
+length(unique(th_depletion$Genus))
+
+th_turnover = rbind(th2[th2$hit_component == "beta" | th2$hit_component ==  "both",],
+                     th3[th3$hit_component == "beta" | th3$hit_component ==  "both",] )
+length(unique(th_turnover$Species))
+length(unique(th_turnover$Genus))
+
+
+# Recovery
+th_recovery = rbind(th4[th4$hit_component == "zi" | th4$hit_component ==  "both",],
+                     th5[th5$hit_component == "zi" | th5$hit_component ==  "both",] )
+length(unique(th_recovery$Species))
+length(unique(th_recovery$Genus))
+
+th_rec_turnover = rbind(th4[th4$hit_component == "beta" | th4$hit_component ==  "both",],
+                     th5[th5$hit_component == "beta" | th5$hit_component ==  "both",] )
+length(unique(th_rec_turnover$Species))
+length(unique(th_rec_turnover$Genus))
+
 
 contigs_to_pull = unique(top_hits$Contig_name)
 asy = SummarizedExperiment::assay(se_q)
@@ -322,7 +393,200 @@ non_zero_counts <- ani_filtered %>%
 
 ```
 
-## Fate of Short-chain fatty acid producers
+## Use a weighted sum to detect most affected strains
+```{r}
+# Define your kernel for depletion
+# Days: 0, 4, 8, 42, 180
+# Weights: 1, -1, -1, 1, 1 (High score = Depletion at days 4 & 8)
+depletion_kernel <- c(1, -1, -1, 1, 1)
+ani_filtered_ <- ani_filtered
+ani_filtered_$days = as.numeric(ani_filtered_$days)
+# Ensure data is complete and compute scores per subject
+strain_stats <- ani_filtered_ %>%
+  complete(nesting(Contig_name, Genus, Species, subject), 
+           days = c(0, 4, 8, 42, 180), 
+           fill = list(ANI = 0)) %>%
+  arrange(days) %>%
+  group_by(subject, Contig_name, Genus, Species) %>%
+  summarise(
+    depletion_score = sum(ANI * depletion_kernel),
+    .groups = "drop"
+  ) %>%
+  # Now aggregate across subjects
+  group_by(Contig_name, Genus, Species) %>%
+  summarise(
+    avg_score = mean(depletion_score, na.rm = TRUE),
+    sd_score = sd(depletion_score, na.rm = TRUE),
+    n_subjects = n(), # Useful to see if the strain was present in all subjects
+    .groups = "drop"
+  ) %>%
+  arrange(desc(avg_score))
+```
+
+### Visualise interesting variations of species within genera
+```{r}
+genus_dist = function(selected_genera){ 
+  selected_species = unique(ani_filtered$Species[ani_filtered$Genus == selected_genera])
+  # get genera counts in the database
+  species_totals <- tax99 %>%
+    filter(Species %in% selected_species) %>%
+    distinct(Species, Genome) %>%    # unique strain × genus pairs
+    group_by(Species) %>%
+    summarize(total_strains = n(), .groups = "drop") %>%
+    complete(Species = selected_species, fill = list(total_strains = 0))
+  
+  day_levels <- c("0","4","8","42","180") 
+  
+  presence_df <- ani_filtered %>%
+    filter(Species %in% selected_species) %>%
+    mutate(days = factor(as.character(days), levels = day_levels),
+           present = ANI > 95) %>%
+    # count unique contig names per Genus x subject x day where present == TRUE
+    group_by(Species, subject, days) %>%
+    summarize(n_strains = n_distinct(Contig_name[present]), .groups = "drop")
+  
+  
+  prop_df <- presence_df %>%
+    left_join(species_totals, by = "Species") %>%
+    mutate(
+      # avoid division by zero: if genus has zero total strains, produce NA
+      prop_of_species = if_else(total_strains > 0,
+                                n_strains / total_strains,
+                                NA_real_)
+    )
+  
+  baseline <- prop_df %>%
+    group_by(Species, subject) %>%
+    summarize(
+      prop0 = max(prop_of_species, na.rm = TRUE),   # highest proportion across all days
+      .groups = "drop"
+    )
+  
+  prop_df2 <- prop_df %>%
+    left_join(baseline, by = c("Species", "subject"))
+  
+  prop_df2 <- prop_df2 %>%
+    mutate(
+      ratio = if_else(!is.na(prop0) & prop0 > 0,
+                      prop_of_species / prop0,
+                      NA_real_),      # baseline-0 subjects → NA
+      ratio = pmin(ratio, 1)   # cap at 1 so colour means "as present as baseline"
+    )
+  summary_ratio <- prop_df2 %>%
+    group_by(Species, days) %>%
+    summarize(
+      mean_ratio = mean(ratio, na.rm = TRUE),
+      se_ratio   = sd(ratio, na.rm = TRUE) / sqrt(sum(!is.na(ratio))),
+      n_subj     = sum(n_strains>0),
+      .groups = "drop"
+    ) %>%
+    mutate(days = factor(as.character(days), levels = c("0","4","8","42","180")))
+  
+  # Order genera by effect (optional)
+  order_species <- summary_ratio %>% filter(days == "8") %>% arrange(mean_ratio) %>% pull(Species) %>% unique()
+  summary_ratio <- summary_ratio %>% mutate(Species = factor(Species, levels = rev(order_species)))
+  
+  # Plot: white -> single colour; limits [0,1]; NA and 0 appear white
+  ggplot(summary_ratio, aes(x = days, y = Species, fill = n_subj)) +
+    geom_tile(color = "grey90", size = 0.3) +
+    geom_text(aes(label = sprintf("%d", n_subj)),
+              size = 6) +
+    scale_fill_gradient(
+      low = "white",
+      high = "#2A6EBBFF",    # pick a single strong colour
+      limits = c(0, 12),
+      na.value = "white",
+      name = "Strains Present"
+    ) +
+    labs(x = "Days", y = NULL) +
+    theme_minimal(base_size = 15) +
+    theme(panel.grid = element_blank(),
+          axis.text.x = element_text(angle = 45, hjust = 1))
+}
+
+# Few strong signals to see here:
+
+# B. dentium goes up while others go down and slowly recover
+genus_dist("Bifidobacterium")
+
+# R. gnavus goes up while other Ruminococci go down and recover
+genus_dist("Ruminococcus_B")
+genus_dist("Ruminococcus_E")
+
+# C leptum (A well known good bacteria) disappears shortly, C innocuum/saudiense (pathobionts) go up. 
+# We might be looking at wrong strains here, but the pattern is clear. 
+genus_dist("Clostridium_A")
+genus_dist("Clostridium")
+genus_dist("Clostridium_AQ")
+
+```
+
+### Check for abundance signal
+```{r}
+plot_avg_abundance = function(asy_mx, meta){
+  # 1. Pivot and Join (as before)
+  combined_data <- asy_mx %>% 
+    as.data.frame() %>%
+    tibble::rownames_to_column("Species") %>%
+    pivot_longer(-Species, names_to = "run_accession", values_to = "Abundance") %>%
+    inner_join(meta, by = "run_accession")
+  
+  # 2. Average across subjects for each Day
+  final_summary <- combined_data %>%
+    group_by(Species, days) %>%
+    summarise(
+      avg_abundance = mean(Abundance, na.rm = TRUE),
+      sem = sd(Abundance, na.rm = TRUE) / sqrt(n()),
+      n_subjects = n_distinct(subject), # Confirming data from all 10 subjects
+      .groups = "drop"
+    ) %>%
+    arrange(Species, days)
+  
+  mapping <- data.frame(
+    Species = unique(final_summary$Species), 
+    name_fix = strainspy:::clean_contig_names(unique(final_summary$Species))
+  )
+  
+  final_summary <- final_summary %>%
+    left_join(mapping, by = "Species")
+  
+  ggplot(final_summary, aes(x = factor(days), y = avg_abundance, color = name_fix, fill = name_fix, group = name_fix)) +
+    # The ribbon now uses the 'fill' aesthetic to match the line color
+    geom_ribbon(aes(ymin = avg_abundance - sem, ymax = avg_abundance + sem), alpha = 0.2, color = NA) +
+    geom_line(size = 1.2) +
+    geom_point(size = 3) +
+    facet_wrap(~name_fix, nrow = 1) + # 'free_y' helps see spikes in rare species
+    theme_minimal() +
+    scale_color_viridis_d(option = "turbo") +
+    scale_fill_viridis_d(option = "turbo") + 
+    # This removes the legend entirely
+    theme(legend.position = "none") +
+    labs(
+      x = "Day",
+      y = "Average Percentage Relative Abundance",
+      title = "Species Abundance Dynamics (Mean ± SEM)"
+    )
+}
+
+# Species level signals
+se_p_abud = cleanup(read_sylph("data/palleja_ab_recovery/combined_p_95.tsv", variable = 'Taxonomic_abundance'), meta)
+se_p_assay_bifid = as.matrix(SummarizedExperiment::assay(se_p_abud[rownames(se_p_abud)[grep("Bifidobacterium", rownames(se_p_abud))],]))
+plot_avg_abundance(se_p_assay_bifid, meta)
+
+se_p_assay_rum = as.matrix(SummarizedExperiment::assay(se_p_abud[rownames(se_p_abud)[grep("Ruminococcus", rownames(se_p_abud))],]))
+plot_avg_abundance(se_p_assay_rum, meta)
+
+se_p_assay_clos = rbind(as.matrix(SummarizedExperiment::assay(se_p_abud[rownames(se_p_abud)[grep("leptum", rownames(se_p_abud))],])),
+                        as.matrix(SummarizedExperiment::assay(se_p_abud[rownames(se_p_abud)[grep("innocuum", rownames(se_p_abud))],])),
+                        as.matrix(SummarizedExperiment::assay(se_p_abud[rownames(se_p_abud)[grep("saudiense", rownames(se_p_abud))],])))
+
+plot_avg_abundance(se_p_assay_clos, meta)
+
+
+```
+
+
+## Fate of Short-chain fatty acid producing genera
 ```{r, fig.width=12}
 scfa_genera <- c(
   "Faecalibacterium",  # classic butyrate producer
@@ -336,7 +600,7 @@ scfa_genera <- c(
 )
 
 sfca_non_zeros <- non_zero_counts %>% filter(Genus %in% scfa_genera)
-set.seed(25); cols <- ggsci::pal_bmj()(9)[sample(10, length(unique(sfca_non_zeros$Genus)))]
+set.seed(25); cols <- ggsci::pal_bmj()(length(unique(sfca_non_zeros$Genus)))
 
 ggplot(sfca_non_zeros, aes(x = days, y = mean_prop_zeros, color = Genus, group = Genus)) +
   geom_line(size = 1) +
@@ -398,92 +662,107 @@ ggplot(opp_non_zeros, aes(x = days, y = mean_prop_zeros, color = Genus, group = 
 ```{r, fig.width=12}
 
 Butyrate_genera <- c(
-  "Faecalibacterium",  
+  "Holdemanella",  
   "Anaerostipes",      
-  "Roseburia"
+  "Roseburia",
+  "Faecalibacterium",  # classic butyrate producer
+  "Agathobacter",      # Eubacterium rectale group
+  "Anaerobutyricum",   # E. hallii group
+  "Anaerostipes",      # strong butyrate producer
+  "Roseburia",         # hallmark butyrate producer
+  "Blautia_A",         # butyrate/acetate producer
+  "Fusicatenibacter",  # secondary butyrate producer
+  "Ruminococcus_E"    # butyrate producer
+  
 )
 
 opp_genera = opportunistic_genera <- c(
   "Clostridium",
-  "Klebsiella"
+  "Clostridium_AQ",
+  "Klebsiella",
+  "Escherichia",
+  "Ruminococcus_B",
+  "Eggerthella",
+  "Bifidobacterium"
 )
 
-selected_genera = c(Butyrate_genera, opp_genera)
-
-# get genera counts in the database
-genus_totals <- tax99 %>%
-  filter(Genus %in% selected_genera) %>%
-  distinct(Genus, Genome) %>%    # unique strain × genus pairs
-  group_by(Genus) %>%
-  summarize(total_strains = n(), .groups = "drop") %>%
-  complete(Genus = selected_genera, fill = list(total_strains = 0))
-
-day_levels <- c("0","4","8","42","180") 
-
-presence_df <- ani_filtered %>%
-  filter(Genus %in% selected_genera) %>%
-  mutate(days = factor(as.character(days), levels = day_levels),
-         present = ANI > 95) %>%
-  # count unique contig names per Genus x subject x day where present == TRUE
-  group_by(Genus, subject, days) %>%
-  summarize(n_strains = n_distinct(Contig_name[present]), .groups = "drop")
-
-
-prop_df <- presence_df %>%
-  left_join(genus_totals, by = "Genus") %>%
-  mutate(
-    # avoid division by zero: if genus has zero total strains, produce NA
-    prop_of_genus = if_else(total_strains > 0,
-                            n_strains / total_strains,
-                            NA_real_)
-  )
-
-baseline <- prop_df %>%
-  group_by(Genus, subject) %>%
-  summarize(
-    prop0 = max(prop_of_genus, na.rm = TRUE),   # highest proportion across all days
-    .groups = "drop"
-  )
-
-prop_df2 <- prop_df %>%
-  left_join(baseline, by = c("Genus", "subject"))
-
-prop_df2 <- prop_df2 %>%
+{
+  selected_genera = c(Butyrate_genera, opp_genera)
+  
+  # get genera counts in the database
+  genus_totals <- tax99 %>%
+    filter(Genus %in% selected_genera) %>%
+    distinct(Genus, Genome) %>%    # unique strain × genus pairs
+    group_by(Genus) %>%
+    summarize(total_strains = n(), .groups = "drop") %>%
+    complete(Genus = selected_genera, fill = list(total_strains = 0))
+  
+  day_levels <- c("0","4","8","42","180") 
+  
+  presence_df <- ani_filtered %>%
+    filter(Genus %in% selected_genera) %>%
+    mutate(days = factor(as.character(days), levels = day_levels),
+           present = ANI > 95) %>%
+    # count unique contig names per Genus x subject x day where present == TRUE
+    group_by(Genus, subject, days) %>%
+    summarize(n_strains = n_distinct(Contig_name[present]), .groups = "drop")
+  
+  
+  prop_df <- presence_df %>%
+    left_join(genus_totals, by = "Genus") %>%
     mutate(
-        ratio = if_else(!is.na(prop0) & prop0 > 0,
-                        prop_of_genus / prop0,
-                        NA_real_),      # baseline-0 subjects → NA
-        ratio = pmin(ratio, 1)   # cap at 1 so colour means "as present as baseline"
+      # avoid division by zero: if genus has zero total strains, produce NA
+      prop_of_genus = if_else(total_strains > 0,
+                              n_strains / total_strains,
+                              NA_real_)
     )
-summary_ratio <- prop_df2 %>%
+  
+  baseline <- prop_df %>%
+    group_by(Genus, subject) %>%
+    summarize(
+      prop0 = max(prop_of_genus, na.rm = TRUE),   # highest proportion across all days
+      .groups = "drop"
+    )
+  
+  prop_df2 <- prop_df %>%
+    left_join(baseline, by = c("Genus", "subject"))
+  
+  prop_df2 <- prop_df2 %>%
+    mutate(
+      ratio = if_else(!is.na(prop0) & prop0 > 0,
+                      prop_of_genus / prop0,
+                      NA_real_),      # baseline-0 subjects → NA
+      ratio = pmin(ratio, 1)   # cap at 1 so colour means "as present as baseline"
+    )
+  summary_ratio <- prop_df2 %>%
     group_by(Genus, days) %>%
     summarize(
-        mean_ratio = mean(ratio, na.rm = TRUE),
-        se_ratio   = sd(ratio, na.rm = TRUE) / sqrt(sum(!is.na(ratio))),
-        n_subj     = sum(!is.na(ratio)),
-        .groups = "drop"
+      mean_ratio = mean(ratio, na.rm = TRUE),
+      se_ratio   = sd(ratio, na.rm = TRUE) / sqrt(sum(!is.na(ratio))),
+      n_subj     = sum(!is.na(ratio)),
+      .groups = "drop"
     ) %>%
     mutate(days = factor(as.character(days), levels = c("0","4","8","42","180")))
-
-# Order genera by effect (optional)
-order_genus <- summary_ratio %>% filter(days == "8") %>% arrange(mean_ratio) %>% pull(Genus) %>% unique()
-summary_ratio <- summary_ratio %>% mutate(Genus = factor(Genus, levels = rev(order_genus)))
-
-# Plot: white -> single colour; limits [0,1]; NA and 0 appear white
-ggplot(summary_ratio, aes(x = days, y = Genus, fill = mean_ratio)) +
+  
+  # Order genera by effect (optional)
+  order_genus <- summary_ratio %>% filter(days == "8") %>% arrange(mean_ratio) %>% pull(Genus) %>% unique()
+  summary_ratio <- summary_ratio %>% mutate(Genus = factor(Genus, levels = rev(order_genus)))
+  
+  # Plot: white -> single colour; limits [0,1]; NA and 0 appear white
+  ggplot(summary_ratio, aes(x = days, y = Genus, fill = mean_ratio)) +
     geom_tile(color = "grey90", size = 0.3) +
     scale_fill_gradient(
-        low = "white",
-        high = cols[2],    # pick a single strong colour
-        limits = c(0, 1),
-        na.value = "white",
-        name = "Strains Present"
+      low = "white",
+      high = cols[2],    # pick a single strong colour
+      limits = c(0, 1),
+      na.value = "white",
+      name = "Strains Present"
     ) +
     labs(x = "Days", y = NULL) +
     theme_minimal(base_size = 15) +
     theme(panel.grid = element_blank(),
           axis.text.x = element_text(angle = 45, hjust = 1))
-
+}
 ```
 
 ## Strain replacement
@@ -604,5 +883,120 @@ ggplot(df_plot, aes(x = factor(days), y = ANI, group = subject, color = subject)
   theme_clean(base_size = 14)
 
 # Strain replacement p-values for these three strains: 4.664351e-12 4.011619e-08 3.600068e-05
+
+
+df_plot_sd = df_plot %>% group_by(Species,days) %>% summarise(sd_ANI = sd(ANI))
+
+ggplot(df_plot_sd, aes(x = days, y = sd_ANI)) +
+  geom_col(width = 0.7, fill = "grey70") +
+  
+  facet_wrap(~Species, scales = "free_y") +
+  
+  labs(x = "Day", y = "SD of ANI") +
+  
+  theme_minimal(base_size = 14) +
+  theme(
+    strip.text = element_text(face = "bold"),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  ) + 
+  geom_text(aes(label = sprintf("%.2f", sd_ANI)),
+            vjust = -0.3, size = 3)
+
+```
+
+### Paper Figures
+```{r, fig.width=12}
+## Supplementary abundance
+## SFCA_Producers
+se_p_assay_fp = as.matrix(SummarizedExperiment::assay(se_p_abud[rownames(se_p_abud)[grep("prausnitzii", rownames(se_p_abud))],]))
+plot_avg_abundance(se_p_assay_fp, meta)
+
+se_p_assay_bl = as.matrix(SummarizedExperiment::assay(se_p_abud[rownames(se_p_abud)[grep("Bifidobacterium", rownames(se_p_abud))],]))
+plot_avg_abundance(se_p_assay_bl, meta)
+
+
+
+strain_dist = function(selected_strains){ 
+  
+  idx_list = sapply(selected_strains, function(x) grep(x, ani_filtered$Contig_name))
+  chose_idx = unname(unlist(idx_list))
+  
+  ani_filtered_ss = ani_filtered[chose_idx,]
+  ani_filtered_ss$strain = rep(selected_strains, times = unlist(lapply(idx_list, length)))
+  
+  
+  day_levels <- c("0","4","8","42","180")
+  # 12 subjects on all days except 4 (9)
+  
+  ani_filtered_ss$n_tot_subj = ifelse(ani_filtered_ss$days == 4, 9, 12)
+  
+  presence_df <- ani_filtered_ss %>%
+    mutate(days = factor(as.character(days), levels = day_levels),
+           present = ANI > 95) %>%
+    # count unique contig names per Genus x subject x day where present == TRUE
+    group_by(Species, subject, days) %>%
+    summarize(n_strains = n_distinct(Contig_name[present]),
+              n_tot_subj = unique(n_tot_subj),
+              strain = unique(strain),
+              .groups = "drop")
+  
+  
+  summary_ratio <- presence_df %>%
+    group_by(days, Species) %>%
+    summarize(
+      Species = unique(Species),
+      mean_ratio = sum(n_strains)/unique(n_tot_subj),
+      n_subj = sum(n_strains),
+      strain = unique(strain),
+      .groups = "drop"
+    ) %>%
+    mutate(days = factor(as.character(days), levels = c("0","4","8","42","180")))
+  
+  # Order genera by effect (optional)
+  order_species <- summary_ratio %>% filter(days == "8") %>% arrange(mean_ratio) %>% pull(Species) %>% unique()
+  summary_ratio <- summary_ratio %>% mutate(Species = factor(Species, levels = rev(order_species)))
+  
+  # Plot: white -> single colour; limits [0,1]; NA and 0 appear white
+  summary_ratio$strain = factor(summary_ratio$strain, levels = rev(selected_strains))
+  ggplot(summary_ratio, aes(x = days, y = strain, fill = mean_ratio)) +
+    geom_tile(color = "grey90", size = 0.3) +
+    geom_text(aes(label = sprintf("%d", n_subj)),
+              size = 6) +
+    scale_fill_gradient(
+      low = "white",
+      high = "#2A6EBBFF",    # pick a single strong colour
+      limits = c(0, 1),
+      na.value = "white",
+      name = "Prevalence"
+    ) +
+    labs(x = "Days", y = NULL) +
+    theme_minimal(base_size = 15) +
+    theme(panel.grid = element_blank(),
+          axis.text.x = element_text(angle = 45, hjust = 1))
+}
+
+### ANI presence/absence for following species 
+## Competition picture
+# Bif longum "NC_014656.1", Bif dentium "NZ_CP072503.1"
+# Rum bromii 	"SFJY01000034.1", Rum gnavus "CATXMW010000001.1"
+# Clos leptum "CABIYC010000001.1", Clos innocuum "CANBFG010000001.1"
+
+## SFCA Picture
+# F prausnitzii: CABMFC010000001.1 gone
+# F prausnitzii: NC_021020.1 returned
+
+## Oppotunitists
+#  Klebs "NZ_JAQDCG010000001.1"
+#  E coli "NZ_CP104500.1"
+
+strain_dist(c("NC_014656.1", "NZ_CP072503.1", 
+              "SFJY01000034.1", "CATXMW010000001.1",
+              "CABIYC010000001.1", "CANBFG010000001.1", 
+              "CABMFC010000001.1", "NC_021020.1",
+              "NZ_JAQDCG010000001.1",
+              "NZ_CP104500.1"))
+
+
+
 
 ```

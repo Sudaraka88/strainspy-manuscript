@@ -2,7 +2,7 @@
 title: "Re-analysing pancancer dataset with dispersion priors"
 output:
   github_document
-date: "2026-02-17"
+date: "2026-04-27"
 editor_options:
   chunk_output_type: console
 ---
@@ -94,12 +94,12 @@ plot_ani_dist(sy, 'RvsP', th$Contig_name[1:10])
 
 ```
 
-Clearly, at least *B. animalis* and *F. nucleatum* should not be picked...
+Clearly, at least *B. animalis* and *F. nucleatum* should NOT be picked...
 
 ### Post-hoc testing
 
 ```{r}
-th_ph = estimate_effect_sizes(sy, ZB_fit, th)
+th_ph = strainspy::comp_ani_diff_and_posthoc_test(sy, ZB_fit, th)
 
 table(th_ph$Comment, useNA = 'always') # now there are only 16 hits
 
@@ -192,7 +192,7 @@ Not enough to kill *B. animalis* though...
 
 ###  Post-hoc testing
 ```{r}
-th_debp_ph = estimate_effect_sizes(sy, ZB_fit, th_debp)
+th_debp_ph = strainspy::comp_ani_diff_and_posthoc_test(sy, ZB_fit, th_debp)
 
 table(th_debp_ph$Comment, useNA = 'always') # now there are only 15 hits, one less from before
 

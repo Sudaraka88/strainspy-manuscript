@@ -393,3 +393,223 @@ The phylogenetic model seems to fit better, and the difference seems clear (more
 
 
 AnPan works as well - when there is signal in the phylogeny, it can detect it accurately. However, building the tree can be tricky if the strain coverage is low. StrainSpy can work equally well in the lower coverage simulations as well, without requiring a phylogeny. 
+
+## Figure for paper
+```{r}
+library(ggplot2)
+library(dplyr)
+library(ggrepel)
+
+# strainspy result
+
+spike = "GCF_024791025.1"
+
+th_plt = rbind(cbind(th_c1, coverage = "x1"),
+               cbind(th_c3, coverage = "x3"),
+               cbind(th_c5, coverage =  "x5"))
+
+th_plt[nrow(th_plt)+1, ] = th_plt[nrow(th_plt),]
+# manually add the baseline hits (there are none!)
+th_plt$coefficient[nrow(th_plt)] = 0 
+th_plt$p_adjust[nrow(th_plt)] = 1
+th_plt$coverage[nrow(th_plt)] = "Null"
+th_plt$Contig_name[nrow(th_plt)] = ""
+
+
+th_plt$neglog_p = -log10(th_plt$p_adjust)
+
+label_df <- th_plt %>%
+  group_by(coverage) %>%
+  arrange(p_adjust, .by_group = TRUE) %>%
+  slice_head(n = 5) %>%
+  ungroup()
+
+# No label needed for the fake point
+rmidx = which(label_df$coverage == "Null")
+if(length(rmidx) > 0) label_df = label_df[-rmidx, ]
+
+top1 <- th_plt %>%
+  group_by(coverage) %>%
+  arrange(p_adjust) %>%
+  slice(1)
+
+ggplot(th_plt, aes(x = coefficient, y = neglog_p)) +
+  geom_point(
+    data = subset(th_plt, Genome_file != spike),
+    aes(color = "other"),
+    size = 1,
+    alpha = 0.5
+  ) +
+  geom_point(
+    data = subset(th_plt, Genome_file == spike),
+    color = "red",
+    size = 2.5,
+    stroke = 1.2
+  ) +
+  geom_text_repel(
+    data = label_df,
+    aes(label = Genome_file),
+    size = 4.5,
+    fontface = "bold",
+    box.padding = 0.4,
+    point.padding = 0.3,
+    segment.color = "grey50",
+    max.overlaps = Inf
+  ) + 
+  
+  scale_color_manual(values = c("grey70", "red")) +
+  facet_wrap(~coverage, nrow = 1) +
+  theme_classic() +
+  labs(
+    x = "Effect size (coefficient)",
+    y = expression(-log[10](adjusted~p))
+  ) +
+  guides(color = "none") + 
+  geom_vline(xintercept = 0, linetype = "dashed", alpha = 0.3) +
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed", alpha = 0.3) +
+  theme_classic(base_size = 16) +
+  theme(
+    strip.background = element_rect(fill = "grey95"),
+    strip.text = element_text(face = "bold"),
+    panel.spacing = unit(1, "lines")
+  )
+
+
+# anpan result
+
+## Null model
+rm_idx = rm_idx = grep("_sx", metadata$sample_id)
+metadata_test = metadata[-rm_idx, ]
+
+# Drop the same leaves from the tree
+tree_test = drop.tip(tree, metadata$sample_id[rm_idx])
+tp_null = plot_outcome_tree(tree_test,
+                        metadata_test, 
+                        covariates = c(),
+                        outcome    = "spiked", return_tree_df = T)
+
+tp_null$tree_plot + theme_classic(base_size = 16) +
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank()
+  )
+
+## Coverage 1 
+rm_idx = unlist(c(sapply(ss, function(x) which(metadata$sample_id %in% x)), grep("_sx3", metadata$sample_id), grep("_sx5", metadata$sample_id)))
+metadata_test = metadata[-rm_idx, ]
+
+# Drop the same leaves from the tree
+tree_test = drop.tip(tree, metadata$sample_id[rm_idx])
+tp1 = plot_outcome_tree(tree_test,
+                        metadata_test, 
+                        covariates = c(),
+                        outcome    = "spiked", return_tree_df = T)
+
+tp1$tree_plot + theme_classic(base_size = 16) +
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank()
+  )
+
+## Coverage 3 
+rm_idx = unlist(c(sapply(ss, function(x) which(metadata$sample_id %in% x)), grep("_sx1", metadata$sample_id), grep("_sx5", metadata$sample_id)))
+metadata_test = metadata[-rm_idx, ]
+
+# Drop the same leaves from the tree
+tree_test = drop.tip(tree, metadata$sample_id[rm_idx])
+tp3 = plot_outcome_tree(tree_test,
+                        metadata_test, 
+                        covariates = c(),
+                        outcome    = "spiked", return_tree_df = T)
+
+tp3$tree_plot + theme_classic(base_size = 16) +
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank()
+  )
+
+## Coverage 5
+rm_idx = unlist(c(sapply(ss, function(x) which(metadata$sample_id %in% x)), grep("_sx1", metadata$sample_id), grep("_sx3", metadata$sample_id)))
+metadata_test = metadata[-rm_idx, ]
+
+# Drop the same leaves from the tree
+tree_test = drop.tip(tree, metadata$sample_id[rm_idx])
+tp5 = plot_outcome_tree(tree_test,
+                        metadata_test, 
+                        covariates = c(),
+                        outcome    = "spiked", return_tree_df = T)
+
+tp5$tree_plot + theme_classic(base_size = 16) +
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank()
+  )
+
+# Results summary plot
+anpan_summary <- tibble(
+  coverage = c("Null", "x1", "x3", "x5"),
+  
+  elpd_diff = -c(
+    anpan_res_bl$loo$comparison["pglmm_fit", "elpd_diff"],
+    anpan_res_c1$loo$comparison["base_fit", "elpd_diff"],
+    anpan_res_c3$loo$comparison["base_fit", "elpd_diff"],
+    anpan_res_c5$loo$comparison["base_fit", "elpd_diff"]
+  ),
+  
+  se_diff = c(
+    anpan_res_bl$loo$comparison["pglmm_fit", "se_diff"],
+    anpan_res_c1$loo$comparison["base_fit", "se_diff"],
+    anpan_res_c3$loo$comparison["base_fit", "se_diff"],
+    anpan_res_c5$loo$comparison["base_fit", "se_diff"]
+  )
+) %>%
+  mutate(
+    abs_elpd = abs(elpd_diff),
+    z_score = abs_elpd / se_diff
+  )
+
+anpan_summary$coverage <- factor(anpan_summary$coverage,
+                                 levels = c("Null", "x1","x3","x5"))
+
+anpan_summary <- anpan_summary %>%
+  mutate(
+    x = as.numeric(coverage),
+    signal = abs(elpd_diff) / se_diff
+  )
+
+ggplot(anpan_summary, aes(x = x, y = elpd_diff, group = 1)) +
+  
+  # uncertainty
+  geom_errorbar(
+    aes(
+      ymin = elpd_diff - se_diff,
+      ymax = elpd_diff + se_diff
+    ),
+    width = 0.1
+  ) +
+  
+  # trajectory
+  geom_line(linewidth = 1) +
+  
+  # points
+  geom_point(size = 4) +
+  
+  # reference line
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  
+  # threshold (your rule)
+  geom_hline(yintercept = 2, linetype = "dotted", color = "red") +
+  
+  scale_x_continuous(
+    breaks = 1:4,
+    labels = c("Null", "1x","3x","5x")
+  ) +
+  
+  theme_classic(base_size = 16) +
+  
+  labs(
+    x = "Coverage",
+    y = expression(Delta~ELPD~abs(phylogeny - base))
+  )
+
+```

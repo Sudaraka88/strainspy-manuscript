@@ -2,7 +2,7 @@
 title: "Prediction of CRC using 3414 pooled colorectal cancer metagenomes"
 output:
   github_document
-date: "2025-11-01"
+date: "2026-04-23"
 editor_options:
   chunk_output_type: console
 ---
@@ -87,19 +87,6 @@ th = top_hits(fit, coef = 2, method = "BH", alpha = 1)
 
 sy_mx_BH = strainspy::prep_for_prediction(sy, 'disease', th$Contig_name)
 
-# sy_mx = assay(sy)
-# sy_mx = as.matrix(t(sy_mx[rownames(sy_mx) %in% th$Contig_name, ]))
-# 
-# sy_mx = sy_mx[,order(match(colnames(sy_mx), th$Contig_name))]
-# 
-# all(colnames(sy_mx) == th$Contig_name)
-# 
-# # These long column names are annoying and R will likely not accept it, I'll change to Genome names
-# colnames(sy_mx) = th$Genome_file
-# 
-# sy_mx_BH = cbind(disease = as.factor(ifelse(meta$disease == "CRC", "CRC", "None")),
-#               as.data.frame(sy_mx))
-
 save_path = "output_rds/pred_enet_crc_q99_BH.rds"
 
 if(file.exists(save_path)) {
@@ -126,8 +113,7 @@ if(file.exists(save_path)) {
 ### Random Forest using FDR predictors
 
 ```{r}
-
-save_path = "output_rds/pred_rf_crc_q99_BH.rds"
+save_path = "output_rds/old_model/pred_rf_crc_q99_BH.rds"
 
 if(file.exists(save_path)) {
   rf_fit_BH = readRDS(save_path)
@@ -149,7 +135,6 @@ if(file.exists(save_path)) {
   saveRDS(rf_fit_BH, save_path)
 }
 
-
 ```
 
 ### Elastic net using Bonferroni predictors at stricter alpha
@@ -161,18 +146,6 @@ th = top_hits(fit, coef = 2, method = "bonferroni", alpha = 0.01)
 
 sy_mx_bf = strainspy::prep_for_prediction(sy, 'disease', th$Contig_name)
 
-# sy_mx = assay(sy)
-# sy_mx = as.matrix(t(sy_mx[rownames(sy_mx) %in% th$Contig_name, ]))
-# 
-# sy_mx = sy_mx[,order(match(colnames(sy_mx), th$Contig_name))]
-# 
-# all(colnames(sy_mx) == th$Contig_name)
-# 
-# # These long column names are annoying and R will likely not accept it, I'll change to Genome names
-# colnames(sy_mx) = th$Genome_file
-# 
-# sy_mx_bf = cbind(disease = as.factor(ifelse(meta$disease == "CRC", "CRC", "None")),
-#               as.data.frame(sy_mx))
 save_path = "output_rds/pred_enet_crc_q99_bf.rds"
 
 if(file.exists(save_path)) {
@@ -241,7 +214,7 @@ legend("bottomright",
          paste0("ENET FDR BH: AUC=", round(auc(roc_BH), 3)),
          paste0("ENET Bonferroni: AUC=", round(auc(roc_Bonf), 3)),
          
-         paste0("RD FDR BH CV: AUC=", round(auc(roc_BH_RF_cv), 3)),
+         paste0("RF FDR BH CV: AUC=", round(auc(roc_BH_RF_cv), 3)),
          paste0("ENET FDR BH CV: AUC=", round(auc(roc_BH_cv), 3)),
          paste0("ENET Bonferroni CV: AUC=", round(auc(roc_Bonf_cv), 3))
          
@@ -249,12 +222,9 @@ legend("bottomright",
        col=c("darkgreen", "blue","red", "green", "cyan","magenta"),
        lwd=2, lty=c(1,1,1,22,2))
 
-
 ```
 
-Looks like RF full model is overfitting, but this is expected to an extent.
-
-Bonferroni predictors lose sensitivity, we'll use FDR (BH).
+Looks like RF full model is overfitting, but this is expected to an extent. Bonferroni predictors lose sensitivity, we'll use FDR (BH).
 
 # LODO 
 
@@ -263,7 +233,6 @@ Bonferroni predictors lose sensitivity, we'll use FDR (BH).
 ### Set up pipeline
 ```{r}
 
-# Try to parallelise
 registerDoParallel(cores = parallel::detectCores() - 1)
 
 # Let's do by meta$study
