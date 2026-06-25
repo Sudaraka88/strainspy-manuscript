@@ -198,7 +198,7 @@ zi_summary <- summary_tbl %>%
 
 ggplot(zi_summary, aes(x = Dominant_coef, y = Species, color = Trend)) +
   geom_point(aes(size = N_hits)) +
-  geom_errorbar(aes(xmin = CI_low, xmax = CI_high), width = 0.2) +
+  geom_errorbarh(aes(xmin = CI_low, xmax = CI_high), width = 0.2) +
   geom_vline(xintercept = 0, linetype = "dashed") +
   scale_color_manual(values = c("\u2191 CRC" = "red", "\u2193 CRC" = "blue")) +
   scale_size_continuous(
@@ -258,22 +258,16 @@ ggplot(beta_summary, aes(x = Dominant_coef, y = Species, color = Trend)) +
   theme_minimal(base_size = 16)
 ```
 
-## ANI distributions of the top strain of each beta detected species 
-
-### Paper Figures
+## ANI distribution of the top strain of each beta detected species 
 
 ```{r, fig.width=12}
 plot_ani_dist(sy, phenotype = 'disease', contigs = beta_summary$Dominant_contig, 
               show_points = T, plot_type = 'box', 
               contig_names = as.character(beta_summary$Species))
 
-
-# E coli
-plot_histogram(sy, phenotype = 'disease', contig = "NZ_CAACXL010000001.1 Escherichia coli strain 13591 isolate 13591, whole genome shotgun sequence", drop_zeros = T, show_quantiles = F, fit_spline = T, bins = 40, fit_control = 100)
-
-# F prausnitzii
-plot_histogram(sy, phenotype = 'disease', contig = "CATXFM010000001.1 MAG TPA_asm: Faecalibacterium prausnitzii isolate SRR17798033_bin.2_MetaWRAP_v1.3_MAG genome assembly, contig: ERZ18698391.52, whole genome shotgun sequence", drop_zeros = T, show_quantiles = F, fit_spline = T, bins = 40, fit_control = 100)
-
+th_ec = th[th$Species == "Escherichia coli",]
+plot_histogram(sy, phenotype = 'disease', contig = th_ec$Contig_name[3],
+              drop_zeros = T, show_quantiles = F, fit_spline = T, bins = 250)
 
 ```
 

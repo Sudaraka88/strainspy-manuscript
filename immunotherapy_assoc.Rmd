@@ -327,9 +327,6 @@ plot_ani_dist(sy[,which(sy$type == "Frankel_2017")], phenotype = 'RvsP', op_th_m
 plot_ani_dist(sy[,which(sy$type == "Gopalakrishnan_2018")], phenotype = 'RvsP', op_th_melanoma_ind$Contig_name[op_th_melanoma_ind$dset == "Gopalakrishnan_2018"])
 plot_ani_dist(sy[,which(sy$type == "Matson_2018")], phenotype = 'RvsP', op_th_melanoma_ind$Contig_name[op_th_melanoma_ind$dset == "Matson_2018"])
 
-
-
-
 ```
 
 They look a bit different. Retest with therapy type as a covariate
