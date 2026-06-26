@@ -1,0 +1,2539 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>pred_crc_lodosingle – StrainSpy Manuscript</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-1b8143a5af30aa0587ead8c64582f750.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    <img src="./assets/icon.svg" alt="" class="navbar-logo light-content">
+    <img src="./assets/icon.svg" alt="" class="navbar-logo dark-content">
+    </a>
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">StrainSpy Manuscript</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./methods.html"> 
+<span class="menu-text">Methods &amp; Simulations</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./associations.html"> 
+<span class="menu-text">Association Testing</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./prediction.html"> 
+<span class="menu-text">Prediction</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./pred_CRC_lodo+single.html">Prediction</a></li><li class="breadcrumb-item"><a href="./pred_CRC_lodo+single.html">Reanalyse the colorectal cancer data with lodo and trained on each dataset</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Home</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">StrainSpy</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Methods &amp; Simulations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Methods &amp; Simulations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./simulations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simulations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Sims_spike_query.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simulations with spiked E. coli strain analysed using Sylph Query</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sims_spike_query_pdis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simulations with spiked P. dis strain analysed using Sylph Query</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./prior_on_dispersion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Re-analysing pancancer dataset with dispersion priors</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./logistic_ID.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Logistic Regression Model”</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./varyingPrior.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">varyingPrior</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Association Testing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./palleja_Ab_analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Analysis of Palleja Antibiotic Exposure data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./CRC_pooled.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Analysis of 3414 pooled colorectal cancer metagenomes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./immunotherapy_assoc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Associations between gut microbial strains and cancer immunotherapy outcomes - a study in rare cancers and melanoma</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Prediction</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pred_CRC_lodo+single.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Reanalyse the colorectal cancer data with lodo and trained on each dataset</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./immunotherapy_preds.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using gut microbial strains to predict cancer immunotherapy outcomes - a study in rare cancers and melanoma</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#set-up-prediction-model" id="toc-set-up-prediction-model" class="nav-link active" data-scroll-target="#set-up-prediction-model">Set up prediction model</a>
+  <ul class="collapse">
+  <li><a href="#load-deps" id="toc-load-deps" class="nav-link" data-scroll-target="#load-deps">Load deps</a></li>
+  <li><a href="#using-query99-data-and-fit" id="toc-using-query99-data-and-fit" class="nav-link" data-scroll-target="#using-query99-data-and-fit">Using query99 data and fit</a>
+  <ul class="collapse">
+  <li><a href="#global-predictors-from-all-data-leakage" id="toc-global-predictors-from-all-data-leakage" class="nav-link" data-scroll-target="#global-predictors-from-all-data-leakage">Global predictors from all data (leakage)</a></li>
+  </ul></li>
+  <li><a href="#predict-the-auc-for-all-datasets-by-training-on-each-dataset-indepdendently" id="toc-predict-the-auc-for-all-datasets-by-training-on-each-dataset-indepdendently" class="nav-link" data-scroll-target="#predict-the-auc-for-all-datasets-by-training-on-each-dataset-indepdendently">Predict the AUC for all datasets by training on each dataset indepdendently</a></li>
+  <li><a href="#predict-the-auc-for-all-datasets-using-global-predictors" id="toc-predict-the-auc-for-all-datasets-using-global-predictors" class="nav-link" data-scroll-target="#predict-the-auc-for-all-datasets-using-global-predictors">Predict the AUC for all datasets using global predictors</a></li>
+  <li><a href="#plot-to-see-how-it-looks" id="toc-plot-to-see-how-it-looks" class="nav-link" data-scroll-target="#plot-to-see-how-it-looks">Plot to see how it looks</a>
+  <ul class="collapse">
+  <li><a href="#lodo" id="toc-lodo" class="nav-link" data-scroll-target="#lodo">LODO</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./pred_CRC_lodo+single.html">Prediction</a></li><li class="breadcrumb-item"><a href="./pred_CRC_lodo+single.html">Reanalyse the colorectal cancer data with lodo and trained on each dataset</a></li></ol></nav></header>
+
+
+
+
+<p>Reanalyse the colorectal cancer data with lodo and trained on each dataset ================ 2026-04-28</p>
+<section id="set-up-prediction-model" class="level1">
+<h1>Set up prediction model</h1>
+<section id="load-deps" class="level2">
+<h2 class="anchored" data-anchor-id="load-deps">Load deps</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(strainspy)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(SummarizedExperiment)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet) <span class="co"># elastic net</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ranger) <span class="co"># RF</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pROC)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(doParallel)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(foreach)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(parallel)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="using-query99-data-and-fit" class="level2">
+<h2 class="anchored" data-anchor-id="using-query99-data-and-fit">Using query99 data and fit</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>meta_path <span class="ot">&lt;-</span> <span class="st">"data/segata_pooled_3741/combined_metadata.tsv"</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>meta <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(meta_path, <span class="at">sep =</span> <span class="st">'</span><span class="sc">\t</span><span class="st">'</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># set up contrasts/reference levels</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>disease <span class="ot">=</span> <span class="fu">factor</span>(meta<span class="sc">$</span>disease, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Control"</span>, <span class="st">"CRC"</span>, <span class="st">"Adenoma"</span>))</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>study <span class="ot">=</span> <span class="fu">factor</span>(meta<span class="sc">$</span>study)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>cascon <span class="ot">=</span> <span class="fu">ifelse</span>(meta<span class="sc">$</span>cascon <span class="sc">==</span> <span class="st">"Case"</span>, <span class="st">"Case"</span>, <span class="st">"Control"</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>cascon <span class="ot">=</span> <span class="fu">factor</span>(meta<span class="sc">$</span>cascon, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Control"</span>, <span class="st">"Case"</span>))</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>country <span class="ot">=</span> <span class="fu">factor</span>(meta<span class="sc">$</span>country)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>sex <span class="ot">=</span> <span class="fu">factor</span>(meta<span class="sc">$</span>sex, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Female"</span>, <span class="st">"Male"</span>))</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># let's reset tumour stages</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>tumour_stage_AJCC[meta<span class="sc">$</span>tumour_stage_AJCC <span class="sc">==</span> <span class="st">""</span>] <span class="ot">=</span> <span class="st">"NoTumour"</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>tumour_stage_AJCC[meta<span class="sc">$</span>disease <span class="sc">==</span> <span class="st">"Adenoma"</span>] <span class="ot">=</span> <span class="st">"Adenoma"</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>tumour_stage_AJCC[meta<span class="sc">$</span>tumour_stage_AJCC <span class="sc">==</span> <span class="st">"CRC_stage_unlabelled"</span>] <span class="ot">=</span> <span class="st">"Unstaged"</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>tumour_stage_AJCC <span class="ot">=</span> <span class="fu">factor</span>(meta<span class="sc">$</span>tumour_stage_AJCC, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"NoTumour"</span>, <span class="st">"Adenoma"</span>, <span class="st">"0"</span>, <span class="st">"I"</span>, <span class="st">"II"</span>, <span class="st">"III"</span>, <span class="st">"IV"</span>, <span class="st">"Unstaged"</span>))</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>tumour_location[meta<span class="sc">$</span>disease <span class="sc">==</span> <span class="st">"Control"</span>] <span class="ot">=</span> <span class="st">"NoTumour"</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>tumour_location[meta<span class="sc">$</span>disease <span class="sc">==</span> <span class="st">"Adenoma"</span>] <span class="ot">=</span> <span class="st">"Adenoma"</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>tumour_location <span class="ot">=</span> <span class="fu">factor</span>(meta<span class="sc">$</span>tumour_location, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"NoTumour"</span>, <span class="st">"Adenoma"</span>, <span class="st">"transverse"</span>, <span class="st">"left_sided"</span>, <span class="st">"right_sided"</span>, <span class="st">"multiple_sites"</span>, <span class="st">"nd"</span>))</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge adenoma and HC into None </span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>disease <span class="ot">=</span> <span class="fu">ifelse</span>(meta<span class="sc">$</span>disease <span class="sc">==</span> <span class="st">"CRC"</span>, <span class="st">"CRC"</span>, <span class="st">"None"</span>)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Read in sylph output</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>sy <span class="ot">&lt;-</span> <span class="fu">read_sylph</span>(<span class="st">"data/segata_pooled_3741/combined_q_99.tsv.gz"</span>) <span class="co"># q99)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Detected Sylph query output file.</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># annoying renames to match meta V sylph file</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(sy) <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_1"</span>, <span class="st">""</span>, <span class="fu">colnames</span>(sy))</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(sy) <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_merged"</span>, <span class="st">""</span>, <span class="fu">colnames</span>(sy))</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colData</span>(sy)<span class="sc">$</span>Sample_file <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_1"</span>, <span class="st">""</span>, <span class="fu">basename</span>(<span class="fu">colData</span>(sy)<span class="sc">$</span>Sample_file))</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colData</span>(sy)<span class="sc">$</span>Sample_file <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_merged"</span>, <span class="st">""</span>, <span class="fu">colnames</span>(sy))</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="do">### We'll skip filtering here</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Checks before merging metadata</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(<span class="fu">colnames</span>(sy) <span class="sc">%in%</span> meta<span class="sc">$</span>run_accession)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## [1] TRUE</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(meta<span class="sc">$</span>run_accession <span class="sc">%in%</span> <span class="fu">colnames</span>(sy))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## [1] TRUE</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>sy <span class="ot">=</span> <span class="fu">modify_metadata</span>(sy, meta, <span class="at">replace =</span> T)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(sy)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## [1] 64415  3414</code></pre>
+<section id="global-predictors-from-all-data-leakage" class="level3">
+<h3 class="anchored" data-anchor-id="global-predictors-from-all-data-leakage">Global predictors from all data (leakage)</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Strains we used in the global prediction model</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>taxonomy <span class="ot">&lt;-</span> <span class="fu">read_taxonomy</span>(<span class="st">"data/TAXONOMY/sylph_DB_taxonomy_99.tsv"</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>global_fit <span class="ot">=</span>  <span class="fu">readRDS</span>(<span class="st">"output_rds/CRC_zib_q_99_ebp.rds"</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>th <span class="ot">=</span> <span class="fu">top_hits</span>(global_fit, <span class="at">coef =</span> <span class="dv">2</span>, <span class="at">method =</span> <span class="st">"bonferroni"</span>, <span class="at">alpha =</span> <span class="fl">0.01</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Found 571 tophits for diseaseCRC at alpha = 0.01 using bonferroni</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>th <span class="ot">=</span> strainspy<span class="sc">:::</span><span class="fu">add_tax2tophits</span>(th, taxonomy, <span class="fu">c</span>(<span class="st">"Species"</span>, <span class="st">"Genus"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="predict-the-auc-for-all-datasets-by-training-on-each-dataset-indepdendently" class="level2">
+<h2 class="anchored" data-anchor-id="predict-the-auc-for-all-datasets-by-training-on-each-dataset-indepdendently">Predict the AUC for all datasets by training on each dataset indepdendently</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>studies <span class="ot">=</span> <span class="fu">unique</span>(meta<span class="sc">$</span>study)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>design <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="st">"~ disease + age + sex + BMI + (1 | study)"</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>output <span class="ot">=</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow =</span> <span class="fu">length</span>(studies), <span class="at">ncol =</span> <span class="fu">length</span>(studies))</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>doParallel<span class="sc">::</span><span class="fu">registerDoParallel</span>(<span class="at">cores =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>()<span class="sc">-</span><span class="dv">2</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># study_x = as.character(studies[16])</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i_train <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(studies)){</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  study_x <span class="ot">=</span> <span class="fu">as.character</span>(studies[i_train])</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"Training using:"</span>, study_x, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(study_x <span class="sc">==</span> <span class="st">"YangY_2021"</span>){</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># manual override for this study - it does not contain age,sex,BMI data. Can't train the usual model using it</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># cat("YangY_2021 dataset does not contain age, sex, BMI data, skipping...\n")</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    output[i_train, ] <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">next</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(study_x <span class="sc">==</span> <span class="st">"c5_NSHII"</span>){</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># manual override for this study - it does not contain age,sex,BMI data. Can't train the usual model using it</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># cat("c5_NSHII is an adenoma dataset (only 14/897 CRC)...\n")</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>    output[i_train, ] <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">next</span></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get the data out</span></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>  sy_x <span class="ot">=</span> <span class="fu">subset</span>(sy, <span class="at">select =</span> <span class="fu">colData</span>(sy)<span class="sc">$</span>study <span class="sc">%in%</span> study_x)</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>  sy_x <span class="ot">&lt;-</span> <span class="fu">filter_by_presence</span>(sy_x, <span class="at">min_nonzero =</span> <span class="fu">ceiling</span>(<span class="fu">dim</span>(sy_x)[<span class="dv">2</span>]<span class="sc">/</span><span class="dv">10</span>)) <span class="co"># filter at ~10%</span></span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>  save_path <span class="ot">=</span> <span class="fu">file.path</span>(<span class="st">"output_rds/crc_separate_dsets"</span>, <span class="fu">paste</span>(study_x, <span class="st">".rds"</span>, <span class="at">sep =</span> <span class="st">""</span>))</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>    ZB_fit_x <span class="ot">=</span> <span class="fu">readRDS</span>(save_path)</span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="st">"CRC"</span> <span class="sc">%in%</span> sy_x<span class="sc">@</span>colData<span class="sc">$</span>disease <span class="sc">&amp;</span> <span class="st">"None"</span> <span class="sc">%in%</span> sy_x<span class="sc">@</span>colData<span class="sc">$</span>disease){</span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>      ebp <span class="ot">=</span> <span class="fu">compute_eb_priors</span>(sy_x, strainspy<span class="sc">:::</span><span class="fu">nobars_</span>(design), <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>(),<span class="at">low_cutoff =</span> <span class="dv">0</span>, <span class="at">high_cutoff =</span> <span class="cn">Inf</span>)</span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>      ZB_fit_x <span class="ot">&lt;-</span> <span class="fu">glmZiBFit</span>(sy_x, design, <span class="at">MAP_prior =</span> ebp, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>      <span class="fu">saveRDS</span>(ZB_fit_x, save_path)</span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a>      <span class="co"># cat("No variation in outcome in:", study_x, " - skipping... \n")</span></span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>      output[i_train, ] <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a>      <span class="cf">next</span></span>
+<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a>  <span class="co"># We obviously lack the power to pick as many strains with smaller datasets, let's use the ranking instead</span></span>
+<span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a>  th_x <span class="ot">=</span> strainspy<span class="sc">:::</span><span class="fu">add_tax2tophits</span>(<span class="fu">top_hits</span>(ZB_fit_x, <span class="at">coef =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="dv">1</span>), taxonomy, <span class="fu">c</span>(<span class="st">"Species"</span>, <span class="st">"Genus"</span>))</span>
+<span id="cb13-50"><a href="#cb13-50" aria-hidden="true" tabindex="-1"></a>  th_x <span class="ot">=</span> th_x[<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(th), ] <span class="co"># keep the same number of predictors</span></span>
+<span id="cb13-51"><a href="#cb13-51" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-52"><a href="#cb13-52" aria-hidden="true" tabindex="-1"></a>  sy_mx_bf_x <span class="ot">=</span> strainspy<span class="sc">::</span><span class="fu">prep_for_prediction</span>(sy_x, <span class="st">'disease'</span>, th_x<span class="sc">$</span>Contig_name)</span>
+<span id="cb13-53"><a href="#cb13-53" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-54"><a href="#cb13-54" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">min</span>(<span class="fu">table</span>(sy_mx_bf_x<span class="sc">$</span>disease))<span class="sc">&gt;=</span><span class="dv">10</span>) { <span class="co"># If one class had less than 10, don't think we can trust it (arbitrary value)</span></span>
+<span id="cb13-55"><a href="#cb13-55" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Fit elastic net only using the training data</span></span>
+<span id="cb13-56"><a href="#cb13-56" aria-hidden="true" tabindex="-1"></a>    enet_fit_bf_x <span class="ot">&lt;-</span> caret<span class="sc">::</span><span class="fu">train</span>(disease <span class="sc">~</span> .,</span>
+<span id="cb13-57"><a href="#cb13-57" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">data =</span> sy_mx_bf_x,</span>
+<span id="cb13-58"><a href="#cb13-58" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">method =</span> <span class="st">'glmnet'</span>,</span>
+<span id="cb13-59"><a href="#cb13-59" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">preProcess =</span> <span class="fu">c</span>(<span class="st">"center"</span>, <span class="st">"scale"</span>),</span>
+<span id="cb13-60"><a href="#cb13-60" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">metric =</span> <span class="st">"ROC"</span>,</span>
+<span id="cb13-61"><a href="#cb13-61" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">trControl =</span> <span class="fu">trainControl</span>(</span>
+<span id="cb13-62"><a href="#cb13-62" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">method =</span> <span class="st">"cv"</span>,</span>
+<span id="cb13-63"><a href="#cb13-63" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">classProbs =</span> <span class="cn">TRUE</span>,              <span class="co"># allow probabilities</span></span>
+<span id="cb13-64"><a href="#cb13-64" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">summaryFunction =</span> twoClassSummary,  <span class="co"># compute ROC, Sens, Spec</span></span>
+<span id="cb13-65"><a href="#cb13-65" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">savePredictions =</span> <span class="st">"final"</span></span>
+<span id="cb13-66"><a href="#cb13-66" aria-hidden="true" tabindex="-1"></a>                                  ),</span>
+<span id="cb13-67"><a href="#cb13-67" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">weights =</span> <span class="fu">ifelse</span>(sy_mx_bf_x<span class="sc">$</span>disease<span class="sc">==</span><span class="st">"CRC"</span>, <span class="dv">2</span>, <span class="dv">1</span>))</span>
+<span id="cb13-68"><a href="#cb13-68" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-69"><a href="#cb13-69" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Predict each study</span></span>
+<span id="cb13-70"><a href="#cb13-70" aria-hidden="true" tabindex="-1"></a>    i_test <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb13-71"><a href="#cb13-71" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (study_test <span class="cf">in</span> studies){</span>
+<span id="cb13-72"><a href="#cb13-72" aria-hidden="true" tabindex="-1"></a>      <span class="co"># cat("Predicting", study_test, "\n")</span></span>
+<span id="cb13-73"><a href="#cb13-73" aria-hidden="true" tabindex="-1"></a>      hold_out_sy <span class="ot">=</span> <span class="fu">subset</span>(sy, <span class="at">select =</span> <span class="fu">colData</span>(sy)<span class="sc">$</span>study <span class="sc">%in%</span> <span class="fu">as.character</span>(study_test))</span>
+<span id="cb13-74"><a href="#cb13-74" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb13-75"><a href="#cb13-75" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span>(<span class="st">"CRC"</span> <span class="sc">%in%</span> hold_out_sy<span class="sc">@</span>colData<span class="sc">$</span>disease <span class="sc">&amp;</span> <span class="st">"None"</span> <span class="sc">%in%</span> hold_out_sy<span class="sc">@</span>colData<span class="sc">$</span>disease){</span>
+<span id="cb13-76"><a href="#cb13-76" aria-hidden="true" tabindex="-1"></a>        hold_out_mx <span class="ot">=</span> strainspy<span class="sc">::</span><span class="fu">prep_for_prediction</span>(hold_out_sy, <span class="st">'disease'</span>, th_x<span class="sc">$</span>Contig_name)</span>
+<span id="cb13-77"><a href="#cb13-77" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb13-78"><a href="#cb13-78" aria-hidden="true" tabindex="-1"></a>        pred_lodo <span class="ot">&lt;-</span> <span class="fu">predict</span>(enet_fit_bf_x, hold_out_mx , <span class="at">type =</span> <span class="st">"prob"</span>)<span class="sc">$</span>CRC</span>
+<span id="cb13-79"><a href="#cb13-79" aria-hidden="true" tabindex="-1"></a>        roc_lodo <span class="ot">&lt;-</span> <span class="fu">roc</span>(<span class="fu">factor</span>(<span class="fu">colData</span>(hold_out_sy)<span class="sc">$</span>disease, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"None"</span>, <span class="st">"CRC"</span>)), pred_lodo, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"None"</span>,<span class="st">"CRC"</span>))</span>
+<span id="cb13-80"><a href="#cb13-80" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb13-81"><a href="#cb13-81" aria-hidden="true" tabindex="-1"></a>        output[i_train, i_test] <span class="ot">=</span> <span class="fu">auc</span>(roc_lodo)</span>
+<span id="cb13-82"><a href="#cb13-82" aria-hidden="true" tabindex="-1"></a>      } <span class="cf">else</span> {</span>
+<span id="cb13-83"><a href="#cb13-83" aria-hidden="true" tabindex="-1"></a>        output[i_train, i_test] <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb13-84"><a href="#cb13-84" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb13-85"><a href="#cb13-85" aria-hidden="true" tabindex="-1"></a>      i_test <span class="ot">=</span> i_test <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb13-86"><a href="#cb13-86" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb13-87"><a href="#cb13-87" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb13-88"><a href="#cb13-88" aria-hidden="true" tabindex="-1"></a>    <span class="co"># cat("Train dataset has &lt;10 observation of one class in:", study_x, " - skipping... \n")</span></span>
+<span id="cb13-89"><a href="#cb13-89" aria-hidden="true" tabindex="-1"></a>    output[i_train, ] <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb13-90"><a href="#cb13-90" aria-hidden="true" tabindex="-1"></a>    <span class="cf">next</span></span>
+<span id="cb13-91"><a href="#cb13-91" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb13-92"><a href="#cb13-92" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-93"><a href="#cb13-93" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Training using: c1_AtezoTRIBE 
+## Retained 21480 rows after filtering
+## Training using: c6__IIGM_TU 
+## Retained 24381 rows after filtering
+## Found 10465 tophits for diseaseNone at alpha = 1 using holm
+
+## Prepared data: 57 samples and 571 predictors.
+## Prepared data: 57 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 124 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 149 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 82 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 106 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 203 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 615 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 193 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 163 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 200 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 154 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 128 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 897 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Training using: c3_IIGM_CZ 
+## Retained 19912 rows after filtering
+## Found 9231 tophits for diseaseNone at alpha = 1 using holm
+
+## Prepared data: 124 samples and 571 predictors.
+
+## Prepared data: 57 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 124 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 149 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 82 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 106 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 203 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 615 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 193 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 163 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 200 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 154 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 128 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 897 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Training using: ZellerG_2014 
+## Retained 20859 rows after filtering
+## Found 8100 tophits for diseaseNone at alpha = 1 using holm
+
+## Prepared data: 149 samples and 571 predictors.
+
+## Prepared data: 57 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 124 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 149 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 82 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 106 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 203 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 615 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 193 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 163 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 200 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 154 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 128 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 897 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Training using: WirbelJ_2018 
+## Retained 20025 rows after filtering
+## Found 9692 tophits for diseaseNone at alpha = 1 using holm
+
+## Prepared data: 82 samples and 571 predictors.
+
+## Prepared data: 57 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 124 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 149 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 82 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 106 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 203 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 615 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 193 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 163 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 200 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 154 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 128 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 897 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Training using: ThomasAM_2018b 
+## Retained 21540 rows after filtering
+## Found 12042 tophits for diseaseNone at alpha = 1 using holm
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Prepared data: 57 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 124 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 149 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 82 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 106 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 203 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 615 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 193 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 163 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 200 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 154 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 128 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 897 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Training using: GuptaA_2019 
+## Retained 19329 rows after filtering
+## Found 11521 tophits for diseaseNone at alpha = 1 using holm
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Prepared data: 57 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 124 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 149 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 82 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 106 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 203 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 615 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 193 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 163 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 200 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 154 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 128 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 897 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Training using: c4_IIGM_IT 
+## Retained 17958 rows after filtering
+## Found 9952 tophits for diseaseNone at alpha = 1 using holm
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Prepared data: 57 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 124 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 149 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 82 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 106 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 203 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 615 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 193 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 163 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 200 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 154 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 128 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 897 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Training using: VogtmannE_2016 
+## Retained 18960 rows after filtering
+## Found 9762 tophits for diseaseNone at alpha = 1 using holm
+
+## Prepared data: 106 samples and 571 predictors.
+
+## Prepared data: 57 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 124 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 149 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 82 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 106 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 203 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 615 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 193 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 163 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 200 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 154 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 128 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 897 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Training using: c2_COLOBIOME 
+## Retained 21979 rows after filtering
+## Found 9537 tophits for diseaseNone at alpha = 1 using holm
+
+## Prepared data: 203 samples and 571 predictors.
+
+## Training using: YachidaS_2019 
+## Retained 19685 rows after filtering
+## Found 9552 tophits for diseaseNone at alpha = 1 using holm
+
+## Prepared data: 615 samples and 571 predictors.
+
+## Prepared data: 57 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 124 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 149 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 82 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 106 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 203 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 615 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 193 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 163 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 200 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 154 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 128 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 897 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Training using: YangJ_2020 
+## Retained 20900 rows after filtering
+## Found 8463 tophits for diseaseNone at alpha = 1 using holm
+
+## Prepared data: 193 samples and 571 predictors.
+
+## Prepared data: 57 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 124 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 149 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 82 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 106 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 203 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 615 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 193 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 163 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 200 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 154 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 128 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 897 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Training using: LiuNN_2022 
+## Retained 22134 rows after filtering
+## Found 9324 tophits for diseaseNone at alpha = 1 using holm
+
+## Prepared data: 163 samples and 571 predictors.
+
+## Prepared data: 57 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 124 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 149 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 82 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 106 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 203 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 615 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 193 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 163 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 200 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 154 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 128 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 897 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Training using: YangY_2021 
+## Training using: FengQ_2015 
+## Retained 22049 rows after filtering
+## Found 10873 tophits for diseaseNone at alpha = 1 using holm
+
+## Prepared data: 154 samples and 571 predictors.
+
+## Prepared data: 57 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 124 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 149 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 82 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 106 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 203 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 615 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 193 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 163 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 200 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 154 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 128 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 897 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Training using: YuJ_2015 
+## Retained 20472 rows after filtering
+## Found 8882 tophits for diseaseNone at alpha = 1 using holm
+
+## Prepared data: 128 samples and 571 predictors.
+
+## Prepared data: 57 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 124 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 149 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 82 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 106 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 203 samples and 571 predictors.
+
+## Setting direction: controls &gt; cases
+
+## Prepared data: 615 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 193 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 163 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 200 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 154 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 128 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 897 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Training using: c5_NSHII</code></pre>
+</section>
+<section id="predict-the-auc-for-all-datasets-using-global-predictors" class="level2">
+<h2 class="anchored" data-anchor-id="predict-the-auc-for-all-datasets-using-global-predictors">Predict the AUC for all datasets using global predictors</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>AUCs_enet <span class="ot">=</span>  <span class="fu">list</span>()</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(d <span class="cf">in</span> studies){</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># hold_out_idx = which(meta$study == d)</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># hold_out_meta = meta[hold_out_idx, ]</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  hold_out_mx <span class="ot">=</span> strainspy<span class="sc">::</span><span class="fu">prep_for_prediction</span>(<span class="fu">subset</span>(sy, <span class="at">select =</span> <span class="fu">colData</span>(sy)<span class="sc">$</span>study <span class="sc">%in%</span> d),  <span class="st">'disease'</span>, th<span class="sc">$</span>Contig_name)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># train_idx = which(meta$study != d)</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># train_meta = meta[train_idx, ]</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  train_sy <span class="ot">=</span> strainspy<span class="sc">::</span><span class="fu">prep_for_prediction</span>(<span class="fu">subset</span>(sy, <span class="at">select =</span> <span class="sc">!</span>(<span class="fu">colData</span>(sy)<span class="sc">$</span>study <span class="sc">%in%</span> d)), <span class="st">'disease'</span>, th<span class="sc">$</span>Contig_name) </span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># train_sy = train_sy, # From global data</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># train_sy = sy_mx_bf[train_idx,]</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># This is the stricted model, possibly less AUC</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  save_path <span class="ot">=</span> <span class="fu">paste</span>(<span class="st">"output_rds/pred_enet_crc_q99_BF_lodo_alpha0.01_"</span>, d ,<span class="st">".rds"</span>, <span class="at">collapse =</span> <span class="st">""</span>, <span class="at">sep =</span> <span class="st">""</span>)</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)) {</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    enet_fit_lodo <span class="ot">=</span> <span class="fu">readRDS</span>(save_path)</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># train_mx = strainspy::prep_for_prediction(train_sy, 'disease', th$Contig_name)</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>    y <span class="ot">&lt;-</span> <span class="fu">factor</span>(train_sy<span class="sc">$</span>disease, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"None"</span>, <span class="st">"CRC"</span>))</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">=</span> sparsevctrs<span class="sc">::</span><span class="fu">coerce_to_sparse_matrix</span>(train_sy[,<span class="sc">-</span><span class="dv">1</span>])</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>    enet_fit_lodo <span class="ot">&lt;-</span> caret<span class="sc">::</span><span class="fu">train</span>(</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> x,</span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> y,</span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>      <span class="co"># data = train_mx,</span></span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>      <span class="at">method =</span> <span class="st">'glmnet'</span>,</span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>      <span class="co"># preProcess = c("center", "scale"),</span></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>      <span class="at">metric =</span> <span class="st">"ROC"</span>,</span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>      <span class="at">trControl =</span> caret<span class="sc">::</span><span class="fu">trainControl</span>(</span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>        <span class="at">method =</span> <span class="st">"cv"</span>,</span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>        <span class="at">classProbs =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>        <span class="at">summaryFunction =</span> twoClassSummary,</span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a>        <span class="co"># index = groupKFold(train_meta$study, k = length(unique(train_meta$study))),</span></span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>        <span class="at">savePredictions =</span> <span class="st">"final"</span>,</span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>        <span class="at">allowParallel =</span> <span class="cn">TRUE</span>   <span class="co"># &lt;- important</span></span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>      )<span class="co">#,</span></span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a>      <span class="co">#weights = ifelse(y=="CRC", 2, 1)</span></span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a>    <span class="fu">saveRDS</span>(enet_fit_lodo, save_path)</span>
+<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-48"><a href="#cb15-48" aria-hidden="true" tabindex="-1"></a>  <span class="co"># hold_out_mx = strainspy::prep_for_prediction(hold_out_sy, 'disease', th$Contig_name)</span></span>
+<span id="cb15-49"><a href="#cb15-49" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-50"><a href="#cb15-50" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">length</span>(<span class="fu">unique</span>(hold_out_mx<span class="sc">$</span>disease))  <span class="sc">==</span> <span class="dv">2</span>){</span>
+<span id="cb15-51"><a href="#cb15-51" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-52"><a href="#cb15-52" aria-hidden="true" tabindex="-1"></a>    pred_lodo <span class="ot">&lt;-</span> <span class="fu">predict</span>(enet_fit_lodo, hold_out_mx , <span class="at">type =</span> <span class="st">"prob"</span>)<span class="sc">$</span>CRC</span>
+<span id="cb15-53"><a href="#cb15-53" aria-hidden="true" tabindex="-1"></a>    roc_lodo <span class="ot">&lt;-</span> <span class="fu">roc</span>(<span class="fu">factor</span>(hold_out_mx<span class="sc">$</span>disease, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"None"</span>, <span class="st">"CRC"</span>)), pred_lodo, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"None"</span>,<span class="st">"CRC"</span>))</span>
+<span id="cb15-54"><a href="#cb15-54" aria-hidden="true" tabindex="-1"></a>    AUCs_enet[[d]] <span class="ot">=</span> <span class="fu">auc</span>(roc_lodo)</span>
+<span id="cb15-55"><a href="#cb15-55" aria-hidden="true" tabindex="-1"></a>    <span class="co"># cat('Done with', d, 'AUC = ', AUCs_enet[[d]], '\n')</span></span>
+<span id="cb15-56"><a href="#cb15-56" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb15-57"><a href="#cb15-57" aria-hidden="true" tabindex="-1"></a>    <span class="co"># cat('Done with', d, 'cannot compute AUC, dataset is all:', as.character(unique(hold_out_mx$disease)), '\n')</span></span>
+<span id="cb15-58"><a href="#cb15-58" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb15-59"><a href="#cb15-59" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-60"><a href="#cb15-60" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-61"><a href="#cb15-61" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Prepared data: 163 samples and 571 predictors.
+
+## Prepared data: 3251 samples and 571 predictors.
+
+## Prepared data: 57 samples and 571 predictors.
+
+## Prepared data: 3357 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 124 samples and 571 predictors.
+
+## Prepared data: 3290 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 149 samples and 571 predictors.
+
+## Prepared data: 3265 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 82 samples and 571 predictors.
+
+## Prepared data: 3332 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Prepared data: 3354 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Prepared data: 3354 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 60 samples and 571 predictors.
+
+## Prepared data: 3354 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 106 samples and 571 predictors.
+
+## Prepared data: 3308 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 203 samples and 571 predictors.
+
+## Prepared data: 3211 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 615 samples and 571 predictors.
+
+## Prepared data: 2799 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 193 samples and 571 predictors.
+
+## Prepared data: 3221 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 163 samples and 571 predictors.
+
+## Prepared data: 3251 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 200 samples and 571 predictors.
+
+## Prepared data: 3214 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 154 samples and 571 predictors.
+
+## Prepared data: 3260 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 128 samples and 571 predictors.
+
+## Prepared data: 3286 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Prepared data: 897 samples and 571 predictors.
+
+## Prepared data: 2517 samples and 571 predictors.
+
+## Setting direction: controls &lt; cases</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">unlist</span>(AUCs_enet))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##  0.4677  0.6905  0.7877  0.7659  0.8577  0.9067</code></pre>
+</section>
+<section id="plot-to-see-how-it-looks" class="level2">
+<h2 class="anchored" data-anchor-id="plot-to-see-how-it-looks">Plot to see how it looks</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ forcats   1.0.1     ✔ readr     2.2.0
+## ✔ lubridate 1.9.5     ✔ stringr   1.6.0
+## ✔ purrr     1.2.2     ✔ tibble    3.3.1
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ lubridate::%within%() masks IRanges::%within%()
+## ✖ purrr::accumulate()   masks foreach::accumulate()
+## ✖ dplyr::collapse()     masks IRanges::collapse()
+## ✖ dplyr::combine()      masks Biobase::combine(), BiocGenerics::combine()
+## ✖ dplyr::count()        masks matrixStats::count()
+## ✖ dplyr::desc()         masks IRanges::desc()
+## ✖ tidyr::expand()       masks Matrix::expand(), S4Vectors::expand()
+## ✖ dplyr::filter()       masks stats::filter()
+## ✖ dplyr::first()        masks S4Vectors::first()
+## ✖ dplyr::lag()          masks stats::lag()
+## ✖ purrr::lift()         masks caret::lift()
+## ✖ tidyr::pack()         masks Matrix::pack()
+## ✖ ggplot2::Position()   masks BiocGenerics::Position(), base::Position()
+## ✖ purrr::reduce()       masks GenomicRanges::reduce(), IRanges::reduce()
+## ✖ dplyr::rename()       masks S4Vectors::rename()
+## ✖ lubridate::second()   masks S4Vectors::second()
+## ✖ lubridate::second&lt;-() masks S4Vectors::second&lt;-()
+## ✖ dplyr::slice()        masks IRanges::slice()
+## ✖ tidyr::unpack()       masks Matrix::unpack()
+## ✖ purrr::when()         masks foreach::when()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>output_mod <span class="ot">=</span> output</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(output_mod) <span class="ot">=</span> studies</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(output_mod) <span class="ot">=</span> studies</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove invalid rows (cannot train)</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>rmrows <span class="ot">=</span> <span class="fu">which</span>(<span class="fu">rowSums</span>(output_mod) <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">length</span>(rmrows) <span class="sc">&gt;</span> <span class="dv">0</span>) output_mod <span class="ot">=</span> output_mod[<span class="sc">-</span>rmrows, ]</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove invalid cols (cannot test)</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>rmcols <span class="ot">=</span> <span class="fu">which</span>(<span class="fu">colSums</span>(output_mod) <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">length</span>(rmcols) <span class="sc">&gt;</span> <span class="dv">0</span>) output_mod <span class="ot">=</span> output_mod[, <span class="sc">-</span>rmcols]</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Add Global row</span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>auc_mat <span class="ot">=</span> <span class="fu">rbind</span>(output_mod, <span class="fu">unlist</span>(AUCs_enet))</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(auc_mat) <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">rownames</span>(output_mod), <span class="st">"Global"</span>)</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- long format ----</span></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(auc_mat) <span class="sc">%&gt;%</span></span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"train"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>train, <span class="at">names_to =</span> <span class="st">"test"</span>, <span class="at">values_to =</span> <span class="st">"AUC"</span>)</span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================================================</span></span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Label counts for training datasets</span></span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================================================</span></span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>NN <span class="ot">&lt;-</span> <span class="fu">table</span>(meta<span class="sc">$</span>study)</span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a>format_train <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (x <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Global"</span>, <span class="st">"Median"</span>, <span class="st">"Best"</span>)) <span class="fu">return</span>(x)</span>
+<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(x, <span class="st">" (n="</span>, NN[[x]], <span class="st">")"</span>)</span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a>cap <span class="ot">&lt;-</span> <span class="cf">function</span>(x) tools<span class="sc">::</span><span class="fu">toTitleCase</span>(<span class="fu">tolower</span>(x))</span>
+<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================================================</span></span>
+<span id="cb21-38"><a href="#cb21-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Median row (exclude self-pairs)</span></span>
+<span id="cb21-39"><a href="#cb21-39" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================================================</span></span>
+<span id="cb21-40"><a href="#cb21-40" aria-hidden="true" tabindex="-1"></a>df_clean <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb21-41"><a href="#cb21-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(train <span class="sc">!=</span> test)</span>
+<span id="cb21-42"><a href="#cb21-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-43"><a href="#cb21-43" aria-hidden="true" tabindex="-1"></a>median_row <span class="ot">&lt;-</span> df_clean <span class="sc">%&gt;%</span></span>
+<span id="cb21-44"><a href="#cb21-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(train <span class="sc">!=</span> <span class="st">"Global"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-45"><a href="#cb21-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(test) <span class="sc">%&gt;%</span></span>
+<span id="cb21-46"><a href="#cb21-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">AUC =</span> <span class="fu">median</span>(AUC, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-47"><a href="#cb21-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">train =</span> <span class="st">"Median"</span>)</span>
+<span id="cb21-48"><a href="#cb21-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-49"><a href="#cb21-49" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================================================</span></span>
+<span id="cb21-50"><a href="#cb21-50" aria-hidden="true" tabindex="-1"></a><span class="co"># Best row (exclude self-pairs)</span></span>
+<span id="cb21-51"><a href="#cb21-51" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================================================</span></span>
+<span id="cb21-52"><a href="#cb21-52" aria-hidden="true" tabindex="-1"></a>best_row <span class="ot">&lt;-</span> df_clean <span class="sc">%&gt;%</span></span>
+<span id="cb21-53"><a href="#cb21-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(train <span class="sc">!=</span> <span class="st">"Global"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-54"><a href="#cb21-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(test) <span class="sc">%&gt;%</span></span>
+<span id="cb21-55"><a href="#cb21-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">AUC =</span> <span class="fu">max</span>(AUC, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-56"><a href="#cb21-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">train =</span> <span class="st">"Best"</span>)</span>
+<span id="cb21-57"><a href="#cb21-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-58"><a href="#cb21-58" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine</span></span>
+<span id="cb21-59"><a href="#cb21-59" aria-hidden="true" tabindex="-1"></a>df_plot <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(df, median_row, best_row)</span>
+<span id="cb21-60"><a href="#cb21-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-61"><a href="#cb21-61" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================================================</span></span>
+<span id="cb21-62"><a href="#cb21-62" aria-hidden="true" tabindex="-1"></a><span class="co"># Row ordering (block structure)</span></span>
+<span id="cb21-63"><a href="#cb21-63" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================================================</span></span>
+<span id="cb21-64"><a href="#cb21-64" aria-hidden="true" tabindex="-1"></a>base_order <span class="ot">&lt;-</span> df_clean <span class="sc">%&gt;%</span></span>
+<span id="cb21-65"><a href="#cb21-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>train <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Global"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb21-66"><a href="#cb21-66" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(train) <span class="sc">%&gt;%</span></span>
+<span id="cb21-67"><a href="#cb21-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">med =</span> <span class="fu">median</span>(AUC, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-68"><a href="#cb21-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(med)) <span class="sc">%&gt;%</span></span>
+<span id="cb21-69"><a href="#cb21-69" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(train)</span>
+<span id="cb21-70"><a href="#cb21-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-71"><a href="#cb21-71" aria-hidden="true" tabindex="-1"></a>row_order <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb21-72"><a href="#cb21-72" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Global"</span>,</span>
+<span id="cb21-73"><a href="#cb21-73" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Best"</span>,</span>
+<span id="cb21-74"><a href="#cb21-74" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Median"</span>,</span>
+<span id="cb21-75"><a href="#cb21-75" aria-hidden="true" tabindex="-1"></a>  base_order</span>
+<span id="cb21-76"><a href="#cb21-76" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-77"><a href="#cb21-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-78"><a href="#cb21-78" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================================================</span></span>
+<span id="cb21-79"><a href="#cb21-79" aria-hidden="true" tabindex="-1"></a><span class="co"># Column ordering (robust, asymmetric-safe)</span></span>
+<span id="cb21-80"><a href="#cb21-80" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================================================</span></span>
+<span id="cb21-81"><a href="#cb21-81" aria-hidden="true" tabindex="-1"></a>test_sets <span class="ot">&lt;-</span> <span class="fu">unique</span>(df_plot<span class="sc">$</span>test)</span>
+<span id="cb21-82"><a href="#cb21-82" aria-hidden="true" tabindex="-1"></a>shared <span class="ot">&lt;-</span> <span class="fu">intersect</span>(base_order, test_sets)</span>
+<span id="cb21-83"><a href="#cb21-83" aria-hidden="true" tabindex="-1"></a>test_only <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(test_sets, base_order)</span>
+<span id="cb21-84"><a href="#cb21-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-85"><a href="#cb21-85" aria-hidden="true" tabindex="-1"></a>col_order <span class="ot">&lt;-</span> <span class="fu">c</span>(shared, test_only)</span>
+<span id="cb21-86"><a href="#cb21-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-87"><a href="#cb21-87" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================================================</span></span>
+<span id="cb21-88"><a href="#cb21-88" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply factors + labels</span></span>
+<span id="cb21-89"><a href="#cb21-89" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================================================</span></span>
+<span id="cb21-90"><a href="#cb21-90" aria-hidden="true" tabindex="-1"></a>df_plot<span class="sc">$</span>train <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
+<span id="cb21-91"><a href="#cb21-91" aria-hidden="true" tabindex="-1"></a>  df_plot<span class="sc">$</span>train,</span>
+<span id="cb21-92"><a href="#cb21-92" aria-hidden="true" tabindex="-1"></a>  <span class="at">levels =</span> row_order,</span>
+<span id="cb21-93"><a href="#cb21-93" aria-hidden="true" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">sapply</span>(row_order, format_train)</span>
+<span id="cb21-94"><a href="#cb21-94" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-95"><a href="#cb21-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-96"><a href="#cb21-96" aria-hidden="true" tabindex="-1"></a>df_plot<span class="sc">$</span>test <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
+<span id="cb21-97"><a href="#cb21-97" aria-hidden="true" tabindex="-1"></a>  df_plot<span class="sc">$</span>test,</span>
+<span id="cb21-98"><a href="#cb21-98" aria-hidden="true" tabindex="-1"></a>  <span class="at">levels =</span> col_order,</span>
+<span id="cb21-99"><a href="#cb21-99" aria-hidden="true" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">cap</span>(col_order)</span>
+<span id="cb21-100"><a href="#cb21-100" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-101"><a href="#cb21-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-102"><a href="#cb21-102" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================================================</span></span>
+<span id="cb21-103"><a href="#cb21-103" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot</span></span>
+<span id="cb21-104"><a href="#cb21-104" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================================================</span></span>
+<span id="cb21-105"><a href="#cb21-105" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_plot, <span class="fu">aes</span>(<span class="at">x =</span> test, <span class="at">y =</span> train, <span class="at">fill =</span> AUC)) <span class="sc">+</span></span>
+<span id="cb21-106"><a href="#cb21-106" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>, <span class="at">linewidth =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb21-107"><a href="#cb21-107" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb21-108"><a href="#cb21-108" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"%.2f"</span>, AUC),</span>
+<span id="cb21-109"><a href="#cb21-109" aria-hidden="true" tabindex="-1"></a>                <span class="at">color =</span> AUC <span class="sc">&gt;</span> <span class="fl">0.75</span>),</span>
+<span id="cb21-110"><a href="#cb21-110" aria-hidden="true" tabindex="-1"></a>            <span class="at">size =</span> <span class="fl">2.8</span>) <span class="sc">+</span></span>
+<span id="cb21-111"><a href="#cb21-111" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb21-112"><a href="#cb21-112" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"black"</span>, <span class="st">"white"</span>), <span class="at">guide =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb21-113"><a href="#cb21-113" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb21-114"><a href="#cb21-114" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradientn</span>(</span>
+<span id="cb21-115"><a href="#cb21-115" aria-hidden="true" tabindex="-1"></a>    <span class="at">colours =</span> <span class="fu">c</span>(<span class="st">"#b2182b"</span>, <span class="st">"white"</span>, <span class="st">"#2166ac"</span>),</span>
+<span id="cb21-116"><a href="#cb21-116" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> scales<span class="sc">::</span><span class="fu">rescale</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.5</span>, <span class="dv">1</span>)),</span>
+<span id="cb21-117"><a href="#cb21-117" aria-hidden="true" tabindex="-1"></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb21-118"><a href="#cb21-118" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">"AUC"</span></span>
+<span id="cb21-119"><a href="#cb21-119" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb21-120"><a href="#cb21-120" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb21-121"><a href="#cb21-121" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_fixed</span>() <span class="sc">+</span></span>
+<span id="cb21-122"><a href="#cb21-122" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb21-123"><a href="#cb21-123" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb21-124"><a href="#cb21-124" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb21-125"><a href="#cb21-125" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>),</span>
+<span id="cb21-126"><a href="#cb21-126" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid =</span> <span class="fu">element_blank</span>()</span>
+<span id="cb21-127"><a href="#cb21-127" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb21-128"><a href="#cb21-128" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb21-129"><a href="#cb21-129" aria-hidden="true" tabindex="-1"></a>  <span class="co"># block separators</span></span>
+<span id="cb21-130"><a href="#cb21-130" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">1.5</span>, <span class="at">linewidth =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb21-131"><a href="#cb21-131" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">3.5</span>, <span class="at">linewidth =</span> <span class="fl">0.6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><img src="pred_CRC_lodo+single_files/figure-gfm/unnamed-chunk-6-1.png" class="img-fluid"><!-- --></p>
+<section id="lodo" class="level3">
+<h3 class="anchored" data-anchor-id="lodo">LODO</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>sylph_path <span class="ot">&lt;-</span> <span class="st">"data/segata_pooled_3741/combined_q_99.tsv.gz"</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="do">### --- ------ --- </span><span class="al">###</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>meta <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(meta_path, <span class="at">sep =</span> <span class="st">'</span><span class="sc">\t</span><span class="st">'</span>)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="co"># set up contrasts/reference levels</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>disease <span class="ot">=</span> <span class="fu">factor</span>(meta<span class="sc">$</span>disease, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Control"</span>, <span class="st">"CRC"</span>, <span class="st">"Adenoma"</span>))</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>study <span class="ot">=</span> <span class="fu">factor</span>(meta<span class="sc">$</span>study)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>cascon <span class="ot">=</span> <span class="fu">ifelse</span>(meta<span class="sc">$</span>cascon <span class="sc">==</span> <span class="st">"Case"</span>, <span class="st">"Case"</span>, <span class="st">"Control"</span>)</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>cascon <span class="ot">=</span> <span class="fu">factor</span>(meta<span class="sc">$</span>cascon, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Control"</span>, <span class="st">"Case"</span>))</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>country <span class="ot">=</span> <span class="fu">factor</span>(meta<span class="sc">$</span>country)</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>sex <span class="ot">=</span> <span class="fu">factor</span>(meta<span class="sc">$</span>sex, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Female"</span>, <span class="st">"Male"</span>))</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="co"># let's reset tumour stages</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>tumour_stage_AJCC[meta<span class="sc">$</span>tumour_stage_AJCC <span class="sc">==</span> <span class="st">""</span>] <span class="ot">=</span> <span class="st">"NoTumour"</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>tumour_stage_AJCC[meta<span class="sc">$</span>disease <span class="sc">==</span> <span class="st">"Adenoma"</span>] <span class="ot">=</span> <span class="st">"Adenoma"</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>tumour_stage_AJCC[meta<span class="sc">$</span>tumour_stage_AJCC <span class="sc">==</span> <span class="st">"CRC_stage_unlabelled"</span>] <span class="ot">=</span> <span class="st">"Unstaged"</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>tumour_stage_AJCC <span class="ot">=</span> <span class="fu">factor</span>(meta<span class="sc">$</span>tumour_stage_AJCC, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"NoTumour"</span>, <span class="st">"Adenoma"</span>, <span class="st">"0"</span>, <span class="st">"I"</span>, <span class="st">"II"</span>, <span class="st">"III"</span>, <span class="st">"IV"</span>, <span class="st">"Unstaged"</span>))</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>tumour_location[meta<span class="sc">$</span>disease <span class="sc">==</span> <span class="st">"Control"</span>] <span class="ot">=</span> <span class="st">"NoTumour"</span></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>tumour_location[meta<span class="sc">$</span>disease <span class="sc">==</span> <span class="st">"Adenoma"</span>] <span class="ot">=</span> <span class="st">"Adenoma"</span></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>tumour_location <span class="ot">=</span> <span class="fu">factor</span>(meta<span class="sc">$</span>tumour_location, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"NoTumour"</span>, <span class="st">"Adenoma"</span>, <span class="st">"transverse"</span>, <span class="st">"left_sided"</span>, <span class="st">"right_sided"</span>, <span class="st">"multiple_sites"</span>, <span class="st">"nd"</span>))</span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge adenoma and HC into None </span></span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>disease <span class="ot">=</span> <span class="fu">ifelse</span>(meta<span class="sc">$</span>disease <span class="sc">==</span> <span class="st">"CRC"</span>, <span class="st">"CRC"</span>, <span class="st">"None"</span>)</span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>sy <span class="ot">&lt;-</span> <span class="fu">read_sylph</span>(sylph_path) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Detected Sylph query output file.</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># annoying renames to match meta V sylph file</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(sy) <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_1"</span>, <span class="st">""</span>, <span class="fu">colnames</span>(sy))</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(sy) <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_merged"</span>, <span class="st">""</span>, <span class="fu">colnames</span>(sy))</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colData</span>(sy)<span class="sc">$</span>Sample_file <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_1"</span>, <span class="st">""</span>, <span class="fu">basename</span>(<span class="fu">colData</span>(sy)<span class="sc">$</span>Sample_file))</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colData</span>(sy)<span class="sc">$</span>Sample_file <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_merged"</span>, <span class="st">""</span>, <span class="fu">colnames</span>(sy))</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="do">### We'll skip filtering here</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Checks before merging metadata</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(<span class="fu">colnames</span>(sy) <span class="sc">%in%</span> meta<span class="sc">$</span>run_accession)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## [1] TRUE</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(meta<span class="sc">$</span>run_accession <span class="sc">%in%</span> <span class="fu">colnames</span>(sy))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## [1] TRUE</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>sy <span class="ot">=</span> <span class="fu">modify_metadata</span>(sy, meta, <span class="at">replace =</span> T)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(sy)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## [1] 64415  3414</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>studies <span class="ot">=</span> <span class="fu">unique</span>(<span class="fu">colData</span>(sy)<span class="sc">$</span>study)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">registerDoParallel</span>(<span class="at">cores =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>() <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>AUCs_enet_lodo <span class="ot">=</span>  <span class="fu">list</span>()</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(d <span class="cf">in</span> studies){</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Training set</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>  sy_sub <span class="ot">=</span> <span class="fu">subset</span>(sy, <span class="at">select =</span> <span class="sc">!</span>(<span class="fu">colData</span>(sy)<span class="sc">$</span>study <span class="sc">%in%</span> <span class="fu">as.character</span>(d)))</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>  sy_sub <span class="ot">=</span> <span class="fu">filter_by_presence</span>(sy_sub, <span class="fu">ceiling</span>(<span class="fu">dim</span>(sy_sub)[<span class="dv">2</span>]<span class="sc">/</span><span class="dv">10</span>))</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Feature selection</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>  design <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="st">"~ disease + age + sex + BMI + (1 | study)"</span>)</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>  save_path <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">"output_rds/CRC_lodo/zib_q_99_ebp_testset_"</span>, d,<span class="st">".rds"</span>, <span class="at">sep =</span> <span class="st">""</span>)</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Run with ebp - this looks a bit less noisy</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>    ZB_fit <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>    ebp <span class="ot">=</span> <span class="fu">compute_eb_priors</span>(sy_sub, strainspy<span class="sc">:::</span><span class="fu">nobars_</span>(design), <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>(),<span class="at">low_cutoff =</span> <span class="dv">0</span>, <span class="at">high_cutoff =</span> <span class="cn">Inf</span>)</span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>    ZB_fit <span class="ot">&lt;-</span> <span class="fu">glmZiBFit</span>(sy, design, <span class="at">MAP_prior =</span> ebp, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">saveRDS</span>(ZB_fit, save_path)</span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>  th <span class="ot">=</span> <span class="fu">top_hits</span>(ZB_fit, <span class="at">coef =</span> <span class="dv">2</span>, <span class="at">method =</span> <span class="st">"BH"</span>, <span class="at">alpha =</span> <span class="fl">0.05</span>)</span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Train Matrix</span></span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>  train_mx <span class="ot">=</span> strainspy<span class="sc">::</span><span class="fu">prep_for_prediction</span>(sy_sub, <span class="st">'disease'</span>, th<span class="sc">$</span>Contig_name)</span>
+<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Test Matrix</span></span>
+<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a>  hold_out_mx <span class="ot">=</span> strainspy<span class="sc">::</span><span class="fu">prep_for_prediction</span>(<span class="fu">subset</span>(sy, <span class="at">select =</span> <span class="fu">colData</span>(sy)<span class="sc">$</span>study <span class="sc">%in%</span> d),  <span class="st">'disease'</span>, th<span class="sc">$</span>Contig_name)</span>
+<span id="cb30-30"><a href="#cb30-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-31"><a href="#cb30-31" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-32"><a href="#cb30-32" aria-hidden="true" tabindex="-1"></a>  save_path <span class="ot">=</span> <span class="fu">paste</span>(<span class="st">"output_rds/CRC_lodo/enet_BH_a0.05_testset_"</span>, d ,<span class="st">".rds"</span>, <span class="at">collapse =</span> <span class="st">""</span>, <span class="at">sep =</span> <span class="st">""</span>)</span>
+<span id="cb30-33"><a href="#cb30-33" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-34"><a href="#cb30-34" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)) {</span>
+<span id="cb30-35"><a href="#cb30-35" aria-hidden="true" tabindex="-1"></a>    enet_fit_lodo <span class="ot">=</span> <span class="fu">readRDS</span>(save_path)</span>
+<span id="cb30-36"><a href="#cb30-36" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb30-37"><a href="#cb30-37" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-38"><a href="#cb30-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># train_mx = strainspy::prep_for_prediction(train_sy, 'disease', th$Contig_name)</span></span>
+<span id="cb30-39"><a href="#cb30-39" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-40"><a href="#cb30-40" aria-hidden="true" tabindex="-1"></a>    y <span class="ot">&lt;-</span> <span class="fu">factor</span>(sy_sub<span class="sc">$</span>disease, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"None"</span>, <span class="st">"CRC"</span>))</span>
+<span id="cb30-41"><a href="#cb30-41" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">=</span> sparsevctrs<span class="sc">::</span><span class="fu">coerce_to_sparse_matrix</span>(train_mx[,<span class="sc">-</span><span class="dv">1</span>])</span>
+<span id="cb30-42"><a href="#cb30-42" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-43"><a href="#cb30-43" aria-hidden="true" tabindex="-1"></a>    enet_fit_lodo <span class="ot">&lt;-</span> caret<span class="sc">::</span><span class="fu">train</span>(</span>
+<span id="cb30-44"><a href="#cb30-44" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> x,</span>
+<span id="cb30-45"><a href="#cb30-45" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> y,</span>
+<span id="cb30-46"><a href="#cb30-46" aria-hidden="true" tabindex="-1"></a>      <span class="co"># data = train_mx,</span></span>
+<span id="cb30-47"><a href="#cb30-47" aria-hidden="true" tabindex="-1"></a>      <span class="at">method =</span> <span class="st">'glmnet'</span>,</span>
+<span id="cb30-48"><a href="#cb30-48" aria-hidden="true" tabindex="-1"></a>      <span class="co"># preProcess = c("center", "scale"),</span></span>
+<span id="cb30-49"><a href="#cb30-49" aria-hidden="true" tabindex="-1"></a>      <span class="at">metric =</span> <span class="st">"ROC"</span>,</span>
+<span id="cb30-50"><a href="#cb30-50" aria-hidden="true" tabindex="-1"></a>      <span class="at">trControl =</span> caret<span class="sc">::</span><span class="fu">trainControl</span>(</span>
+<span id="cb30-51"><a href="#cb30-51" aria-hidden="true" tabindex="-1"></a>        <span class="at">method =</span> <span class="st">"cv"</span>,</span>
+<span id="cb30-52"><a href="#cb30-52" aria-hidden="true" tabindex="-1"></a>        <span class="at">classProbs =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb30-53"><a href="#cb30-53" aria-hidden="true" tabindex="-1"></a>        <span class="at">summaryFunction =</span> twoClassSummary,</span>
+<span id="cb30-54"><a href="#cb30-54" aria-hidden="true" tabindex="-1"></a>        <span class="co"># index = groupKFold(train_meta$study, k = length(unique(train_meta$study))),</span></span>
+<span id="cb30-55"><a href="#cb30-55" aria-hidden="true" tabindex="-1"></a>        <span class="at">savePredictions =</span> <span class="st">"final"</span>,</span>
+<span id="cb30-56"><a href="#cb30-56" aria-hidden="true" tabindex="-1"></a>        <span class="at">allowParallel =</span> <span class="cn">TRUE</span>   <span class="co"># &lt;- important</span></span>
+<span id="cb30-57"><a href="#cb30-57" aria-hidden="true" tabindex="-1"></a>      )<span class="co">#,</span></span>
+<span id="cb30-58"><a href="#cb30-58" aria-hidden="true" tabindex="-1"></a>      <span class="co">#weights = ifelse(y=="CRC", 2, 1)</span></span>
+<span id="cb30-59"><a href="#cb30-59" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb30-60"><a href="#cb30-60" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-61"><a href="#cb30-61" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-62"><a href="#cb30-62" aria-hidden="true" tabindex="-1"></a>    <span class="fu">saveRDS</span>(enet_fit_lodo, save_path)</span>
+<span id="cb30-63"><a href="#cb30-63" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb30-64"><a href="#cb30-64" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-65"><a href="#cb30-65" aria-hidden="true" tabindex="-1"></a>  <span class="co"># hold_out_mx = strainspy::prep_for_prediction(hold_out_sy, 'disease', th$Contig_name)</span></span>
+<span id="cb30-66"><a href="#cb30-66" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-67"><a href="#cb30-67" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">length</span>(<span class="fu">unique</span>(hold_out_mx<span class="sc">$</span>disease))  <span class="sc">==</span> <span class="dv">2</span>){</span>
+<span id="cb30-68"><a href="#cb30-68" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-69"><a href="#cb30-69" aria-hidden="true" tabindex="-1"></a>    pred_lodo <span class="ot">&lt;-</span> <span class="fu">predict</span>(enet_fit_lodo, hold_out_mx , <span class="at">type =</span> <span class="st">"prob"</span>)<span class="sc">$</span>CRC</span>
+<span id="cb30-70"><a href="#cb30-70" aria-hidden="true" tabindex="-1"></a>    roc_lodo <span class="ot">&lt;-</span> <span class="fu">roc</span>(<span class="fu">factor</span>(hold_out_mx<span class="sc">$</span>disease, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"None"</span>, <span class="st">"CRC"</span>)), pred_lodo, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"None"</span>,<span class="st">"CRC"</span>))</span>
+<span id="cb30-71"><a href="#cb30-71" aria-hidden="true" tabindex="-1"></a>    AUCs_enet_lodo[[d]] <span class="ot">=</span> <span class="fu">auc</span>(roc_lodo)</span>
+<span id="cb30-72"><a href="#cb30-72" aria-hidden="true" tabindex="-1"></a>    <span class="co"># cat('Done with', d, 'AUC = ', AUCs_enet_lodo[[d]], '\n')</span></span>
+<span id="cb30-73"><a href="#cb30-73" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb30-74"><a href="#cb30-74" aria-hidden="true" tabindex="-1"></a>    <span class="co"># cat('Done with', d, 'cannot compute AUC, dataset is all:', as.character(unique(hold_out_mx$disease)), '\n')</span></span>
+<span id="cb30-75"><a href="#cb30-75" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb30-76"><a href="#cb30-76" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-77"><a href="#cb30-77" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-78"><a href="#cb30-78" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Retained 20513 rows after filtering
+## Found 5940 tophits for diseaseNone at alpha = 0.05 using BH
+
+## Prepared data: 3286 samples and 5940 predictors.
+
+## Prepared data: 128 samples and 5940 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Retained 20545 rows after filtering
+## Found 5725 tophits for diseaseNone at alpha = 0.05 using BH
+
+## Prepared data: 3308 samples and 5725 predictors.
+
+## Prepared data: 106 samples and 5725 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Retained 20317 rows after filtering
+## Found 6531 tophits for diseaseNone at alpha = 0.05 using BH
+
+## Prepared data: 3251 samples and 6531 predictors.
+
+## Prepared data: 163 samples and 6531 predictors.
+
+## Retained 20317 rows after filtering
+## Found 6698 tophits for diseaseNone at alpha = 0.05 using BH
+
+## Prepared data: 3211 samples and 6698 predictors.
+
+## Prepared data: 203 samples and 6698 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Retained 20498 rows after filtering
+## Found 7228 tophits for diseaseNone at alpha = 0.05 using BH
+
+## Prepared data: 3290 samples and 7228 predictors.
+
+## Prepared data: 124 samples and 7228 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Retained 20541 rows after filtering
+## Found 6311 tophits for diseaseNone at alpha = 0.05 using BH
+
+## Prepared data: 3354 samples and 6311 predictors.
+
+## Prepared data: 60 samples and 6311 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Retained 20466 rows after filtering
+## Found 6068 tophits for diseaseNone at alpha = 0.05 using BH
+
+## Prepared data: 3332 samples and 6068 predictors.
+
+## Prepared data: 82 samples and 6068 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Retained 20375 rows after filtering
+## Found 5686 tophits for diseaseNone at alpha = 0.05 using BH
+
+## Prepared data: 3265 samples and 5686 predictors.
+
+## Prepared data: 149 samples and 5686 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Retained 20340 rows after filtering
+## Found 6324 tophits for diseaseNone at alpha = 0.05 using BH
+
+## Prepared data: 3260 samples and 6324 predictors.
+
+## Prepared data: 154 samples and 6324 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Retained 20417 rows after filtering
+## Found 8283 tophits for diseaseNone at alpha = 0.05 using BH
+
+## Prepared data: 2799 samples and 8283 predictors.
+
+## Prepared data: 615 samples and 8283 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Retained 20256 rows after filtering
+## Found 5341 tophits for diseaseNone at alpha = 0.05 using BH
+
+## Prepared data: 3221 samples and 5341 predictors.
+
+## Prepared data: 193 samples and 5341 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Retained 20242 rows after filtering
+## Found 4911 tophits for diseaseNone at alpha = 0.05 using BH
+
+## Prepared data: 3251 samples and 4911 predictors.
+
+## Prepared data: 163 samples and 4911 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Retained 20519 rows after filtering
+## Found 6627 tophits for diseaseNone at alpha = 0.05 using BH
+
+## Prepared data: 3214 samples and 6627 predictors.
+
+## Prepared data: 200 samples and 6627 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Retained 20377 rows after filtering
+## Found 6149 tophits for diseaseNone at alpha = 0.05 using BH
+
+## Prepared data: 3357 samples and 6149 predictors.
+
+## Prepared data: 57 samples and 6149 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Retained 21637 rows after filtering
+## Found 6020 tophits for diseaseNone at alpha = 0.05 using BH
+
+## Prepared data: 2517 samples and 6020 predictors.
+
+## Prepared data: 897 samples and 6020 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Retained 20516 rows after filtering
+## Found 6052 tophits for diseaseNone at alpha = 0.05 using BH
+
+## Prepared data: 3354 samples and 6052 predictors.
+
+## Prepared data: 60 samples and 6052 predictors.
+
+## Setting direction: controls &lt; cases
+
+## Retained 20415 rows after filtering
+## Found 6655 tophits for diseaseNone at alpha = 0.05 using BH
+
+## Prepared data: 3354 samples and 6655 predictors.
+
+## Prepared data: 60 samples and 6655 predictors.
+
+## Setting direction: controls &lt; cases</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">unlist</span>(AUCs_enet_lodo))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##  0.4179  0.6977  0.8006  0.7665  0.8496  0.9278</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>plt_long <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">train =</span> <span class="st">"lodo_enet"</span>, <span class="at">test =</span> <span class="fu">names</span>(AUCs_enet_lodo), <span class="at">AUC =</span> <span class="fu">unlist</span>(AUCs_enet_lodo))</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>plt_long <span class="ot">=</span> <span class="fu">rbind</span>(df_plot, plt_long)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>plt_long<span class="sc">$</span>test <span class="ot">=</span> <span class="fu">tolower</span>(plt_long<span class="sc">$</span>test)</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="co"># THese are the good ones to plot</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>plt_studies <span class="ot">=</span> plt_long <span class="sc">%&gt;%</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(train <span class="sc">==</span> <span class="st">"lodo_enet"</span>, AUC <span class="sc">&gt;</span> <span class="fl">0.7</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(test)</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Only keep the rows/cols we need</span></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>plt_long <span class="ot">=</span> plt_long <span class="sc">%&gt;%</span> </span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(train <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"lodo_enet"</span>, <span class="st">"Median"</span>, <span class="st">"Best"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(test <span class="sc">%in%</span> plt_studies) <span class="sc">%&gt;%</span></span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(AUC)</span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>plt_long<span class="sc">$</span>test <span class="ot">=</span> <span class="fu">factor</span>(plt_long<span class="sc">$</span>test, <span class="at">levels =</span> <span class="fu">unique</span>(plt_long<span class="sc">$</span>test))</span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>plt_long <span class="ot">&lt;-</span> plt_long <span class="sc">%&gt;%</span></span>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">label_col =</span> <span class="fu">ifelse</span>(AUC <span class="sc">&gt;</span> <span class="fl">0.84</span>, <span class="st">"white"</span>, <span class="st">"black"</span>)</span>
+<span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb34-23"><a href="#cb34-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-24"><a href="#cb34-24" aria-hidden="true" tabindex="-1"></a>plt_long <span class="ot">&lt;-</span> plt_long <span class="sc">%&gt;%</span></span>
+<span id="cb34-25"><a href="#cb34-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb34-26"><a href="#cb34-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">train =</span> <span class="fu">recode</span>(</span>
+<span id="cb34-27"><a href="#cb34-27" aria-hidden="true" tabindex="-1"></a>      train,</span>
+<span id="cb34-28"><a href="#cb34-28" aria-hidden="true" tabindex="-1"></a>      <span class="st">"lodo_enet"</span> <span class="ot">=</span> <span class="st">"LODO"</span>,</span>
+<span id="cb34-29"><a href="#cb34-29" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Median"</span> <span class="ot">=</span> <span class="st">"Median Cross-Study"</span>,</span>
+<span id="cb34-30"><a href="#cb34-30" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Best"</span> <span class="ot">=</span> <span class="st">"Best Cross-Study"</span></span>
+<span id="cb34-31"><a href="#cb34-31" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb34-32"><a href="#cb34-32" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb34-33"><a href="#cb34-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">train =</span> <span class="fu">factor</span>(</span>
+<span id="cb34-34"><a href="#cb34-34" aria-hidden="true" tabindex="-1"></a>      train,</span>
+<span id="cb34-35"><a href="#cb34-35" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">rev</span>(<span class="fu">c</span>(</span>
+<span id="cb34-36"><a href="#cb34-36" aria-hidden="true" tabindex="-1"></a>        <span class="st">"LODO"</span>,</span>
+<span id="cb34-37"><a href="#cb34-37" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Median Cross-Study"</span>,</span>
+<span id="cb34-38"><a href="#cb34-38" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Best Cross-Study"</span></span>
+<span id="cb34-39"><a href="#cb34-39" aria-hidden="true" tabindex="-1"></a>      ))</span>
+<span id="cb34-40"><a href="#cb34-40" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb34-41"><a href="#cb34-41" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb34-42"><a href="#cb34-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">label_col =</span> <span class="fu">ifelse</span>(AUC <span class="sc">&gt;</span> <span class="fl">0.79</span>, <span class="st">"white"</span>, <span class="st">"black"</span>)</span>
+<span id="cb34-43"><a href="#cb34-43" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb34-44"><a href="#cb34-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-45"><a href="#cb34-45" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(plt_long, <span class="fu">aes</span>(<span class="at">x =</span> test, <span class="at">y =</span> train, <span class="at">fill =</span> AUC)) <span class="sc">+</span></span>
+<span id="cb34-46"><a href="#cb34-46" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb34-47"><a href="#cb34-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(</span>
+<span id="cb34-48"><a href="#cb34-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"white"</span>,</span>
+<span id="cb34-49"><a href="#cb34-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="fl">0.8</span>,</span>
+<span id="cb34-50"><a href="#cb34-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span> <span class="fl">0.98</span>,</span>
+<span id="cb34-51"><a href="#cb34-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">height =</span> <span class="fl">0.98</span></span>
+<span id="cb34-52"><a href="#cb34-52" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb34-53"><a href="#cb34-53" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb34-54"><a href="#cb34-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(</span>
+<span id="cb34-55"><a href="#cb34-55" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(</span>
+<span id="cb34-56"><a href="#cb34-56" aria-hidden="true" tabindex="-1"></a>      <span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"%.2f"</span>, AUC),</span>
+<span id="cb34-57"><a href="#cb34-57" aria-hidden="true" tabindex="-1"></a>      <span class="at">colour =</span> label_col</span>
+<span id="cb34-58"><a href="#cb34-58" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb34-59"><a href="#cb34-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">7</span>,</span>
+<span id="cb34-60"><a href="#cb34-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">fontface =</span> <span class="st">"bold"</span></span>
+<span id="cb34-61"><a href="#cb34-61" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb34-62"><a href="#cb34-62" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb34-63"><a href="#cb34-63" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_identity</span>() <span class="sc">+</span></span>
+<span id="cb34-64"><a href="#cb34-64" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb34-65"><a href="#cb34-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(</span>
+<span id="cb34-66"><a href="#cb34-66" aria-hidden="true" tabindex="-1"></a>    <span class="at">low =</span> <span class="st">"#FBE9E7"</span>,</span>
+<span id="cb34-67"><a href="#cb34-67" aria-hidden="true" tabindex="-1"></a>    <span class="at">high =</span> <span class="st">"#BF360C"</span>,</span>
+<span id="cb34-68"><a href="#cb34-68" aria-hidden="true" tabindex="-1"></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="dv">1</span>),</span>
+<span id="cb34-69"><a href="#cb34-69" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">"AUC"</span></span>
+<span id="cb34-70"><a href="#cb34-70" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb34-71"><a href="#cb34-71" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb34-72"><a href="#cb34-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb34-73"><a href="#cb34-73" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NULL</span>,</span>
+<span id="cb34-74"><a href="#cb34-74" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="cn">NULL</span></span>
+<span id="cb34-75"><a href="#cb34-75" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb34-76"><a href="#cb34-76" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb34-77"><a href="#cb34-77" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_fixed</span>() <span class="sc">+</span></span>
+<span id="cb34-78"><a href="#cb34-78" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb34-79"><a href="#cb34-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">20</span>) <span class="sc">+</span></span>
+<span id="cb34-80"><a href="#cb34-80" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb34-81"><a href="#cb34-81" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb34-82"><a href="#cb34-82" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb34-83"><a href="#cb34-83" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb34-84"><a href="#cb34-84" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(</span>
+<span id="cb34-85"><a href="#cb34-85" aria-hidden="true" tabindex="-1"></a>      <span class="at">angle =</span> <span class="dv">45</span>,</span>
+<span id="cb34-86"><a href="#cb34-86" aria-hidden="true" tabindex="-1"></a>      <span class="at">hjust =</span> <span class="dv">1</span>,</span>
+<span id="cb34-87"><a href="#cb34-87" aria-hidden="true" tabindex="-1"></a>      <span class="at">vjust =</span> <span class="dv">1</span>,</span>
+<span id="cb34-88"><a href="#cb34-88" aria-hidden="true" tabindex="-1"></a>      <span class="at">size =</span> <span class="dv">18</span>,</span>
+<span id="cb34-89"><a href="#cb34-89" aria-hidden="true" tabindex="-1"></a>      <span class="at">face =</span> <span class="st">"bold"</span></span>
+<span id="cb34-90"><a href="#cb34-90" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb34-91"><a href="#cb34-91" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb34-92"><a href="#cb34-92" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(</span>
+<span id="cb34-93"><a href="#cb34-93" aria-hidden="true" tabindex="-1"></a>      <span class="at">size =</span> <span class="dv">18</span>,</span>
+<span id="cb34-94"><a href="#cb34-94" aria-hidden="true" tabindex="-1"></a>      <span class="at">face =</span> <span class="st">"bold"</span></span>
+<span id="cb34-95"><a href="#cb34-95" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb34-96"><a href="#cb34-96" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb34-97"><a href="#cb34-97" aria-hidden="true" tabindex="-1"></a>    <span class="co"># legend.position = "right",</span></span>
+<span id="cb34-98"><a href="#cb34-98" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb34-99"><a href="#cb34-99" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="dv">10</span>, <span class="dv">15</span>, <span class="dv">10</span>, <span class="dv">10</span>)</span>
+<span id="cb34-100"><a href="#cb34-100" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><img src="pred_CRC_lodo+single_files/figure-gfm/unnamed-chunk-7-1.png" class="img-fluid"><!-- --></p>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
