@@ -47,8 +47,7 @@ if(file.exists(save_path)){
 
 top_hits(full_zib_95_w)
 # true/false positive
-plot_ani_dist(d_p95_full, phenotype = 'spiked', contigs = top_hits(full_zib_95_w, alpha = 0.05)$Contig_name, drop_zeros = F, show_points = T, plot_type = 'box')
-plot_ani_dist(d_p95_full, phenotype = 'spiked', contigs = top_hits(full_zib_95_w, alpha = 0.05)$Contig_name, drop_zeros = T, show_points = T, plot_type = 'box')
+plot_ani_dist(d_p95_full, phenotype = 'spiked', contigs = top_hits(full_zib_95_w, alpha = 0.05)$Contig_name, show_points = T, plot_type = 'box')
 ```
 
 Here, *Clostridiales bacterium* is a false positive. Based on the box plot, it looks like an edge case with just 3 samples driving the signal.
@@ -69,7 +68,7 @@ if(file.exists(save_path)){
 top_hits(full_zib_95_s)
 
 # true/false positive
-plot_ani_dist(d_p95_full, phenotype = 'spiked', contigs = top_hits(full_zib_95_s, alpha = 0.05)$Contig_name, drop_zeros = T, show_points = T, plot_type = 'box')
+plot_ani_dist(d_p95_full, phenotype = 'spiked', contigs = top_hits(full_zib_95_s, alpha = 0.05)$Contig_name, show_points = T, plot_type = 'box')
 ```
 
 This fixes the FP issue.
@@ -94,7 +93,7 @@ if(file.exists(save_path)){
 
 top_hits(full_zib_95_eb)
 # This plot is redundant - same as (0,1) prior
-plot_ani_dist(d_p95_full, phenotype = 'spiked', contigs = top_hits(full_zib_95_s, alpha = 0.05)$Contig_name, drop_zeros = T, show_points = T, plot_type = 'box')
+plot_ani_dist(d_p95_full, phenotype = 'spiked', contigs = top_hits(full_zib_95_s, alpha = 0.05)$Contig_name, show_points = T, plot_type = 'box')
 
 ```
 
@@ -125,7 +124,7 @@ d_subset = modify_metadata(d_subset, meta_subset)
 dim(d_subset)
 ```
 
-## fit ZIB weak prior
+## Fit ZIB weak prior
 
 ```{r, fig.width=12}
 save_path = "output_rds/prior_zib_small_weak.rds"
@@ -143,10 +142,10 @@ head(top_hits(fit_zib_w))
 plot_manhattan(fit_zib_w, taxonomy = tax_95, aggregate_by_taxa = F)
 
 # Plenty of edge cases
-plot_ani_dist(d_subset, phenotype = 'spiked', contigs = top_hits(fit_zib_w, alpha = 0.05)$Contig_name[1:15], drop_zeros = T, show_points = T, plot_type = 'box')
+plot_ani_dist(d_subset, phenotype = 'spiked', contigs = top_hits(fit_zib_w, alpha = 0.05)$Contig_name[1:15], show_points = T, plot_type = 'box')
 ```
 
-## fit ZIB strong prior
+## Fit ZIB strong prior
 
 ```{r, fig.width=12}
 save_path = "output_rds/prior_zib_small_strong.rds"
@@ -164,10 +163,10 @@ head(top_hits(fit_zib_s))
 plot_manhattan(fit_zib_s, taxonomy = tax_95, aggregate_by_taxa = F)
 
 # Still edge cases
-plot_ani_dist(d_subset, phenotype = 'spiked', contigs = top_hits(fit_zib_s, alpha = 0.05)$Contig_name, drop_zeros = T, show_points = T, plot_type = 'box')
+plot_ani_dist(d_subset, phenotype = 'spiked', contigs = top_hits(fit_zib_s, alpha = 0.05)$Contig_name,show_points = T, plot_type = 'box')
 ```
 
-### compare the two priors
+### Compare the two priors
 
 ```{r}
 # At a strong multiple testing correction, both priors pick the same edge cases, but in a different order
@@ -183,7 +182,7 @@ length(top_hits(fit_zib_s, alpha = 0.05, method = 'BH')$Contig_name)
 
 Both methods are not great for the small sample size.
 
-## fit empirical bayes prior
+## Fit empirical bayes prior
 ```{r, fig.width=12}
 ebp = compute_eb_priors(d_subset, design = design, nthreads = parallel::detectCores(), low_cutoff = 0, high_cutoff = Inf)
 ebp
@@ -207,8 +206,7 @@ plot_manhattan(fit_zib_eb, taxonomy = tax_95, aggregate_by_taxa = F)
 # We only have the ZI signal for E. coli now! 
 
 # valid case
-plot_ani_dist(d_subset, phenotype = 'spiked', contigs = top_hits(fit_zib_eb, alpha = 0.05)$Contig_name, drop_zeros = F, show_points = T, plot_type = 'box')
-plot_ani_dist(d_subset, phenotype = 'spiked', contigs = top_hits(fit_zib_eb, alpha = 0.05)$Contig_name, drop_zeros = T, show_points = T, plot_type = 'box')
+plot_ani_dist(d_subset, phenotype = 'spiked', contigs = top_hits(fit_zib_eb, alpha = 0.05)$Contig_name, show_points = T, plot_type = 'box')
 
 ```
 

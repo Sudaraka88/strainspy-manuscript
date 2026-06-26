@@ -90,7 +90,7 @@ print_auc <- function(boot_auc, ret = F){
   ci_lower  <- quantile(boot_auc, 0.025)
   ci_upper  <- quantile(boot_auc, 0.975)
   
-  cat("AUC =", round(point_est, 3), "[95% CI:", round(ci_lower, 3), "-", round(ci_upper, 3), "]\n")
+  # cat("AUC =", round(point_est, 3), "[95% CI:", round(ci_lower, 3), "-", round(ci_upper, 3), "]\n")
   
   if(ret){
     return(c(point_est, ci_lower, ci_upper))
@@ -234,8 +234,8 @@ for(train_dset_nm in dset){
     sy_train = filter_by_presence(sy_train, ceiling(dim(sy_train)[2]/10))
     
     if(length(train_idx) > 20) { # We can train with this
-      
-      cat("Running strainspy for", train_type, "in", train_dset_nm, "\n")
+#       
+      # cat("Running strainspy for", train_type, "in", train_dset_nm, "\n")
       
       save_path = paste("output_rds/pred_enet_imm_fit_train_", train_dset_nm, "_",  train_type ,".rds", sep = "")
       if(file.exists(save_path)){
@@ -279,7 +279,7 @@ for(train_dset_nm in dset){
           
           # 4. Evaluate metrics
           if (length(test_idx) > 0) {
-            cat("Training:", train_dset_nm, ", Therapy:", train_type, " | Testing:", test_dset_nm, ", Therapy:", test_type, "\n")
+            # cat("Training:", train_dset_nm, ", Therapy:", train_type, " | Testing:", test_dset_nm, ", Therapy:", test_type, "\n")
             tmp <- evaluate_test_set(fit = enet_mdl, test_idx = test_idx, sy = sy, th_filt_names = feature_names, B = B)
             Op <- rbind(Op, data.frame(
               Train         = train_dset_nm,
@@ -291,7 +291,7 @@ for(train_dset_nm in dset){
               therapy_train = train_type
             ))    
           } else {
-            cat("No samples of therapy", test_type, "in", test_dset_nm, "\n")
+            # cat("No samples of therapy", test_type, "in", test_dset_nm, "\n")
           }
           
           
@@ -299,7 +299,7 @@ for(train_dset_nm in dset){
       }
       
     } else {
-      cat("Not enough samples of therapy", train_type, "in", train_dset_nm, "\n")
+      # cat("Not enough samples of therapy", train_type, "in", train_dset_nm, "\n")
       next
     }
     
@@ -476,7 +476,7 @@ set.seed(1988)
 Op <- data.frame()
 
 for (test_dset_nm in test_dset) {
-  cat("Training:", "rare", "(", "CICB", ") | Testing set:", test_dset_nm, "\n")
+  # cat("Training:", "rare", "(", "CICB", ") | Testing set:", test_dset_nm, "\n")
   
   for (test_type in therapy_types) {
     # Determine test indices based on type criteria (preserving your original != 'CICB' logic for 'Other')
@@ -561,7 +561,7 @@ for (train_dset_nm in train_dset) {
     
     # 3. Process test datasets
     for (test_dset_nm in test_dset) {
-      cat("Training:", train_dset_nm, "(", train_type, ") | Testing set:", test_dset_nm, "\n")
+      # cat("Training:", train_dset_nm, "(", train_type, ") | Testing set:", test_dset_nm, "\n")
       
       for (test_type in therapy_types) {
         # Determine test indices based on type criteria (preserving your original != 'CICB' logic for 'Other')

@@ -1,0 +1,54 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "StrainSpy Manuscript"
+
+  navbar:
+    logo: assets/icon.svg
+    left:
+      - href: index.Rmd
+        text: Home
+      - href: methods.Rmd
+        text: Methods & Simulations
+      - href: associations.Rmd
+        text: Association Testing
+      - href: prediction.Rmd
+        text: Prediction
+
+  sidebar:
+    style: docked
+    search: true
+
+    contents:
+      - section: "Home"
+        contents:
+          - index.Rmd
+
+      - section: "Methods & Simulations"
+        contents:
+          - methods.Rmd
+          - simulations.Rmd
+          - Sims_spike_query.Rmd
+          - sims_spike_query_pdis.Rmd
+          - prior_on_dispersion.Rmd
+          - logistic_ID.Rmd
+          - varyingPrior.Rmd
+
+      - section: "Association Testing"
+        contents:
+          - palleja_Ab_analysis.Rmd
+          - CRC_pooled.Rmd
+          - immunotherapy_assoc.Rmd
+
+      - section: "Prediction"
+        contents:
+          - pred_CRC_lodo+single.Rmd
+          - immunotherapy_preds.Rmd
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    code-fold: true

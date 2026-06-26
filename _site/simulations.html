@@ -1,0 +1,1514 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2025-02-04">
+
+<title>Simulations – StrainSpy Manuscript</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-1b8143a5af30aa0587ead8c64582f750.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    <img src="./assets/icon.svg" alt="" class="navbar-logo light-content">
+    <img src="./assets/icon.svg" alt="" class="navbar-logo dark-content">
+    </a>
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">StrainSpy Manuscript</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./methods.html"> 
+<span class="menu-text">Methods &amp; Simulations</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./associations.html"> 
+<span class="menu-text">Association Testing</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./prediction.html"> 
+<span class="menu-text">Prediction</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./methods.html">Methods &amp; Simulations</a></li><li class="breadcrumb-item"><a href="./simulations.html">Simulations</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Home</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">StrainSpy</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Methods &amp; Simulations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Methods &amp; Simulations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./simulations.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Simulations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Sims_spike_query.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simulations with spiked E. coli strain analysed using Sylph Query</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sims_spike_query_pdis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simulations with spiked P. dis strain analysed using Sylph Query</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./prior_on_dispersion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Re-analysing pancancer dataset with dispersion priors</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./logistic_ID.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Logistic Regression Model”</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./varyingPrior.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">varyingPrior</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Association Testing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./palleja_Ab_analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Analysis of Palleja Antibiotic Exposure data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./CRC_pooled.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Analysis of 3414 pooled colorectal cancer metagenomes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./immunotherapy_assoc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Associations between gut microbial strains and cancer immunotherapy outcomes - a study in rare cancers and melanoma</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Prediction</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pred_CRC_lodo+single.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reanalyse the colorectal cancer data with lodo and trained on each dataset</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./immunotherapy_preds.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using gut microbial strains to predict cancer immunotherapy outcomes - a study in rare cancers and melanoma</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#download-data" id="toc-download-data" class="nav-link active" data-scroll-target="#download-data">Download data</a></li>
+  <li><a href="#run-sylph" id="toc-run-sylph" class="nav-link" data-scroll-target="#run-sylph">Run Sylph</a></li>
+  <li><a href="#functions-to-generate-plots-and-heatmaps" id="toc-functions-to-generate-plots-and-heatmaps" class="nav-link" data-scroll-target="#functions-to-generate-plots-and-heatmaps">Functions to generate plots and heatmaps</a></li>
+  <li><a href="#load-data-and-prepare-for-simulations" id="toc-load-data-and-prepare-for-simulations" class="nav-link" data-scroll-target="#load-data-and-prepare-for-simulations">Load data and prepare for simulations</a></li>
+  <li><a href="#sensitivity-analysis" id="toc-sensitivity-analysis" class="nav-link" data-scroll-target="#sensitivity-analysis">Sensitivity Analysis</a>
+  <ul class="collapse">
+  <li><a href="#simulate-changes-in-identity" id="toc-simulate-changes-in-identity" class="nav-link" data-scroll-target="#simulate-changes-in-identity">Simulate changes in identity</a></li>
+  <li><a href="#simulate-changes-in-presenceabsence" id="toc-simulate-changes-in-presenceabsence" class="nav-link" data-scroll-target="#simulate-changes-in-presenceabsence">Simulate changes in presence/absence</a></li>
+  <li><a href="#simulate-both-identity-and-presenceabsence-changes" id="toc-simulate-both-identity-and-presenceabsence-changes" class="nav-link" data-scroll-target="#simulate-both-identity-and-presenceabsence-changes">Simulate both identity and presence/absence changes</a></li>
+  </ul></li>
+  <li><a href="#generate-a-manhattan-plots-with-ground-truth-for-a-single-data-point" id="toc-generate-a-manhattan-plots-with-ground-truth-for-a-single-data-point" class="nav-link" data-scroll-target="#generate-a-manhattan-plots-with-ground-truth-for-a-single-data-point">Generate a manhattan plots with ground truth for a single data point</a></li>
+  <li><a href="#paper-figure" id="toc-paper-figure" class="nav-link" data-scroll-target="#paper-figure">Paper Figure</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./methods.html">Methods &amp; Simulations</a></li><li class="breadcrumb-item"><a href="./simulations.html">Simulations</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Simulations</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 4, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="download-data" class="level3">
+<h3 class="anchored" data-anchor-id="download-data">Download data</h3>
+<p>Sample 200 sample IDs from the Zeevi et al., dataset (PRJEB11532)</p>
+<pre><code>{ head -n 1 PRJEB11532_ena_meta.tsv; tail -n +2 PRJEB11532_ena_meta.tsv | shuf -n 200; } &gt; subsample200_PRJEB11532_ena_meta.tsv
+cut -f1 subsample200_PRJEB11532_ena_meta.tsv &gt; subsample200_PRJEB11532_ids.tsv
+
+
+kingfisher get --run-identifiers-list subsample200_PRJEB11532_ids.tsv --download-threads 5 -m ena-ascp ena-ftp aws-http prefetch</code></pre>
+</section>
+<section id="run-sylph" class="level3">
+<h3 class="anchored" data-anchor-id="run-sylph">Run Sylph</h3>
+<p>Run Sylph (v0.8.0) in ‘query’ mode using the GTDB 99% identity dataset.</p>
+<pre><code>sylph query gtdb_ordered_99.syldb -u --read-seq-id 99.9 -t 100  -1 ./*_1.fastq.gz -2 ./*_2.fastq.gz -o ./zeevi_PRJEB11532_query_gtdb_220_id99.tsv ./ERR*[0-9][0-9].fastq.gz</code></pre>
+<pre><code>sylph query /data1/gerryt/sylph_analyses/gtdb_98_ordered_DB/gtdb_ordered_98.syldb -u --read-seq-id 99.9 -t 25  -1 ./*_1.fastq.gz -2 ./*_2.fastq.gz -o ./zeevi_PRJEB11532_query_gtdb_220_id98.tsv ./ERR*[0-9][0-9].fastq.gz</code></pre>
+<pre><code>sylph profile /data1/gerryt/sylph_analyses/gtdb_98_ordered_DB/gtdb_ordered_98.syldb -u --read-seq-id 99.9 -t 25  -1 ./*_1.fastq.gz -2 ./*_2.fastq.gz -o ./zeevi_PRJEB11532_profile_gtdb_220_id98.tsv ./ERR*[0-9][0-9].fastq.gz</code></pre>
+<pre><code>sylph profile /data1/gerryt/sylph_analyses/gtdb-r220-c200-dbv1.syldb -u --read-seq-id 99.9 -t 25  -1 ./*_1.fastq.gz -2 ./*_2.fastq.gz -o ./zeevi_PRJEB11532_profile_gtdb_220_id95.tsv ./ERR*[0-9][0-9].fastq.gz</code></pre>
+<pre><code>sylph query /data1/gerryt/sylph_analyses/gtdb-r220-c200-dbv1.syldb -u --read-seq-id 99.9 -t 25  -1 ./*_1.fastq.gz -2 ./*_2.fastq.gz -o ./zeevi_PRJEB11532_query_gtdb_220_id95.tsv ./ERR*[0-9][0-9].fastq.gz</code></pre>
+</section>
+<section id="functions-to-generate-plots-and-heatmaps" class="level3">
+<h3 class="anchored" data-anchor-id="functions-to-generate-plots-and-heatmaps">Functions to generate plots and heatmaps</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggthemes)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(viridis)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: viridisLite</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>gg_facet_plot <span class="ot">&lt;-</span> <span class="cf">function</span>(op, <span class="at">title =</span> <span class="cn">NULL</span>, <span class="at">reverse_x =</span> <span class="cn">FALSE</span>){</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="st">'sf'</span> <span class="sc">%in%</span> <span class="fu">colnames</span>(op)){</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    op<span class="sc">$</span>var <span class="ot">=</span> <span class="fu">as.numeric</span>(op<span class="sc">$</span>sf)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    xlab_ <span class="ot">=</span> <span class="st">"Scale Factor"</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span>(<span class="st">'z_prop'</span> <span class="sc">%in%</span> <span class="fu">colnames</span>(op)){</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    op<span class="sc">$</span>var <span class="ot">=</span> <span class="fu">as.numeric</span>(op<span class="sc">$</span>z_prop)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    xlab_ <span class="ot">=</span> <span class="st">"Zero Proportion"</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  op<span class="sc">$</span>Test <span class="ot">&lt;-</span> <span class="fu">factor</span>(op<span class="sc">$</span>Test)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  op<span class="sc">$</span>tp <span class="ot">=</span> <span class="fu">as.numeric</span>(op<span class="sc">$</span>tp)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  op<span class="sc">$</span>fn <span class="ot">=</span> <span class="fu">as.numeric</span>(op<span class="sc">$</span>fn)</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  op<span class="sc">$</span>fp <span class="ot">=</span> <span class="fu">as.numeric</span>(op<span class="sc">$</span>fp)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  op<span class="sc">$</span>tn <span class="ot">=</span> <span class="fu">as.numeric</span>(op<span class="sc">$</span>tn)</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  op <span class="ot">&lt;-</span> op <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">Sensitivity =</span> tp <span class="sc">/</span> (tp <span class="sc">+</span> fn) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">Specificity =</span> tn <span class="sc">/</span> (tn <span class="sc">+</span> fn) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">Precision   =</span> tp <span class="sc">/</span> (tp <span class="sc">+</span> fp) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">F1          =</span> <span class="dv">2</span> <span class="sc">*</span> tp <span class="sc">/</span> (<span class="dv">2</span> <span class="sc">*</span> tp <span class="sc">+</span> fp <span class="sc">+</span> fn) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>  long_op <span class="ot">&lt;-</span> op <span class="sc">%&gt;%</span></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>      <span class="at">cols =</span> <span class="fu">c</span>(Sensitivity, Specificity, Precision, F1),</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>      <span class="at">names_to =</span> <span class="st">"Metric"</span>,</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>      <span class="at">values_to =</span> <span class="st">"Value"</span></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>  long_op<span class="sc">$</span>Metric <span class="ot">&lt;-</span> <span class="fu">factor</span>(long_op<span class="sc">$</span>Metric, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Sensitivity"</span>, <span class="st">"Specificity"</span>, <span class="st">"Precision"</span>,<span class="st">"F1"</span>))</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">=</span> <span class="fu">ggplot</span>(long_op, <span class="fu">aes</span>(<span class="at">x =</span> var, <span class="at">y =</span> Value, <span class="at">col =</span> Test)) <span class="sc">+</span></span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>Metric, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_clean</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span></span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">16</span>)) <span class="sc">+</span></span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> title,</span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> xlab_,</span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="cn">NULL</span></span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Conditionally reverse the x-axis</span></span>
+<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (reverse_x) {</span>
+<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a>    p <span class="ot">&lt;-</span> p <span class="sc">+</span> <span class="fu">scale_x_reverse</span>()</span>
+<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-50"><a href="#cb13-50" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-51"><a href="#cb13-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(p)</span>
+<span id="cb13-52"><a href="#cb13-52" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-53"><a href="#cb13-53" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-54"><a href="#cb13-54" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-55"><a href="#cb13-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-56"><a href="#cb13-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-57"><a href="#cb13-57" aria-hidden="true" tabindex="-1"></a>gg_heatmaps <span class="ot">&lt;-</span> <span class="cf">function</span>(op){</span>
+<span id="cb13-58"><a href="#cb13-58" aria-hidden="true" tabindex="-1"></a>  op<span class="sc">$</span>sf <span class="ot">=</span> <span class="fu">as.factor</span>(<span class="fu">as.numeric</span>(op<span class="sc">$</span>sf))</span>
+<span id="cb13-59"><a href="#cb13-59" aria-hidden="true" tabindex="-1"></a>  op<span class="sc">$</span>z_prop <span class="ot">=</span> <span class="fu">as.factor</span>(<span class="fu">as.numeric</span>(op<span class="sc">$</span>z_prop))</span>
+<span id="cb13-60"><a href="#cb13-60" aria-hidden="true" tabindex="-1"></a>  op<span class="sc">$</span>Test <span class="ot">&lt;-</span> <span class="fu">factor</span>(op<span class="sc">$</span>Test)</span>
+<span id="cb13-61"><a href="#cb13-61" aria-hidden="true" tabindex="-1"></a>  op<span class="sc">$</span>tp <span class="ot">=</span> <span class="fu">as.numeric</span>(op<span class="sc">$</span>tp)</span>
+<span id="cb13-62"><a href="#cb13-62" aria-hidden="true" tabindex="-1"></a>  op<span class="sc">$</span>fn <span class="ot">=</span> <span class="fu">as.numeric</span>(op<span class="sc">$</span>fn)</span>
+<span id="cb13-63"><a href="#cb13-63" aria-hidden="true" tabindex="-1"></a>  op<span class="sc">$</span>fp <span class="ot">=</span> <span class="fu">as.numeric</span>(op<span class="sc">$</span>fp)</span>
+<span id="cb13-64"><a href="#cb13-64" aria-hidden="true" tabindex="-1"></a>  op<span class="sc">$</span>tn <span class="ot">=</span> <span class="fu">as.numeric</span>(op<span class="sc">$</span>tn)</span>
+<span id="cb13-65"><a href="#cb13-65" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-66"><a href="#cb13-66" aria-hidden="true" tabindex="-1"></a>  op <span class="ot">&lt;-</span> op <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(</span>
+<span id="cb13-67"><a href="#cb13-67" aria-hidden="true" tabindex="-1"></a>    <span class="at">Sensitivity =</span> tp <span class="sc">/</span> (tp <span class="sc">+</span> fn) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb13-68"><a href="#cb13-68" aria-hidden="true" tabindex="-1"></a>    <span class="at">Specificity =</span> tn <span class="sc">/</span> (tn <span class="sc">+</span> fn) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb13-69"><a href="#cb13-69" aria-hidden="true" tabindex="-1"></a>    <span class="at">Precision   =</span> tp <span class="sc">/</span> (tp <span class="sc">+</span> fp) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb13-70"><a href="#cb13-70" aria-hidden="true" tabindex="-1"></a>    <span class="at">F1          =</span> <span class="dv">2</span> <span class="sc">*</span> tp <span class="sc">/</span> (<span class="dv">2</span> <span class="sc">*</span> tp <span class="sc">+</span> fp <span class="sc">+</span> fn) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb13-71"><a href="#cb13-71" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb13-72"><a href="#cb13-72" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-73"><a href="#cb13-73" aria-hidden="true" tabindex="-1"></a>  op_long <span class="ot">&lt;-</span> op <span class="sc">%&gt;%</span></span>
+<span id="cb13-74"><a href="#cb13-74" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(Sensitivity, Specificity, Precision, F1),</span>
+<span id="cb13-75"><a href="#cb13-75" aria-hidden="true" tabindex="-1"></a>                 <span class="at">names_to =</span> <span class="st">"Metric"</span>, <span class="at">values_to =</span> <span class="st">"Value"</span>)</span>
+<span id="cb13-76"><a href="#cb13-76" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-77"><a href="#cb13-77" aria-hidden="true" tabindex="-1"></a>  op_long<span class="sc">$</span>Metric <span class="ot">&lt;-</span> <span class="fu">factor</span>(op_long<span class="sc">$</span>Metric, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Sensitivity"</span>, <span class="st">"Specificity"</span>, <span class="st">"Precision"</span>, <span class="st">"F1"</span>))</span>
+<span id="cb13-78"><a href="#cb13-78" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-79"><a href="#cb13-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(op_long, <span class="fu">aes</span>(<span class="at">x =</span> z_prop, <span class="at">y =</span> sf, <span class="at">fill =</span> Value)) <span class="sc">+</span></span>
+<span id="cb13-80"><a href="#cb13-80" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_tile</span>() <span class="sc">+</span></span>
+<span id="cb13-81"><a href="#cb13-81" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_grid</span>(Metric <span class="sc">~</span> Test) <span class="sc">+</span></span>
+<span id="cb13-82"><a href="#cb13-82" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_viridis_c</span>(<span class="at">name =</span> <span class="st">"Value"</span>) <span class="sc">+</span></span>
+<span id="cb13-83"><a href="#cb13-83" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Zero Proportion"</span>, <span class="at">y =</span> <span class="st">"Scale Factor"</span>) <span class="sc">+</span></span>
+<span id="cb13-84"><a href="#cb13-84" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb13-85"><a href="#cb13-85" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb13-86"><a href="#cb13-86" aria-hidden="true" tabindex="-1"></a>      <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb13-87"><a href="#cb13-87" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)</span>
+<span id="cb13-88"><a href="#cb13-88" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb13-89"><a href="#cb13-89" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="load-data-and-prepare-for-simulations" class="level3">
+<h3 class="anchored" data-anchor-id="load-data-and-prepare-for-simulations">Load data and prepare for simulations</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(strainspy)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load Zeevi the GTDB 99% identity dataset</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># data &lt;- read_sylph("~/Documents/strainspy_manuscript/zeevi/zeevi_PRJEB11532_query_gtdb_220_id99.tsv.gz")</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_sylph</span>(<span class="st">"TEST_DATA/zeevi/zeevi_PRJEB11532_query_gtdb_220_id99.tsv.gz"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Detected Sylph query output file.</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">filter_by_presence</span>(data, <span class="at">min_nonzero =</span> <span class="dv">20</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Retained 18027 rows after filtering</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the ids of cases after a random split</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">789</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>cascon <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="fu">round</span>(SummarizedExperiment<span class="sc">::</span><span class="fu">ncol</span>(data)),  <span class="dv">1</span>, <span class="fl">0.5</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>cases <span class="ot">=</span> <span class="fu">which</span>(cascon <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co"># setup metadata</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>meta_data <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">run_accession =</span> <span class="fu">colnames</span>(data),</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>                       <span class="at">Case_status =</span> cascon)</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>meta_data<span class="sc">$</span>Case_status <span class="ot">&lt;-</span> <span class="fu">factor</span>(meta_data<span class="sc">$</span>Case_status)</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>data <span class="ot">=</span> <span class="fu">modify_metadata</span>(<span class="at">se =</span> data, <span class="at">meta_data =</span> meta_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="sensitivity-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="sensitivity-analysis">Sensitivity Analysis</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># randomly select 100 features (contigs) to rescale abundance - ensure omit NA from cascon model</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">&lt;-</span> <span class="st">"TEST_DATA/zeevi/TEMP_FITS/null_cascon2.rds"</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  fit_cascon_null <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  fit_cascon_null <span class="ot">=</span> strainspy<span class="sc">::</span><span class="fu">caseControlFit</span>(data, <span class="at">design =</span> <span class="fu">as.formula</span>(<span class="st">"Case_status ~ Value"</span>), <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(fit_cascon_null, save_path)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">&lt;-</span> <span class="st">"TEST_DATA/zeevi/TEMP_FITS/null_ob2.rds"</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  fit_ob_null <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  fit_ob_null <span class="ot">=</span> strainspy<span class="sc">::</span><span class="fu">glmObFit</span>(data, <span class="at">design =</span> <span class="fu">as.formula</span>(<span class="st">"~ Case_status"</span>), <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(fit_ob_null, save_path)</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">&lt;-</span> <span class="st">"TEST_DATA/zeevi/TEMP_FITS/null_zib2.rds"</span></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>  fit_zib_null <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>  fit_zib_null <span class="ot">=</span> strainspy<span class="sc">::</span><span class="fu">glmZiBFit</span>(data, <span class="at">design =</span> <span class="fu">as.formula</span>(<span class="st">"~ Case_status"</span>), <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(fit_zib_null, save_path)</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">789</span>)</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>sel <span class="ot">=</span> <span class="fu">sample</span>(<span class="fu">which</span>(<span class="sc">!</span><span class="fu">is.na</span>(fit_cascon_null<span class="sc">@</span>coefficients<span class="sc">$</span>X.Intercept.)), <span class="dv">100</span>)</span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>contigs <span class="ot">=</span> data<span class="sc">@</span>elementMetadata<span class="sc">$</span>Contig_name[sel]</span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a><span class="co"># fit the 3 models using update option</span></span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a><span class="co"># fit_ob_null = readRDS("TEST_DATA/zeevi/TEMP_FITS/null_ob.rds")</span></span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a><span class="co"># fit_zib_null = readRDS("TEST_DATA/zeevi/TEMP_FITS/null_zib.rds")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<section id="simulate-changes-in-identity" class="level3">
+<h3 class="anchored" data-anchor-id="simulate-changes-in-identity">Simulate changes in identity</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">=</span> <span class="st">"output_rds/zeevi_sim_id.rds"</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  op_id <span class="ot">=</span> <span class="fu">readRDS</span>(save_path)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># run through by varying beta</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  scale_factors <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">seq</span>(<span class="fl">0.95</span>, <span class="fl">0.995</span>, <span class="at">by =</span> <span class="fl">0.005</span>),<span class="fl">0.999</span>,<span class="dv">1</span>)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  op_id <span class="ot">=</span> <span class="fu">data.frame</span>()</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(scale_factor <span class="cf">in</span> scale_factors){</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    exp_beta <span class="ot">=</span> <span class="fu">c</span>()</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    exp_zi <span class="ot">=</span> <span class="fu">c</span>()</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    se <span class="ot">=</span> data <span class="co"># NULL</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    data_matrix <span class="ot">&lt;-</span> SummarizedExperiment<span class="sc">::</span><span class="fu">assay</span>(se) <span class="co"># NULL</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>    vals_to_mod <span class="ot">=</span> data_matrix[sel, cases]</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(sel)){ </span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>      tmp <span class="ot">=</span> strainspy<span class="sc">:::</span><span class="fu">rescale_beta</span>(<span class="at">x =</span> data_matrix[sel[i], cases]<span class="sc">/</span><span class="dv">100</span>,</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">beta =</span> scale_factor,</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">zi =</span> <span class="dv">0</span>)</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>      vals_to_mod[i,] <span class="ot">=</span> tmp<span class="sc">$</span>rescaled<span class="sc">*</span><span class="dv">100</span></span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>      exp_beta[i] <span class="ot">=</span> tmp<span class="sc">$</span>expected_beta</span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>      exp_zi[i] <span class="ot">=</span> tmp<span class="sc">$</span>expected_zi</span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># add modified counts for cases</span></span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>    data_matrix[sel, cases] <span class="ot">=</span> vals_to_mod</span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># add modified assay back to se</span></span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>    SummarizedExperiment<span class="sc">::</span><span class="fu">assay</span>(se) <span class="ot">&lt;-</span> data_matrix</span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>    fit_zib_updated <span class="ot">=</span> strainspy<span class="sc">:::</span><span class="fu">update_fit</span>(<span class="at">fit =</span> fit_zib_null, <span class="at">se =</span> se, <span class="at">update_idx =</span> sel, <span class="at">nthreads =</span> <span class="dv">10</span>)</span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>    fit_ob_updated <span class="ot">=</span> strainspy<span class="sc">:::</span><span class="fu">update_fit</span>(<span class="at">fit =</span> fit_ob_null, <span class="at">se =</span> se, <span class="at">update_idx =</span> sel, <span class="at">nthreads =</span> <span class="dv">10</span>)</span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a>    fit_cascon_updated <span class="ot">=</span> strainspy<span class="sc">:::</span><span class="fu">update_fit</span>(<span class="at">fit =</span> fit_cascon_null, <span class="at">se =</span> se, <span class="at">update_idx =</span> sel, <span class="at">nthreads =</span> <span class="dv">10</span>, <span class="at">min_identity =</span> <span class="fl">0.93</span>)</span>
+<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># fit_lr_updated = strainspy:::update_fit(fit = fit_lr_null, se = se, update_idx = sel, nthreads = 10, family = "binomial")</span></span>
+<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(scale_factor, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a>    op_id <span class="ot">=</span> <span class="fu">rbind</span>(op_id, </span>
+<span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">cbind</span>(scale_factor, </span>
+<span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a>                        <span class="fu">rbind</span>(</span>
+<span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">c</span>(<span class="st">"zib"</span>, strainspy<span class="sc">:::</span><span class="fu">get_confusion_mx</span>(<span class="at">top_hits =</span> <span class="fu">top_hits</span>(fit_zib_updated), <span class="at">gt_contigs =</span> contigs, <span class="at">all_contigs =</span> <span class="fu">rownames</span>(se), <span class="at">print_cm =</span> T)),</span>
+<span id="cb20-43"><a href="#cb20-43" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">c</span>(<span class="st">"ob"</span>, strainspy<span class="sc">:::</span><span class="fu">get_confusion_mx</span>(<span class="at">top_hits =</span> <span class="fu">top_hits</span>(fit_ob_updated), <span class="at">gt_contigs =</span> contigs, <span class="at">all_contigs =</span> <span class="fu">rownames</span>(se), <span class="at">print_cm =</span> T)),</span>
+<span id="cb20-44"><a href="#cb20-44" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">c</span>(<span class="st">"cc"</span>, strainspy<span class="sc">:::</span><span class="fu">get_confusion_mx</span>(<span class="at">top_hits =</span> <span class="fu">top_hits</span>(fit_cascon_updated), <span class="at">gt_contigs =</span> contigs, <span class="at">all_contigs =</span> <span class="fu">rownames</span>(se), <span class="at">print_cm =</span> T)))))</span>
+<span id="cb20-45"><a href="#cb20-45" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb20-46"><a href="#cb20-46" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb20-47"><a href="#cb20-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(op_id) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"sf"</span>, <span class="st">"Test"</span>, <span class="st">"tp"</span>, <span class="st">"fn"</span>, <span class="st">"fp"</span>, <span class="st">"tn"</span>)</span>
+<span id="cb20-48"><a href="#cb20-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(op_id, save_path)</span>
+<span id="cb20-49"><a href="#cb20-49" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb20-50"><a href="#cb20-50" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb20-51"><a href="#cb20-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-52"><a href="#cb20-52" aria-hidden="true" tabindex="-1"></a>op_id <span class="ot">=</span> op_id[<span class="fu">order</span>(op_id<span class="sc">$</span>sf, <span class="at">decreasing =</span> T), ]; <span class="fu">rownames</span>(op_id) <span class="ot">=</span> <span class="cn">NULL</span></span>
+<span id="cb20-53"><a href="#cb20-53" aria-hidden="true" tabindex="-1"></a><span class="fu">gg_facet_plot</span>(op_id, <span class="st">"Variation in feature identity"</span>, <span class="at">reverse_x =</span> T)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 7 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 7 rows containing missing values or values outside the scale range
+(`geom_line()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="simulations_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="simulate-changes-in-presenceabsence" class="level3">
+<h3 class="anchored" data-anchor-id="simulate-changes-in-presenceabsence">Simulate changes in presence/absence</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">=</span> <span class="st">"output_rds/zeevi_sim_pa.rds"</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  op_pa <span class="ot">=</span> <span class="fu">readRDS</span>(save_path)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  zero_props <span class="ot">=</span> <span class="fu">seq</span>(<span class="fl">0.15</span>, <span class="fl">0.7</span>, <span class="at">by =</span> <span class="fl">0.05</span>)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  op_pa <span class="ot">=</span> <span class="fu">data.frame</span>()</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(zero_prop <span class="cf">in</span> zero_props){</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    exp_beta <span class="ot">=</span> <span class="fu">c</span>()</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    exp_zi <span class="ot">=</span> <span class="fu">c</span>()</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    se <span class="ot">=</span> data <span class="co"># NULL</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>    data_matrix <span class="ot">&lt;-</span> SummarizedExperiment<span class="sc">::</span><span class="fu">assay</span>(se) <span class="co"># NULL</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>    vals_to_mod <span class="ot">=</span> data_matrix[sel, cases]</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(sel)){ </span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>      tmp <span class="ot">=</span> strainspy<span class="sc">:::</span><span class="fu">rescale_beta</span>(<span class="at">x =</span> data_matrix[sel[i], cases]<span class="sc">/</span><span class="dv">100</span>,</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">beta =</span> <span class="dv">1</span>,</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">zi =</span> zero_prop)</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>      vals_to_mod[i,] <span class="ot">=</span> tmp<span class="sc">$</span>rescaled<span class="sc">*</span><span class="dv">100</span></span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>      exp_beta[i] <span class="ot">=</span> tmp<span class="sc">$</span>expected_beta</span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>      exp_zi[i] <span class="ot">=</span> tmp<span class="sc">$</span>expected_zi</span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># add modified counts for cases</span></span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a>    data_matrix[sel, cases] <span class="ot">=</span> vals_to_mod</span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># add modified assay back to se</span></span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a>    SummarizedExperiment<span class="sc">::</span><span class="fu">assay</span>(se) <span class="ot">&lt;-</span> data_matrix</span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a>    fit_zib_updated <span class="ot">=</span> strainspy<span class="sc">:::</span><span class="fu">update_fit</span>(<span class="at">fit =</span> fit_zib_null, <span class="at">se =</span> se, <span class="at">update_idx =</span> sel, <span class="at">nthreads =</span> <span class="dv">10</span>)</span>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a>    fit_ob_updated <span class="ot">=</span> strainspy<span class="sc">:::</span><span class="fu">update_fit</span>(<span class="at">fit =</span> fit_ob_null, <span class="at">se =</span> se, <span class="at">update_idx =</span> sel, <span class="at">nthreads =</span> <span class="dv">10</span>)</span>
+<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a>    fit_cascon_updated <span class="ot">=</span> strainspy<span class="sc">:::</span><span class="fu">update_fit</span>(<span class="at">fit =</span> fit_cascon_null, <span class="at">se =</span> se, <span class="at">update_idx =</span> sel, <span class="at">nthreads =</span> <span class="dv">10</span>, <span class="at">min_identity =</span> <span class="fl">0.9</span>)</span>
+<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(zero_prop, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a>    op_pa <span class="ot">=</span> <span class="fu">rbind</span>(op_pa, </span>
+<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">cbind</span>(zero_prop, </span>
+<span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a>                        <span class="fu">rbind</span>(</span>
+<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">c</span>(<span class="st">"zib"</span>, strainspy<span class="sc">:::</span><span class="fu">get_confusion_mx</span>(<span class="at">top_hits =</span> <span class="fu">top_hits</span>(fit_zib_updated), <span class="at">gt_contigs =</span> contigs, <span class="at">all_contigs =</span> <span class="fu">rownames</span>(se), <span class="at">print_cm =</span> T)),</span>
+<span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">c</span>(<span class="st">"ob"</span>, strainspy<span class="sc">:::</span><span class="fu">get_confusion_mx</span>(<span class="at">top_hits =</span> <span class="fu">top_hits</span>(fit_ob_updated), <span class="at">gt_contigs =</span> contigs, <span class="at">all_contigs =</span> <span class="fu">rownames</span>(se), <span class="at">print_cm =</span> T)),</span>
+<span id="cb23-41"><a href="#cb23-41" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">c</span>(<span class="st">"cc"</span>, strainspy<span class="sc">:::</span><span class="fu">get_confusion_mx</span>(<span class="at">top_hits =</span> <span class="fu">top_hits</span>(fit_cascon_updated), <span class="at">gt_contigs =</span> contigs, <span class="at">all_contigs =</span> <span class="fu">rownames</span>(se), <span class="at">print_cm =</span> T)))))</span>
+<span id="cb23-42"><a href="#cb23-42" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb23-43"><a href="#cb23-43" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-44"><a href="#cb23-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(op_pa) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"z_prop"</span>, <span class="st">"Test"</span>, <span class="st">"tp"</span>, <span class="st">"fn"</span>, <span class="st">"fp"</span>, <span class="st">"tn"</span>)</span>
+<span id="cb23-45"><a href="#cb23-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(op_pa, save_path)</span>
+<span id="cb23-46"><a href="#cb23-46" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb23-47"><a href="#cb23-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-48"><a href="#cb23-48" aria-hidden="true" tabindex="-1"></a><span class="fu">gg_facet_plot</span>(op_pa, <span class="st">"Variation in feature presence/absence"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 6 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 6 rows containing missing values or values outside the scale range
+(`geom_line()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="simulations_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="simulate-both-identity-and-presenceabsence-changes" class="level3">
+<h3 class="anchored" data-anchor-id="simulate-both-identity-and-presenceabsence-changes">Simulate both identity and presence/absence changes</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">=</span> <span class="st">"output_rds/zeevi_sim_full.rds"</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  op_full <span class="ot">=</span> <span class="fu">readRDS</span>(save_path)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  zero_props <span class="ot">=</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="fl">0.72</span>, <span class="at">by =</span> <span class="fl">0.05</span>)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  scale_factors <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">seq</span>(<span class="fl">0.95</span>, <span class="fl">0.995</span>, <span class="at">by =</span> <span class="fl">0.005</span>),<span class="fl">0.999</span>,<span class="dv">1</span>)</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  op_full <span class="ot">=</span> <span class="fu">data.frame</span>()</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(scale_factor <span class="cf">in</span> scale_factors){</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(zero_prop <span class="cf">in</span> zero_props){</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>      t0 <span class="ot">=</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>      exp_beta <span class="ot">=</span> <span class="fu">c</span>()</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>      exp_zi <span class="ot">=</span> <span class="fu">c</span>()</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>      se <span class="ot">=</span> data <span class="co"># NULL</span></span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>      data_matrix <span class="ot">&lt;-</span> SummarizedExperiment<span class="sc">::</span><span class="fu">assay</span>(se) <span class="co"># NULL</span></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>      vals_to_mod <span class="ot">=</span> data_matrix[sel, cases]</span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(sel)){ </span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>        tmp <span class="ot">=</span> <span class="fu">rescale_beta</span>(<span class="at">x =</span> data_matrix[sel[i], cases]<span class="sc">/</span><span class="dv">100</span>,</span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a>                           <span class="at">beta =</span> scale_factor,</span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a>                           <span class="at">zi =</span> zero_prop)</span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a>        vals_to_mod[i,] <span class="ot">=</span> tmp<span class="sc">$</span>rescaled<span class="sc">*</span><span class="dv">100</span></span>
+<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a>        exp_beta[i] <span class="ot">=</span> tmp<span class="sc">$</span>expected_beta</span>
+<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a>        exp_zi[i] <span class="ot">=</span> tmp<span class="sc">$</span>expected_zi</span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a>      <span class="co"># add modified counts for cases</span></span>
+<span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a>      data_matrix[sel, cases] <span class="ot">=</span> vals_to_mod</span>
+<span id="cb26-33"><a href="#cb26-33" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb26-34"><a href="#cb26-34" aria-hidden="true" tabindex="-1"></a>      <span class="co"># add modified assay back to se</span></span>
+<span id="cb26-35"><a href="#cb26-35" aria-hidden="true" tabindex="-1"></a>      SummarizedExperiment<span class="sc">::</span><span class="fu">assay</span>(se) <span class="ot">&lt;-</span> data_matrix</span>
+<span id="cb26-36"><a href="#cb26-36" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb26-37"><a href="#cb26-37" aria-hidden="true" tabindex="-1"></a>      fit_zib_updated <span class="ot">=</span> strainspy<span class="sc">:::</span><span class="fu">update_fit</span>(<span class="at">fit =</span> fit_zib_null, <span class="at">se =</span> se, <span class="at">update_idx =</span> sel, <span class="at">nthreads =</span> <span class="dv">10</span>)</span>
+<span id="cb26-38"><a href="#cb26-38" aria-hidden="true" tabindex="-1"></a>      fit_ob_updated <span class="ot">=</span> strainspy<span class="sc">:::</span><span class="fu">update_fit</span>(<span class="at">fit =</span> fit_ob_null, <span class="at">se =</span> se, <span class="at">update_idx =</span> sel, <span class="at">nthreads =</span> <span class="dv">10</span>)</span>
+<span id="cb26-39"><a href="#cb26-39" aria-hidden="true" tabindex="-1"></a>      fit_cascon_updated <span class="ot">=</span> strainspy<span class="sc">:::</span><span class="fu">update_fit</span>(<span class="at">fit =</span> fit_cascon_null, <span class="at">se =</span> se, <span class="at">update_idx =</span> sel, <span class="at">nthreads =</span> <span class="dv">10</span>, <span class="at">min_identity =</span> <span class="fl">0.9</span>)</span>
+<span id="cb26-40"><a href="#cb26-40" aria-hidden="true" tabindex="-1"></a>      <span class="fu">cat</span>(<span class="st">"eval_time (min) ="</span>, <span class="fu">Sys.time</span>() <span class="sc">-</span> t0, <span class="st">"sf ="</span>, scale_factor, <span class="st">"zp ="</span>,  zero_prop, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb26-41"><a href="#cb26-41" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb26-42"><a href="#cb26-42" aria-hidden="true" tabindex="-1"></a>      op_full <span class="ot">=</span> <span class="fu">rbind</span>(op_full, </span>
+<span id="cb26-43"><a href="#cb26-43" aria-hidden="true" tabindex="-1"></a>                      <span class="fu">cbind</span>(zero_prop, scale_factor,</span>
+<span id="cb26-44"><a href="#cb26-44" aria-hidden="true" tabindex="-1"></a>                            <span class="fu">rbind</span>(</span>
+<span id="cb26-45"><a href="#cb26-45" aria-hidden="true" tabindex="-1"></a>                              <span class="fu">c</span>(<span class="st">"zib"</span>, strainspy<span class="sc">:::</span><span class="fu">get_confusion_mx</span>(<span class="at">top_hits =</span> <span class="fu">top_hits</span>(fit_zib_updated), <span class="at">gt_contigs =</span> contigs, <span class="at">all_contigs =</span> <span class="fu">rownames</span>(se), <span class="at">print_cm =</span> T)),</span>
+<span id="cb26-46"><a href="#cb26-46" aria-hidden="true" tabindex="-1"></a>                              <span class="fu">c</span>(<span class="st">"ob"</span>, strainspy<span class="sc">:::</span><span class="fu">get_confusion_mx</span>(<span class="at">top_hits =</span> <span class="fu">top_hits</span>(fit_ob_updated), <span class="at">gt_contigs =</span> contigs, <span class="at">all_contigs =</span> <span class="fu">rownames</span>(se), <span class="at">print_cm =</span> T)),</span>
+<span id="cb26-47"><a href="#cb26-47" aria-hidden="true" tabindex="-1"></a>                              <span class="fu">c</span>(<span class="st">"cc"</span>, strainspy<span class="sc">:::</span><span class="fu">get_confusion_mx</span>(<span class="at">top_hits =</span> <span class="fu">top_hits</span>(fit_cascon_updated), <span class="at">gt_contigs =</span> contigs, <span class="at">all_contigs =</span> <span class="fu">rownames</span>(se), <span class="at">print_cm =</span> T)))))</span>
+<span id="cb26-48"><a href="#cb26-48" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb26-49"><a href="#cb26-49" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb26-50"><a href="#cb26-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(op_full) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"z_prop"</span>, <span class="st">"sf"</span>, <span class="st">"Test"</span>, <span class="st">"tp"</span>, <span class="st">"fn"</span>, <span class="st">"fp"</span>, <span class="st">"tn"</span>)</span>
+<span id="cb26-51"><a href="#cb26-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(op_full, save_path)</span>
+<span id="cb26-52"><a href="#cb26-52" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb26-53"><a href="#cb26-53" aria-hidden="true" tabindex="-1"></a><span class="fu">gg_heatmaps</span>(op_full)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="simulations_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="generate-a-manhattan-plots-with-ground-truth-for-a-single-data-point" class="level2">
+<h2 class="anchored" data-anchor-id="generate-a-manhattan-plots-with-ground-truth-for-a-single-data-point">Generate a manhattan plots with ground truth for a single data point</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># scale_factor = 0.975</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co"># zero_prop = 0.25</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co"># exp_beta = c()</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="co"># exp_zi = c()</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="co"># se = data # NULL</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="co"># data_matrix &lt;- SummarizedExperiment::assay(se) # NULL</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="co"># vals_to_mod = data_matrix[sel, cases]</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a><span class="co"># for(i in 1:length(sel)){ </span></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a><span class="co">#   tmp = strainspy:::rescale_beta(x = data_matrix[sel[i], cases]/100,</span></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a><span class="co">#                                  beta = scale_factor,</span></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a><span class="co">#                                  zi = zero_prop)</span></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a><span class="co">#   </span></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a><span class="co">#   vals_to_mod[i,] = tmp$rescaled*100</span></span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a><span class="co">#   exp_beta[i] = tmp$expected_beta</span></span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a><span class="co">#   exp_zi[i] = tmp$expected_zi</span></span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a><span class="co"># # add modified counts for cases</span></span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a><span class="co"># data_matrix[sel, cases] = vals_to_mod</span></span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a><span class="co"># # add modified assay back to se</span></span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a><span class="co"># SummarizedExperiment::assay(se) &lt;- data_matrix</span></span>
+<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a><span class="co"># fit_zib_updated = strainspy:::update_fit(fit = fit_zib_null, se = se, update_idx = sel, nthreads = 10)</span></span>
+<span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a><span class="co"># fit_ob_updated = strainspy:::update_fit(fit = fit_ob_null, se = se, update_idx = sel, nthreads = 10)</span></span>
+<span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a><span class="co"># fit_cascon_updated = strainspy:::update_fit(fit = fit_cascon_null, se = se, update_idx = sel, nthreads = 10, min_identity = 0.9)</span></span>
+<span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb27-31"><a href="#cb27-31" aria-hidden="true" tabindex="-1"></a><span class="co"># strainspy:::plot_manhattan_gt(fit_zib_updated, method = "holm", ground_truth = contigs)</span></span>
+<span id="cb27-32"><a href="#cb27-32" aria-hidden="true" tabindex="-1"></a><span class="co"># strainspy:::plot_manhattan_gt(fit_ob_updated, method = "holm", ground_truth = contigs)</span></span>
+<span id="cb27-33"><a href="#cb27-33" aria-hidden="true" tabindex="-1"></a><span class="co"># strainspy:::plot_manhattan_gt(fit_cascon_updated, method = "holm", ground_truth = contigs)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="paper-figure" class="level1">
+<h1>Paper Figure</h1>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We'll do 10 replicates of cascon, but keep the split the same</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">789</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>sel_ <span class="ot">=</span> <span class="fu">sample</span>(<span class="fu">which</span>(<span class="sc">!</span><span class="fu">is.na</span>(fit_zib_null<span class="sc">@</span>coefficients<span class="sc">$</span>X.Intercept.)), <span class="dv">1000</span>) <span class="co"># Start with a larger sample</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>contigs_ <span class="ot">=</span> data<span class="sc">@</span>elementMetadata<span class="sc">$</span>Contig_name[sel_]</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>ds <span class="ot">=</span> SummarizedExperiment<span class="sc">::</span><span class="fu">assay</span>(data)</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>ds <span class="ot">=</span> <span class="fu">as.matrix</span>(ds[sel_, cases])</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>zs <span class="ot">=</span> <span class="fu">apply</span>(ds, <span class="dv">1</span>, <span class="cf">function</span>(x) <span class="fu">length</span>(<span class="fu">which</span>(x <span class="sc">==</span> <span class="dv">0</span>))) <span class="co"># count zeros in each contig</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">789</span>) </span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>zs_sel <span class="ot">=</span> <span class="fu">sample</span>(<span class="fu">which</span>(zs <span class="sc">&lt;</span> <span class="dv">20</span>), <span class="dv">250</span>)</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>sel_pool <span class="ot">=</span> sel_[zs_sel] <span class="co"># roughly permits up to 20 zeros (20% zeros)</span></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>contig_pool <span class="ot">=</span> contigs_[zs_sel]</span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">=</span> <span class="st">"output_rds/zeevi_sim_paper_2.rds"</span></span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>  op_pa_full <span class="ot">=</span> <span class="fu">readRDS</span>(save_path)</span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>  op_pa_full <span class="ot">=</span> <span class="fu">data.frame</span>()</span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>  zero_props <span class="ot">=</span> <span class="fu">seq</span>(<span class="fl">0.15</span>, <span class="fl">0.75</span>, <span class="at">by =</span> <span class="fl">0.1</span>)</span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>  scale_factors <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">seq</span>(<span class="fl">0.975</span>, <span class="fl">0.995</span>, <span class="at">by =</span> <span class="fl">0.005</span>),<span class="fl">0.999</span>,<span class="dv">1</span>)</span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># </span></span>
+<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># zero_props = 0.5</span></span>
+<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># scale_factors = 0.98</span></span>
+<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">789</span>);</span>
+<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a>  seeds <span class="ot">=</span> <span class="fu">sample</span>(<span class="dv">1000</span>, <span class="dv">10</span>)[<span class="dv">2</span><span class="sc">:</span><span class="dv">10</span>]</span>
+<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(s <span class="cf">in</span> seeds){</span>
+<span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a>    t <span class="ot">=</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb28-35"><a href="#cb28-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Presence absence simulation</span></span>
+<span id="cb28-36"><a href="#cb28-36" aria-hidden="true" tabindex="-1"></a>    op_pa <span class="ot">=</span> <span class="fu">data.frame</span>()</span>
+<span id="cb28-37"><a href="#cb28-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(zero_prop <span class="cf">in</span> zero_props){</span>
+<span id="cb28-38"><a href="#cb28-38" aria-hidden="true" tabindex="-1"></a>      exp_beta <span class="ot">=</span> <span class="fu">c</span>()</span>
+<span id="cb28-39"><a href="#cb28-39" aria-hidden="true" tabindex="-1"></a>      exp_zi <span class="ot">=</span> <span class="fu">c</span>()</span>
+<span id="cb28-40"><a href="#cb28-40" aria-hidden="true" tabindex="-1"></a>      se <span class="ot">=</span> data <span class="co"># NULL</span></span>
+<span id="cb28-41"><a href="#cb28-41" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb28-42"><a href="#cb28-42" aria-hidden="true" tabindex="-1"></a>      data_matrix <span class="ot">&lt;-</span> SummarizedExperiment<span class="sc">::</span><span class="fu">assay</span>(se) <span class="co"># NULL</span></span>
+<span id="cb28-43"><a href="#cb28-43" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb28-44"><a href="#cb28-44" aria-hidden="true" tabindex="-1"></a>      <span class="fu">set.seed</span>(s); subset <span class="ot">=</span> <span class="fu">sample</span>(<span class="fu">length</span>(sel_pool), <span class="dv">50</span>) <span class="co"># Add some randomising</span></span>
+<span id="cb28-45"><a href="#cb28-45" aria-hidden="true" tabindex="-1"></a>      sel <span class="ot">=</span> sel_pool[subset] </span>
+<span id="cb28-46"><a href="#cb28-46" aria-hidden="true" tabindex="-1"></a>      contigs <span class="ot">=</span> contig_pool[subset]</span>
+<span id="cb28-47"><a href="#cb28-47" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb28-48"><a href="#cb28-48" aria-hidden="true" tabindex="-1"></a>      vals_to_mod <span class="ot">=</span> data_matrix[sel, cases]</span>
+<span id="cb28-49"><a href="#cb28-49" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb28-50"><a href="#cb28-50" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(sel)){ </span>
+<span id="cb28-51"><a href="#cb28-51" aria-hidden="true" tabindex="-1"></a>        tmp <span class="ot">=</span> strainspy<span class="sc">:::</span><span class="fu">rescale_beta</span>(<span class="at">x =</span> data_matrix[sel[i], cases]<span class="sc">/</span><span class="dv">100</span>,</span>
+<span id="cb28-52"><a href="#cb28-52" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">beta =</span> <span class="dv">1</span>,</span>
+<span id="cb28-53"><a href="#cb28-53" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">zi =</span> zero_prop)</span>
+<span id="cb28-54"><a href="#cb28-54" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb28-55"><a href="#cb28-55" aria-hidden="true" tabindex="-1"></a>        vals_to_mod[i,] <span class="ot">=</span> tmp<span class="sc">$</span>rescaled<span class="sc">*</span><span class="dv">100</span></span>
+<span id="cb28-56"><a href="#cb28-56" aria-hidden="true" tabindex="-1"></a>        exp_beta[i] <span class="ot">=</span> tmp<span class="sc">$</span>expected_beta</span>
+<span id="cb28-57"><a href="#cb28-57" aria-hidden="true" tabindex="-1"></a>        exp_zi[i] <span class="ot">=</span> tmp<span class="sc">$</span>expected_zi</span>
+<span id="cb28-58"><a href="#cb28-58" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb28-59"><a href="#cb28-59" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb28-60"><a href="#cb28-60" aria-hidden="true" tabindex="-1"></a>      <span class="co"># add modified counts for cases</span></span>
+<span id="cb28-61"><a href="#cb28-61" aria-hidden="true" tabindex="-1"></a>      data_matrix[sel, cases] <span class="ot">=</span> vals_to_mod</span>
+<span id="cb28-62"><a href="#cb28-62" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb28-63"><a href="#cb28-63" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Can we allow ANI &lt; 0.95, sounds meaningless</span></span>
+<span id="cb28-64"><a href="#cb28-64" aria-hidden="true" tabindex="-1"></a>      lt95ani <span class="ot">=</span> <span class="fu">which</span>(vals_to_mod <span class="sc">&lt;</span> <span class="dv">95</span> <span class="sc">&amp;</span> vals_to_mod <span class="sc">!=</span> <span class="dv">0</span>)</span>
+<span id="cb28-65"><a href="#cb28-65" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">length</span>(lt95ani) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb28-66"><a href="#cb28-66" aria-hidden="true" tabindex="-1"></a>        <span class="fu">cat</span>(<span class="st">"Set"</span>, <span class="fu">length</span>(lt95ani), <span class="st">"values to 0</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb28-67"><a href="#cb28-67" aria-hidden="true" tabindex="-1"></a>        vals_to_mod[lt95ani] <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb28-68"><a href="#cb28-68" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb28-69"><a href="#cb28-69" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb28-70"><a href="#cb28-70" aria-hidden="true" tabindex="-1"></a>      <span class="co"># add modified assay back to se</span></span>
+<span id="cb28-71"><a href="#cb28-71" aria-hidden="true" tabindex="-1"></a>      SummarizedExperiment<span class="sc">::</span><span class="fu">assay</span>(se) <span class="ot">&lt;-</span> data_matrix</span>
+<span id="cb28-72"><a href="#cb28-72" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb28-73"><a href="#cb28-73" aria-hidden="true" tabindex="-1"></a>      fit_zib_updated <span class="ot">=</span> strainspy<span class="sc">:::</span><span class="fu">update_fit</span>(<span class="at">fit =</span> fit_zib_null, <span class="at">se =</span> se, <span class="at">update_idx =</span> sel, <span class="at">nthreads =</span> <span class="dv">10</span>)</span>
+<span id="cb28-74"><a href="#cb28-74" aria-hidden="true" tabindex="-1"></a>      fit_ob_updated <span class="ot">=</span> strainspy<span class="sc">:::</span><span class="fu">update_fit</span>(<span class="at">fit =</span> fit_ob_null, <span class="at">se =</span> se, <span class="at">update_idx =</span> sel, <span class="at">nthreads =</span> <span class="dv">10</span>)</span>
+<span id="cb28-75"><a href="#cb28-75" aria-hidden="true" tabindex="-1"></a>      fit_cascon_updated <span class="ot">=</span> strainspy<span class="sc">:::</span><span class="fu">update_fit</span>(<span class="at">fit =</span> fit_cascon_null, <span class="at">se =</span> se, <span class="at">update_idx =</span> sel, <span class="at">nthreads =</span> <span class="dv">10</span>, <span class="at">min_identity =</span> <span class="fl">0.97</span>)</span>
+<span id="cb28-76"><a href="#cb28-76" aria-hidden="true" tabindex="-1"></a>      <span class="fu">cat</span>(zero_prop, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb28-77"><a href="#cb28-77" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb28-78"><a href="#cb28-78" aria-hidden="true" tabindex="-1"></a>      op_pa <span class="ot">=</span> <span class="fu">rbind</span>(op_pa, </span>
+<span id="cb28-79"><a href="#cb28-79" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">cbind</span>(s, <span class="st">"pa"</span>,</span>
+<span id="cb28-80"><a href="#cb28-80" aria-hidden="true" tabindex="-1"></a>                          zero_prop, </span>
+<span id="cb28-81"><a href="#cb28-81" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">rbind</span>(</span>
+<span id="cb28-82"><a href="#cb28-82" aria-hidden="true" tabindex="-1"></a>                            <span class="fu">c</span>(<span class="st">"zib"</span>, strainspy<span class="sc">:::</span><span class="fu">get_confusion_mx</span>(<span class="at">top_hits =</span> <span class="fu">top_hits</span>(fit_zib_updated, <span class="at">method =</span> <span class="st">"BH"</span>), <span class="at">gt_contigs =</span> contigs, <span class="at">all_contigs =</span> <span class="fu">rownames</span>(se), <span class="at">print_cm =</span> T)),</span>
+<span id="cb28-83"><a href="#cb28-83" aria-hidden="true" tabindex="-1"></a>                            <span class="fu">c</span>(<span class="st">"ob"</span>, strainspy<span class="sc">:::</span><span class="fu">get_confusion_mx</span>(<span class="at">top_hits =</span> <span class="fu">top_hits</span>(fit_ob_updated, <span class="at">method =</span> <span class="st">"BH"</span>), <span class="at">gt_contigs =</span> contigs, <span class="at">all_contigs =</span> <span class="fu">rownames</span>(se), <span class="at">print_cm =</span> T)),</span>
+<span id="cb28-84"><a href="#cb28-84" aria-hidden="true" tabindex="-1"></a>                            <span class="fu">c</span>(<span class="st">"cc"</span>, strainspy<span class="sc">:::</span><span class="fu">get_confusion_mx</span>(<span class="at">top_hits =</span> <span class="fu">top_hits</span>(fit_cascon_updated, <span class="at">method =</span> <span class="st">"BH"</span>), <span class="at">gt_contigs =</span> contigs, <span class="at">all_contigs =</span> <span class="fu">rownames</span>(se), <span class="at">print_cm =</span> T))</span>
+<span id="cb28-85"><a href="#cb28-85" aria-hidden="true" tabindex="-1"></a>                          )</span>
+<span id="cb28-86"><a href="#cb28-86" aria-hidden="true" tabindex="-1"></a>                    )</span>
+<span id="cb28-87"><a href="#cb28-87" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb28-88"><a href="#cb28-88" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb28-89"><a href="#cb28-89" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb28-90"><a href="#cb28-90" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb28-91"><a href="#cb28-91" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb28-92"><a href="#cb28-92" aria-hidden="true" tabindex="-1"></a>    <span class="fu">colnames</span>(op_pa) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"seed"</span>, <span class="st">"sim"</span>, <span class="st">"stat"</span>, <span class="st">"Test"</span>, <span class="st">"tp"</span>, <span class="st">"fn"</span>, <span class="st">"fp"</span>, <span class="st">"tn"</span>)</span>
+<span id="cb28-93"><a href="#cb28-93" aria-hidden="true" tabindex="-1"></a>    op_pa_full <span class="ot">=</span> <span class="fu">rbind</span>(op_pa_full, op_pa)</span>
+<span id="cb28-94"><a href="#cb28-94" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb28-95"><a href="#cb28-95" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Identity simulation</span></span>
+<span id="cb28-96"><a href="#cb28-96" aria-hidden="true" tabindex="-1"></a>    op_id <span class="ot">=</span> <span class="fu">data.frame</span>()</span>
+<span id="cb28-97"><a href="#cb28-97" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(scale_factor <span class="cf">in</span> scale_factors){</span>
+<span id="cb28-98"><a href="#cb28-98" aria-hidden="true" tabindex="-1"></a>      exp_beta <span class="ot">=</span> <span class="fu">c</span>()</span>
+<span id="cb28-99"><a href="#cb28-99" aria-hidden="true" tabindex="-1"></a>      exp_zi <span class="ot">=</span> <span class="fu">c</span>()</span>
+<span id="cb28-100"><a href="#cb28-100" aria-hidden="true" tabindex="-1"></a>      se <span class="ot">=</span> data <span class="co"># NULL</span></span>
+<span id="cb28-101"><a href="#cb28-101" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb28-102"><a href="#cb28-102" aria-hidden="true" tabindex="-1"></a>      data_matrix <span class="ot">&lt;-</span> SummarizedExperiment<span class="sc">::</span><span class="fu">assay</span>(se) <span class="co"># NULL</span></span>
+<span id="cb28-103"><a href="#cb28-103" aria-hidden="true" tabindex="-1"></a>      vals_to_mod <span class="ot">=</span> data_matrix[sel, cases]</span>
+<span id="cb28-104"><a href="#cb28-104" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb28-105"><a href="#cb28-105" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(sel)){ </span>
+<span id="cb28-106"><a href="#cb28-106" aria-hidden="true" tabindex="-1"></a>        tmp <span class="ot">=</span> strainspy<span class="sc">:::</span><span class="fu">rescale_beta</span>(<span class="at">x =</span> data_matrix[sel[i], cases]<span class="sc">/</span><span class="dv">100</span>,</span>
+<span id="cb28-107"><a href="#cb28-107" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">beta =</span> scale_factor,</span>
+<span id="cb28-108"><a href="#cb28-108" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">zi =</span> <span class="dv">0</span>)</span>
+<span id="cb28-109"><a href="#cb28-109" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb28-110"><a href="#cb28-110" aria-hidden="true" tabindex="-1"></a>        vals_to_mod[i,] <span class="ot">=</span> tmp<span class="sc">$</span>rescaled<span class="sc">*</span><span class="dv">100</span></span>
+<span id="cb28-111"><a href="#cb28-111" aria-hidden="true" tabindex="-1"></a>        exp_beta[i] <span class="ot">=</span> tmp<span class="sc">$</span>expected_beta</span>
+<span id="cb28-112"><a href="#cb28-112" aria-hidden="true" tabindex="-1"></a>        exp_zi[i] <span class="ot">=</span> tmp<span class="sc">$</span>expected_zi</span>
+<span id="cb28-113"><a href="#cb28-113" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb28-114"><a href="#cb28-114" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb28-115"><a href="#cb28-115" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Can we allow ANI &lt; 0.95, sounds meaningless</span></span>
+<span id="cb28-116"><a href="#cb28-116" aria-hidden="true" tabindex="-1"></a>      lt95ani <span class="ot">=</span> <span class="fu">which</span>(vals_to_mod <span class="sc">&lt;</span> <span class="dv">95</span> <span class="sc">&amp;</span> vals_to_mod <span class="sc">!=</span> <span class="dv">0</span>)</span>
+<span id="cb28-117"><a href="#cb28-117" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">length</span>(lt95ani) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb28-118"><a href="#cb28-118" aria-hidden="true" tabindex="-1"></a>        <span class="fu">cat</span>(<span class="st">"Set"</span>, <span class="fu">length</span>(lt95ani), <span class="st">"values to 0</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb28-119"><a href="#cb28-119" aria-hidden="true" tabindex="-1"></a>        vals_to_mod[lt95ani] <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb28-120"><a href="#cb28-120" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb28-121"><a href="#cb28-121" aria-hidden="true" tabindex="-1"></a>      <span class="co"># add modified counts for cases</span></span>
+<span id="cb28-122"><a href="#cb28-122" aria-hidden="true" tabindex="-1"></a>      data_matrix[sel, cases] <span class="ot">=</span> vals_to_mod</span>
+<span id="cb28-123"><a href="#cb28-123" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb28-124"><a href="#cb28-124" aria-hidden="true" tabindex="-1"></a>      <span class="co"># add modified assay back to se</span></span>
+<span id="cb28-125"><a href="#cb28-125" aria-hidden="true" tabindex="-1"></a>      SummarizedExperiment<span class="sc">::</span><span class="fu">assay</span>(se) <span class="ot">&lt;-</span> data_matrix</span>
+<span id="cb28-126"><a href="#cb28-126" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb28-127"><a href="#cb28-127" aria-hidden="true" tabindex="-1"></a>      fit_zib_updated <span class="ot">=</span> strainspy<span class="sc">:::</span><span class="fu">update_fit</span>(<span class="at">fit =</span> fit_zib_null, <span class="at">se =</span> se, <span class="at">update_idx =</span> sel, <span class="at">nthreads =</span> <span class="dv">10</span>)</span>
+<span id="cb28-128"><a href="#cb28-128" aria-hidden="true" tabindex="-1"></a>      fit_ob_updated <span class="ot">=</span> strainspy<span class="sc">:::</span><span class="fu">update_fit</span>(<span class="at">fit =</span> fit_ob_null, <span class="at">se =</span> se, <span class="at">update_idx =</span> sel, <span class="at">nthreads =</span> <span class="dv">10</span>)</span>
+<span id="cb28-129"><a href="#cb28-129" aria-hidden="true" tabindex="-1"></a>      fit_cascon_updated <span class="ot">=</span> strainspy<span class="sc">:::</span><span class="fu">update_fit</span>(<span class="at">fit =</span> fit_cascon_null, <span class="at">se =</span> se, <span class="at">update_idx =</span> sel, <span class="at">nthreads =</span> <span class="dv">10</span>, <span class="at">min_identity =</span> <span class="fl">0.97</span>)</span>
+<span id="cb28-130"><a href="#cb28-130" aria-hidden="true" tabindex="-1"></a>      <span class="co"># fit_lr_updated = strainspy:::update_fit(fit = fit_lr_null, se = se, update_idx = sel, nthreads = 10, family = "binomial")</span></span>
+<span id="cb28-131"><a href="#cb28-131" aria-hidden="true" tabindex="-1"></a>      <span class="fu">cat</span>(scale_factor, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb28-132"><a href="#cb28-132" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb28-133"><a href="#cb28-133" aria-hidden="true" tabindex="-1"></a>      op_id <span class="ot">=</span> <span class="fu">rbind</span>(op_id, </span>
+<span id="cb28-134"><a href="#cb28-134" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">cbind</span>(s, <span class="st">"id"</span>,</span>
+<span id="cb28-135"><a href="#cb28-135" aria-hidden="true" tabindex="-1"></a>                          scale_factor, </span>
+<span id="cb28-136"><a href="#cb28-136" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">rbind</span>(</span>
+<span id="cb28-137"><a href="#cb28-137" aria-hidden="true" tabindex="-1"></a>                            <span class="fu">c</span>(<span class="st">"zib"</span>, strainspy<span class="sc">:::</span><span class="fu">get_confusion_mx</span>(<span class="at">top_hits =</span> <span class="fu">top_hits</span>(fit_zib_updated, <span class="at">method =</span> <span class="st">"BH"</span>), <span class="at">gt_contigs =</span> contigs, <span class="at">all_contigs =</span> <span class="fu">rownames</span>(se), <span class="at">print_cm =</span> T)),</span>
+<span id="cb28-138"><a href="#cb28-138" aria-hidden="true" tabindex="-1"></a>                            <span class="fu">c</span>(<span class="st">"ob"</span>, strainspy<span class="sc">:::</span><span class="fu">get_confusion_mx</span>(<span class="at">top_hits =</span> <span class="fu">top_hits</span>(fit_ob_updated, <span class="at">method =</span> <span class="st">"BH"</span>), <span class="at">gt_contigs =</span> contigs, <span class="at">all_contigs =</span> <span class="fu">rownames</span>(se), <span class="at">print_cm =</span> T)),</span>
+<span id="cb28-139"><a href="#cb28-139" aria-hidden="true" tabindex="-1"></a>                            <span class="fu">c</span>(<span class="st">"cc"</span>, strainspy<span class="sc">:::</span><span class="fu">get_confusion_mx</span>(<span class="at">top_hits =</span> <span class="fu">top_hits</span>(fit_cascon_updated, <span class="at">method =</span> <span class="st">"BH"</span>), <span class="at">gt_contigs =</span> contigs, <span class="at">all_contigs =</span> <span class="fu">rownames</span>(se), <span class="at">print_cm =</span> T))</span>
+<span id="cb28-140"><a href="#cb28-140" aria-hidden="true" tabindex="-1"></a>                          )</span>
+<span id="cb28-141"><a href="#cb28-141" aria-hidden="true" tabindex="-1"></a>                    )</span>
+<span id="cb28-142"><a href="#cb28-142" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb28-143"><a href="#cb28-143" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb28-144"><a href="#cb28-144" aria-hidden="true" tabindex="-1"></a>    <span class="fu">colnames</span>(op_id) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"seed"</span>, <span class="st">"sim"</span>, <span class="st">"stat"</span>, <span class="st">"Test"</span>, <span class="st">"tp"</span>, <span class="st">"fn"</span>, <span class="st">"fp"</span>, <span class="st">"tn"</span>)</span>
+<span id="cb28-145"><a href="#cb28-145" aria-hidden="true" tabindex="-1"></a>    op_pa_full <span class="ot">=</span> <span class="fu">rbind</span>(op_pa_full, op_id)</span>
+<span id="cb28-146"><a href="#cb28-146" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Sys.time</span>() <span class="sc">-</span> t</span>
+<span id="cb28-147"><a href="#cb28-147" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb28-148"><a href="#cb28-148" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(op_pa_full, save_path)</span>
+<span id="cb28-149"><a href="#cb28-149" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb28-150"><a href="#cb28-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-151"><a href="#cb28-151" aria-hidden="true" tabindex="-1"></a>gg_facet_plot2 <span class="ot">&lt;-</span> <span class="cf">function</span>(op, <span class="at">title =</span> <span class="cn">NULL</span>, <span class="at">reverse_x =</span> <span class="cn">FALSE</span>){</span>
+<span id="cb28-152"><a href="#cb28-152" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Use 'stat' as the x-axis variable</span></span>
+<span id="cb28-153"><a href="#cb28-153" aria-hidden="true" tabindex="-1"></a>  op<span class="sc">$</span>var <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(op<span class="sc">$</span>stat)</span>
+<span id="cb28-154"><a href="#cb28-154" aria-hidden="true" tabindex="-1"></a>  xlab_ <span class="ot">&lt;-</span> <span class="cf">if</span> (<span class="st">"sf"</span> <span class="sc">%in%</span> <span class="fu">colnames</span>(op)) {</span>
+<span id="cb28-155"><a href="#cb28-155" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Scale Factor"</span></span>
+<span id="cb28-156"><a href="#cb28-156" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (<span class="st">"z_prop"</span> <span class="sc">%in%</span> <span class="fu">colnames</span>(op)) {</span>
+<span id="cb28-157"><a href="#cb28-157" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Zero Proportion"</span></span>
+<span id="cb28-158"><a href="#cb28-158" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb28-159"><a href="#cb28-159" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Stat"</span></span>
+<span id="cb28-160"><a href="#cb28-160" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb28-161"><a href="#cb28-161" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-162"><a href="#cb28-162" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Ensure proper types</span></span>
+<span id="cb28-163"><a href="#cb28-163" aria-hidden="true" tabindex="-1"></a>  op<span class="sc">$</span>Test <span class="ot">&lt;-</span> <span class="fu">factor</span>(op<span class="sc">$</span>Test)</span>
+<span id="cb28-164"><a href="#cb28-164" aria-hidden="true" tabindex="-1"></a>  op <span class="ot">&lt;-</span> op <span class="sc">%&gt;%</span></span>
+<span id="cb28-165"><a href="#cb28-165" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb28-166"><a href="#cb28-166" aria-hidden="true" tabindex="-1"></a>      <span class="at">tp =</span> <span class="fu">as.numeric</span>(tp),</span>
+<span id="cb28-167"><a href="#cb28-167" aria-hidden="true" tabindex="-1"></a>      <span class="at">fn =</span> <span class="fu">as.numeric</span>(fn),</span>
+<span id="cb28-168"><a href="#cb28-168" aria-hidden="true" tabindex="-1"></a>      <span class="at">fp =</span> <span class="fu">as.numeric</span>(fp),</span>
+<span id="cb28-169"><a href="#cb28-169" aria-hidden="true" tabindex="-1"></a>      <span class="at">tn =</span> <span class="fu">as.numeric</span>(tn),</span>
+<span id="cb28-170"><a href="#cb28-170" aria-hidden="true" tabindex="-1"></a>      <span class="at">Sensitivity =</span> tp <span class="sc">/</span> (tp <span class="sc">+</span> fn) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb28-171"><a href="#cb28-171" aria-hidden="true" tabindex="-1"></a>      <span class="at">Specificity =</span> tn <span class="sc">/</span> (tn <span class="sc">+</span> fp) <span class="sc">*</span> <span class="dv">100</span><span class="co">#,</span></span>
+<span id="cb28-172"><a href="#cb28-172" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Precision   = tp / (tp + fp) * 100,</span></span>
+<span id="cb28-173"><a href="#cb28-173" aria-hidden="true" tabindex="-1"></a>      <span class="co"># F1          = 2 * tp / (2 * tp + fp + fn) * 100</span></span>
+<span id="cb28-174"><a href="#cb28-174" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb28-175"><a href="#cb28-175" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-176"><a href="#cb28-176" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Convert to long format</span></span>
+<span id="cb28-177"><a href="#cb28-177" aria-hidden="true" tabindex="-1"></a>  long_op <span class="ot">&lt;-</span> op <span class="sc">%&gt;%</span></span>
+<span id="cb28-178"><a href="#cb28-178" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(</span>
+<span id="cb28-179"><a href="#cb28-179" aria-hidden="true" tabindex="-1"></a>      <span class="at">cols =</span> <span class="fu">c</span>(Sensitivity, Specificity), <span class="co">#, Precision, F1),</span></span>
+<span id="cb28-180"><a href="#cb28-180" aria-hidden="true" tabindex="-1"></a>      <span class="at">names_to =</span> <span class="st">"Metric"</span>,</span>
+<span id="cb28-181"><a href="#cb28-181" aria-hidden="true" tabindex="-1"></a>      <span class="at">values_to =</span> <span class="st">"Value"</span></span>
+<span id="cb28-182"><a href="#cb28-182" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb28-183"><a href="#cb28-183" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-184"><a href="#cb28-184" aria-hidden="true" tabindex="-1"></a>  long_op<span class="sc">$</span>Metric <span class="ot">&lt;-</span> <span class="fu">factor</span>(long_op<span class="sc">$</span>Metric, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Sensitivity"</span>, <span class="st">"Specificity"</span>, <span class="st">"Precision"</span>, <span class="st">"F1"</span>))</span>
+<span id="cb28-185"><a href="#cb28-185" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-186"><a href="#cb28-186" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Summarize: mean and SE over seeds</span></span>
+<span id="cb28-187"><a href="#cb28-187" aria-hidden="true" tabindex="-1"></a>  summary_op <span class="ot">&lt;-</span> long_op <span class="sc">%&gt;%</span></span>
+<span id="cb28-188"><a href="#cb28-188" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(var, Test, Metric) <span class="sc">%&gt;%</span></span>
+<span id="cb28-189"><a href="#cb28-189" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb28-190"><a href="#cb28-190" aria-hidden="true" tabindex="-1"></a>      <span class="at">Mean =</span> <span class="fu">mean</span>(Value, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb28-191"><a href="#cb28-191" aria-hidden="true" tabindex="-1"></a>      <span class="at">SE =</span> <span class="fu">sd</span>(Value, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>()),</span>
+<span id="cb28-192"><a href="#cb28-192" aria-hidden="true" tabindex="-1"></a>      <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb28-193"><a href="#cb28-193" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb28-194"><a href="#cb28-194" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-195"><a href="#cb28-195" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-196"><a href="#cb28-196" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (reverse_x) {</span>
+<span id="cb28-197"><a href="#cb28-197" aria-hidden="true" tabindex="-1"></a>    summary_op<span class="sc">$</span>var <span class="ot">=</span> <span class="fu">factor</span>(summary_op<span class="sc">$</span>var, <span class="at">levels =</span> <span class="fu">sort</span>(<span class="fu">unique</span>(summary_op<span class="sc">$</span>var), <span class="at">decreasing =</span> T))</span>
+<span id="cb28-198"><a href="#cb28-198" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb28-199"><a href="#cb28-199" aria-hidden="true" tabindex="-1"></a>    summary_op<span class="sc">$</span>var <span class="ot">=</span> <span class="fu">factor</span>(summary_op<span class="sc">$</span>var, <span class="at">levels =</span> <span class="fu">sort</span>(<span class="fu">unique</span>(summary_op<span class="sc">$</span>var)))</span>
+<span id="cb28-200"><a href="#cb28-200" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb28-201"><a href="#cb28-201" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-202"><a href="#cb28-202" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-203"><a href="#cb28-203" aria-hidden="true" tabindex="-1"></a>  dw <span class="ot">=</span> <span class="fl">0.25</span></span>
+<span id="cb28-204"><a href="#cb28-204" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Plot with error bars</span></span>
+<span id="cb28-205"><a href="#cb28-205" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(summary_op, <span class="fu">aes</span>(<span class="at">x =</span> var, <span class="at">y =</span> Mean, <span class="at">color =</span> Test, <span class="at">shape =</span> Test)) <span class="sc">+</span></span>
+<span id="cb28-206"><a href="#cb28-206" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">2.5</span>, <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> dw)) <span class="sc">+</span></span>
+<span id="cb28-207"><a href="#cb28-207" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">1</span>, <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> dw), <span class="fu">aes</span>(<span class="at">group =</span> Test)) <span class="sc">+</span></span>
+<span id="cb28-208"><a href="#cb28-208" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_errorbar</span>(</span>
+<span id="cb28-209"><a href="#cb28-209" aria-hidden="true" tabindex="-1"></a>      <span class="fu">aes</span>(<span class="at">ymin =</span> Mean <span class="sc">-</span> SE, <span class="at">ymax =</span> Mean <span class="sc">+</span> SE),</span>
+<span id="cb28-210"><a href="#cb28-210" aria-hidden="true" tabindex="-1"></a>      <span class="at">width =</span> <span class="dv">1</span>,</span>
+<span id="cb28-211"><a href="#cb28-211" aria-hidden="true" tabindex="-1"></a>      <span class="at">linewidth =</span> <span class="dv">1</span>,  <span class="co"># increase this value (e.g., 1 → 1.2 or 1.5)</span></span>
+<span id="cb28-212"><a href="#cb28-212" aria-hidden="true" tabindex="-1"></a>      <span class="at">position =</span> <span class="fu">position_dodge</span>(dw)</span>
+<span id="cb28-213"><a href="#cb28-213" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb28-214"><a href="#cb28-214" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>Metric, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb28-215"><a href="#cb28-215" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_clean</span>(<span class="at">base_size =</span> <span class="dv">20</span>) <span class="sc">+</span></span>
+<span id="cb28-216"><a href="#cb28-216" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(</span>
+<span id="cb28-217"><a href="#cb28-217" aria-hidden="true" tabindex="-1"></a>      <span class="st">"#D55E00"</span>, <span class="co"># reddish-orange  </span></span>
+<span id="cb28-218"><a href="#cb28-218" aria-hidden="true" tabindex="-1"></a>      <span class="st">"#0072B2"</span>, <span class="co"># deep blue  </span></span>
+<span id="cb28-219"><a href="#cb28-219" aria-hidden="true" tabindex="-1"></a>      <span class="st">"#009E73"</span>  <span class="co"># teal/green  </span></span>
+<span id="cb28-220"><a href="#cb28-220" aria-hidden="true" tabindex="-1"></a>    )) <span class="sc">+</span></span>
+<span id="cb28-221"><a href="#cb28-221" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb28-222"><a href="#cb28-222" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> title,</span>
+<span id="cb28-223"><a href="#cb28-223" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> xlab_,</span>
+<span id="cb28-224"><a href="#cb28-224" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="cn">NULL</span></span>
+<span id="cb28-225"><a href="#cb28-225" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb28-226"><a href="#cb28-226" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-227"><a href="#cb28-227" aria-hidden="true" tabindex="-1"></a>  <span class="co"># ggplot(summary_op, aes(x = var, y = Mean, col = Test)) +</span></span>
+<span id="cb28-228"><a href="#cb28-228" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   geom_point(size = 2.5) +                     # Increase point size</span></span>
+<span id="cb28-229"><a href="#cb28-229" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   geom_line(linewidth = 1) +                   # Increase line width</span></span>
+<span id="cb28-230"><a href="#cb28-230" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   geom_errorbar(aes(ymin = Mean - SE, ymax = Mean + SE), width = 0.01) +</span></span>
+<span id="cb28-231"><a href="#cb28-231" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   facet_wrap(~Metric, scales = "free_y") +</span></span>
+<span id="cb28-232"><a href="#cb28-232" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   theme_clean(base_size = 14) +</span></span>
+<span id="cb28-233"><a href="#cb28-233" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   theme(text = element_text(size = 16)) +</span></span>
+<span id="cb28-234"><a href="#cb28-234" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   labs(</span></span>
+<span id="cb28-235"><a href="#cb28-235" aria-hidden="true" tabindex="-1"></a>  <span class="co">#     title = title,</span></span>
+<span id="cb28-236"><a href="#cb28-236" aria-hidden="true" tabindex="-1"></a>  <span class="co">#     x = xlab_,</span></span>
+<span id="cb28-237"><a href="#cb28-237" aria-hidden="true" tabindex="-1"></a>  <span class="co">#     y = NULL</span></span>
+<span id="cb28-238"><a href="#cb28-238" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   )</span></span>
+<span id="cb28-239"><a href="#cb28-239" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-240"><a href="#cb28-240" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Optionally reverse x-axis</span></span>
+<span id="cb28-241"><a href="#cb28-241" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-242"><a href="#cb28-242" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-243"><a href="#cb28-243" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(p)</span>
+<span id="cb28-244"><a href="#cb28-244" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb28-245"><a href="#cb28-245" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-246"><a href="#cb28-246" aria-hidden="true" tabindex="-1"></a><span class="fu">gg_facet_plot2</span>(op_pa_full[op_pa_full<span class="sc">$</span>sim <span class="sc">==</span> <span class="st">"pa"</span>, ])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="simulations_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gg_facet_plot2</span>(op_pa_full[op_pa_full<span class="sc">$</span>sim <span class="sc">==</span> <span class="st">"id"</span>, ], <span class="at">reverse_x =</span> T)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="simulations_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

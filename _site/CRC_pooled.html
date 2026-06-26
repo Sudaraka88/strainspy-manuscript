@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>crc_pooled – StrainSpy Manuscript</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-1b8143a5af30aa0587ead8c64582f750.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    <img src="./assets/icon.svg" alt="" class="navbar-logo light-content">
+    <img src="./assets/icon.svg" alt="" class="navbar-logo dark-content">
+    </a>
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">StrainSpy Manuscript</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./methods.html"> 
+<span class="menu-text">Methods &amp; Simulations</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./associations.html"> 
+<span class="menu-text">Association Testing</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./prediction.html"> 
+<span class="menu-text">Prediction</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./palleja_Ab_analysis.html">Association Testing</a></li><li class="breadcrumb-item"><a href="./CRC_pooled.html">Analysis of 3414 pooled colorectal cancer metagenomes</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Home</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">StrainSpy</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Methods &amp; Simulations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Methods &amp; Simulations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./simulations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simulations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Sims_spike_query.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simulations with spiked E. coli strain analysed using Sylph Query</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sims_spike_query_pdis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simulations with spiked P. dis strain analysed using Sylph Query</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./prior_on_dispersion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Re-analysing pancancer dataset with dispersion priors</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./logistic_ID.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Logistic Regression Model”</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./varyingPrior.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">varyingPrior</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Association Testing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./palleja_Ab_analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Analysis of Palleja Antibiotic Exposure data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./CRC_pooled.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Analysis of 3414 pooled colorectal cancer metagenomes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./immunotherapy_assoc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Associations between gut microbial strains and cancer immunotherapy outcomes - a study in rare cancers and melanoma</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Prediction</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pred_CRC_lodo+single.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reanalyse the colorectal cancer data with lodo and trained on each dataset</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./immunotherapy_preds.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using gut microbial strains to predict cancer immunotherapy outcomes - a study in rare cancers and melanoma</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#analysis-of-3414-pooled-colorectal-cancer-metagenomes" id="toc-analysis-of-3414-pooled-colorectal-cancer-metagenomes" class="nav-link active" data-scroll-target="#analysis-of-3414-pooled-colorectal-cancer-metagenomes">Analysis of 3414 pooled colorectal cancer metagenomes</a></li>
+  <li><a href="#run-zib-analysis-in-q99-mode" id="toc-run-zib-analysis-in-q99-mode" class="nav-link" data-scroll-target="#run-zib-analysis-in-q99-mode">Run ZiB analysis in q99 mode</a>
+  <ul class="collapse">
+  <li><a href="#load-dependencies" id="toc-load-dependencies" class="nav-link" data-scroll-target="#load-dependencies">Load dependencies</a></li>
+  <li><a href="#load-metadata" id="toc-load-metadata" class="nav-link" data-scroll-target="#load-metadata">Load metadata</a></li>
+  <li><a href="#load-sylph-outputs" id="toc-load-sylph-outputs" class="nav-link" data-scroll-target="#load-sylph-outputs">Load sylph outputs</a></li>
+  <li><a href="#fit-the-model" id="toc-fit-the-model" class="nav-link" data-scroll-target="#fit-the-model">Fit the model</a></li>
+  <li><a href="#visualise-outputs" id="toc-visualise-outputs" class="nav-link" data-scroll-target="#visualise-outputs">Visualise Outputs</a>
+  <ul class="collapse">
+  <li><a href="#load-gtdb-taxonomy" id="toc-load-gtdb-taxonomy" class="nav-link" data-scroll-target="#load-gtdb-taxonomy">Load GTDB taxonomy</a></li>
+  </ul></li>
+  <li><a href="#manhattan-and-volcano-plots" id="toc-manhattan-and-volcano-plots" class="nav-link" data-scroll-target="#manhattan-and-volcano-plots">Manhattan and Volcano plots</a>
+  <ul class="collapse">
+  <li><a href="#control-vs.-adenoma" id="toc-control-vs.-adenoma" class="nav-link" data-scroll-target="#control-vs.-adenoma">Control vs.&nbsp;Adenoma</a></li>
+  <li><a href="#control-vs.-crc" id="toc-control-vs.-crc" class="nav-link" data-scroll-target="#control-vs.-crc">Control vs.&nbsp;CRC</a></li>
+  </ul></li>
+  <li><a href="#summarise-and-inspect" id="toc-summarise-and-inspect" class="nav-link" data-scroll-target="#summarise-and-inspect">Summarise and inspect</a></li>
+  <li><a href="#build-a-summary-from-top-hits" id="toc-build-a-summary-from-top-hits" class="nav-link" data-scroll-target="#build-a-summary-from-top-hits">Build a summary from top hits</a></li>
+  <li><a href="#zi-component-hits" id="toc-zi-component-hits" class="nav-link" data-scroll-target="#zi-component-hits">ZI component hits</a>
+  <ul class="collapse">
+  <li><a href="#visualise-this-in-a-forest-plot" id="toc-visualise-this-in-a-forest-plot" class="nav-link" data-scroll-target="#visualise-this-in-a-forest-plot">Visualise this in a forest plot</a></li>
+  </ul></li>
+  <li><a href="#beta-component-hits" id="toc-beta-component-hits" class="nav-link" data-scroll-target="#beta-component-hits">Beta component hits</a></li>
+  <li><a href="#ani-distribution-of-the-top-strain-of-each-beta-detected-species" id="toc-ani-distribution-of-the-top-strain-of-each-beta-detected-species" class="nav-link" data-scroll-target="#ani-distribution-of-the-top-strain-of-each-beta-detected-species">ANI distribution of the top strain of each beta detected species</a></li>
+  </ul></li>
+  <li><a href="#associations-with-other-metadata" id="toc-associations-with-other-metadata" class="nav-link" data-scroll-target="#associations-with-other-metadata">Associations with other metadata</a>
+  <ul class="collapse">
+  <li><a href="#tumour-location" id="toc-tumour-location" class="nav-link" data-scroll-target="#tumour-location">Tumour location</a>
+  <ul class="collapse">
+  <li><a href="#build-a-summary-from-top-hits-1" id="toc-build-a-summary-from-top-hits-1" class="nav-link" data-scroll-target="#build-a-summary-from-top-hits-1">Build a summary from top hits</a></li>
+  <li><a href="#zi-component-hits-1" id="toc-zi-component-hits-1" class="nav-link" data-scroll-target="#zi-component-hits-1">ZI component hits</a></li>
+  <li><a href="#visualise-this-in-a-forest-plot-1" id="toc-visualise-this-in-a-forest-plot-1" class="nav-link" data-scroll-target="#visualise-this-in-a-forest-plot-1">Visualise this in a forest plot</a></li>
+  </ul></li>
+  <li><a href="#cancer-stage" id="toc-cancer-stage" class="nav-link" data-scroll-target="#cancer-stage">Cancer stage</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./palleja_Ab_analysis.html">Association Testing</a></li><li class="breadcrumb-item"><a href="./CRC_pooled.html">Analysis of 3414 pooled colorectal cancer metagenomes</a></li></ol></nav></header>
+
+
+
+
+<section id="analysis-of-3414-pooled-colorectal-cancer-metagenomes" class="level1">
+<h1>Analysis of 3414 pooled colorectal cancer metagenomes</h1>
+<p>2025-08-27</p>
+</section>
+<section id="run-zib-analysis-in-q99-mode" class="level1">
+<h1>Run ZiB analysis in q99 mode</h1>
+<section id="load-dependencies" class="level2">
+<h2 class="anchored" data-anchor-id="load-dependencies">Load dependencies</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(SummarizedExperiment)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(strainspy)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggvenn)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="load-metadata" class="level2">
+<h2 class="anchored" data-anchor-id="load-metadata">Load metadata</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>meta_path <span class="ot">&lt;-</span> <span class="st">"./data/segata_pooled_3741/combined_metadata.tsv"</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>meta <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(meta_path, <span class="at">sep =</span> <span class="st">'</span><span class="sc">\t</span><span class="st">'</span>) </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># set up contrasts/reference levels</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>disease <span class="ot">=</span> <span class="fu">factor</span>(meta<span class="sc">$</span>disease, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Control"</span>, <span class="st">"CRC"</span>, <span class="st">"Adenoma"</span>))</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>study <span class="ot">=</span> <span class="fu">factor</span>(meta<span class="sc">$</span>study)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>cascon <span class="ot">=</span> <span class="fu">ifelse</span>(meta<span class="sc">$</span>cascon <span class="sc">==</span> <span class="st">"Case"</span>, <span class="st">"Case"</span>, <span class="st">"Control"</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>cascon <span class="ot">=</span> <span class="fu">factor</span>(meta<span class="sc">$</span>cascon, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Control"</span>, <span class="st">"Case"</span>))</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>country <span class="ot">=</span> <span class="fu">factor</span>(meta<span class="sc">$</span>country)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>sex <span class="ot">=</span> <span class="fu">factor</span>(meta<span class="sc">$</span>sex, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Female"</span>, <span class="st">"Male"</span>))</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># let's reset tumour stages</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>tumour_stage_AJCC[meta<span class="sc">$</span>tumour_stage_AJCC <span class="sc">==</span> <span class="st">""</span>] <span class="ot">=</span> <span class="st">"NoTumour"</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>tumour_stage_AJCC[meta<span class="sc">$</span>disease <span class="sc">==</span> <span class="st">"Adenoma"</span>] <span class="ot">=</span> <span class="st">"Adenoma"</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>tumour_stage_AJCC[meta<span class="sc">$</span>tumour_stage_AJCC <span class="sc">==</span> <span class="st">"CRC_stage_unlabelled"</span>] <span class="ot">=</span> <span class="st">"Unstaged"</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>tumour_stage_AJCC <span class="ot">=</span> <span class="fu">factor</span>(meta<span class="sc">$</span>tumour_stage_AJCC, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"NoTumour"</span>, <span class="st">"Adenoma"</span>, <span class="st">"0"</span>, <span class="st">"I"</span>, <span class="st">"II"</span>, <span class="st">"III"</span>, <span class="st">"IV"</span>, <span class="st">"Unstaged"</span>))</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>tumour_location[meta<span class="sc">$</span>disease <span class="sc">==</span> <span class="st">"Control"</span>] <span class="ot">=</span> <span class="st">"NoTumour"</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>tumour_location[meta<span class="sc">$</span>disease <span class="sc">==</span> <span class="st">"Adenoma"</span>] <span class="ot">=</span> <span class="st">"Adenoma"</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>tumour_location <span class="ot">=</span> <span class="fu">factor</span>(meta<span class="sc">$</span>tumour_location, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"NoTumour"</span>, <span class="st">"Adenoma"</span>, <span class="st">"transverse"</span>, <span class="st">"left_sided"</span>, <span class="st">"right_sided"</span>, <span class="st">"multiple_sites"</span>, <span class="st">"nd"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="load-sylph-outputs" class="level2">
+<h2 class="anchored" data-anchor-id="load-sylph-outputs">Load sylph outputs</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>sy <span class="ot">&lt;-</span> <span class="fu">read_sylph</span>(<span class="st">"./data/segata_pooled_3741/combined_q_99.tsv.gz"</span>) <span class="co"># q99)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Detected Sylph query output file.</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>sy <span class="ot">&lt;-</span> <span class="fu">filter_by_presence</span>(sy, <span class="at">min_nonzero =</span> <span class="dv">342</span>) <span class="co"># filter at 10%</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Retained 20476 rows after filtering</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># annoying renames to match meta V sylph file</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(sy) <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_1"</span>, <span class="st">""</span>, <span class="fu">colnames</span>(sy))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(sy) <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_merged"</span>, <span class="st">""</span>, <span class="fu">colnames</span>(sy))</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colData</span>(sy)<span class="sc">$</span>Sample_file <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_1"</span>, <span class="st">""</span>, <span class="fu">basename</span>(<span class="fu">colData</span>(sy)<span class="sc">$</span>Sample_file))</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colData</span>(sy)<span class="sc">$</span>Sample_file <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_merged"</span>, <span class="st">""</span>, <span class="fu">colnames</span>(sy))</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(sy)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## [1] 20476  3414</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Checks before merging metadata</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(<span class="fu">colnames</span>(sy) <span class="sc">%in%</span> meta<span class="sc">$</span>run_accession)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## [1] TRUE</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(meta<span class="sc">$</span>run_accession <span class="sc">%in%</span> <span class="fu">colnames</span>(sy))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## [1] TRUE</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>sy <span class="ot">=</span> <span class="fu">modify_metadata</span>(sy, meta)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="fit-the-model" class="level2">
+<h2 class="anchored" data-anchor-id="fit-the-model">Fit the model</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>design <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="st">"~ disease + age + sex + BMI + (1 | study)"</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">&lt;-</span> <span class="st">"output_rds/CRC_zib_q_99_ebp.rds"</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Run with ebp - this looks a bit less noisy</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  ZB_fit <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  ebp <span class="ot">=</span> <span class="fu">compute_eb_priors</span>(sy, strainspy<span class="sc">:::</span><span class="fu">nobars_</span>(design), <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>(),<span class="at">low_cutoff =</span> <span class="dv">0</span>, <span class="at">high_cutoff =</span> <span class="cn">Inf</span>)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  ZB_fit <span class="ot">&lt;-</span> <span class="fu">glmZiBFit</span>(sy, design, <span class="at">MAP_prior =</span> ebp, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(ZB_fit, save_path)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="visualise-outputs" class="level2">
+<h2 class="anchored" data-anchor-id="visualise-outputs">Visualise Outputs</h2>
+<section id="load-gtdb-taxonomy" class="level3">
+<h3 class="anchored" data-anchor-id="load-gtdb-taxonomy">Load GTDB taxonomy</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>taxonomy <span class="ot">&lt;-</span> <span class="fu">read_taxonomy</span>(<span class="st">"data/TAXONOMY/sylph_DB_taxonomy_99.tsv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="manhattan-and-volcano-plots" class="level2">
+<h2 class="anchored" data-anchor-id="manhattan-and-volcano-plots">Manhattan and Volcano plots</h2>
+<section id="control-vs.-adenoma" class="level3">
+<h3 class="anchored" data-anchor-id="control-vs.-adenoma">Control vs.&nbsp;Adenoma</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_manhattan</span>(ZB_fit, <span class="at">taxonomy =</span> taxonomy, <span class="at">aggregate_by_taxa =</span> T, <span class="at">coef =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## ! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
+## ! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
+## ! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
+## ! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.</code></pre>
+<p><img src="CRC_pooled_files/figure-gfm/unnamed-chunk-6-1.png" class="img-fluid"><!-- --></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_manhattan</span>(ZB_fit, <span class="at">taxonomy =</span> taxonomy, <span class="at">aggregate_by_taxa =</span> F, <span class="at">coef =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## ! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
+## ! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
+## ! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
+## ! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
+## ! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
+## ! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.</code></pre>
+<p><img src="CRC_pooled_files/figure-gfm/unnamed-chunk-6-2.png" class="img-fluid"><!-- --></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_volcano</span>(ZB_fit, <span class="at">coef =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Found 20476 tophits for diseaseAdenoma at alpha = 1 using holm</code></pre>
+<p><img src="CRC_pooled_files/figure-gfm/unnamed-chunk-6-3.png" class="img-fluid"><!-- --></p>
+<p>No real signal detected. This agrees with the original paper.</p>
+</section>
+<section id="control-vs.-crc" class="level3">
+<h3 class="anchored" data-anchor-id="control-vs.-crc">Control vs.&nbsp;CRC</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_manhattan</span>(ZB_fit, <span class="at">taxonomy =</span> taxonomy, <span class="at">aggregate_by_taxa =</span> T, <span class="at">coef =</span> <span class="dv">2</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## ! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
+## ! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
+## ! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
+## ! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.</code></pre>
+<p><img src="CRC_pooled_files/figure-gfm/unnamed-chunk-7-1.png" class="img-fluid"><!-- --></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_manhattan</span>(ZB_fit, <span class="at">taxonomy =</span> taxonomy, <span class="at">aggregate_by_taxa =</span> F, <span class="at">coef =</span> <span class="dv">2</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## ! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
+## ! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
+## ! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
+## ! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
+## ! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
+## ! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.</code></pre>
+<p><img src="CRC_pooled_files/figure-gfm/unnamed-chunk-7-2.png" class="img-fluid"><!-- --></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_volcano</span>(ZB_fit, <span class="at">coef =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Found 20476 tophits for diseaseCRC at alpha = 1 using holm</code></pre>
+<p><img src="CRC_pooled_files/figure-gfm/unnamed-chunk-7-3.png" class="img-fluid"><!-- --></p>
+<p>Looks like there are many hits.</p>
+</section>
+</section>
+<section id="summarise-and-inspect" class="level2">
+<h2 class="anchored" data-anchor-id="summarise-and-inspect">Summarise and inspect</h2>
+</section>
+<section id="build-a-summary-from-top-hits" class="level2">
+<h2 class="anchored" data-anchor-id="build-a-summary-from-top-hits">Build a summary from top hits</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>ZIB_th_path <span class="ot">=</span> <span class="st">"output_rds/CRC_zib_q_99_ebp_th_filtered.rds"</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(ZIB_th_path)){</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  th <span class="ot">=</span> <span class="fu">readRDS</span>(ZIB_th_path)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  th <span class="ot">=</span> <span class="fu">top_hits</span>(ZB_fit, <span class="at">coef =</span> <span class="dv">2</span>)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Do the posthoc test</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Assumption: A strain is different if their ANI to a given ref is &gt;1.5% different</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>  th_ph <span class="ot">=</span> <span class="fu">estimate_effect_sizes</span>(sy, ZB_fit, th, <span class="at">beta_min_ani_diff =</span> <span class="fl">1.5e-3</span>, </span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>                                <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>()) </span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># contigs with good effect size and enough non-zero samples in Control-CRC groups</span></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>  good_contigs <span class="ot">=</span> <span class="fu">unique</span>(th_ph<span class="sc">$</span>Contig_name[<span class="fu">is.na</span>(th_ph<span class="sc">$</span>Comment) <span class="sc">&amp;</span> th_ph<span class="sc">$</span>Contrast <span class="sc">==</span> <span class="st">"Control - CRC"</span>])</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>  th <span class="ot">=</span> th[th<span class="sc">$</span>Contig_name <span class="sc">%in%</span> good_contigs,]</span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>  th<span class="sc">$</span>Species <span class="ot">=</span> taxonomy<span class="sc">$</span>Species[<span class="fu">match</span>(th<span class="sc">$</span>Genome_file, taxonomy<span class="sc">$</span>Genome)]</span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(th, ZIB_th_path)</span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Signals detected from 70 species</span></span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">sort</span>(<span class="fu">table</span>(th<span class="sc">$</span>Species), <span class="at">decreasing =</span> T))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## [1] 70</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ask chatGPT for a nice summary table</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>summary_tbl <span class="ot">&lt;-</span> th <span class="sc">%&gt;%</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Species)) <span class="sc">%&gt;%</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Species) <span class="sc">%&gt;%</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">N_hits =</span> <span class="fu">n</span>(),</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">Top_adj_p_beta  =</span> <span class="fu">min</span>(p_adjust, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">Top_coef_beta   =</span> coefficient[<span class="fu">which.min</span>(p_adjust)],</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">Top_se_beta     =</span> std_error[<span class="fu">which.min</span>(p_adjust)],</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">Top_contig_beta =</span> Contig_name[<span class="fu">which.min</span>(p_adjust)],</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">Top_adj_p_ZI    =</span> <span class="fu">min</span>(zi_p_adjust, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">Top_coef_ZI     =</span> zi_coefficient[<span class="fu">which.min</span>(zi_p_adjust)],</span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">Top_se_ZI       =</span> zi_std_error[<span class="fu">which.min</span>(zi_p_adjust)],</span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">Top_contig_ZI   =</span> Contig_name[<span class="fu">which.min</span>(zi_p_adjust)],</span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">Min_adj_p =</span> <span class="fu">pmin</span>(Top_adj_p_beta, Top_adj_p_ZI, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">Dominant_component =</span> <span class="fu">ifelse</span>(Top_adj_p_beta <span class="sc">&lt;</span> Top_adj_p_ZI, <span class="st">"Beta"</span>, <span class="st">"ZI"</span>),</span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">Dominant_contig    =</span> <span class="fu">ifelse</span>(Dominant_component <span class="sc">==</span> <span class="st">"Beta"</span>, Top_contig_beta, Top_contig_ZI),</span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">Dominant_coef      =</span> <span class="fu">ifelse</span>(Dominant_component <span class="sc">==</span> <span class="st">"Beta"</span>, Top_coef_beta, Top_coef_ZI),</span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">Dominant_se        =</span> <span class="fu">ifelse</span>(Dominant_component <span class="sc">==</span> <span class="st">"Beta"</span>, Top_se_beta, Top_se_ZI)</span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Species, N_hits, Dominant_component, Min_adj_p, Dominant_coef, Dominant_se, Dominant_contig) <span class="sc">%&gt;%</span></span>
+<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Min_adj_p)</span>
+<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-30"><a href="#cb30-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Write as tsv for manual perusal</span></span>
+<span id="cb30-31"><a href="#cb30-31" aria-hidden="true" tabindex="-1"></a><span class="co"># write.table(summary_tbl, "output_tables/CRC_Z99_ebp_summary.tsv", sep = '\t', col.names = T, row.names = F, quote = F)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="zi-component-hits" class="level2">
+<h2 class="anchored" data-anchor-id="zi-component-hits">ZI component hits</h2>
+<p>When the <code>Dominant_component</code> is ZI, negative and positive <code>Dominant_coef</code> indicates presence and absence in CRC compared to control.</p>
+<section id="visualise-this-in-a-forest-plot" class="level3">
+<h3 class="anchored" data-anchor-id="visualise-this-in-a-forest-plot">Visualise this in a forest plot</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>zi_summary <span class="ot">&lt;-</span> summary_tbl <span class="sc">%&gt;%</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Dominant_component <span class="sc">==</span> <span class="st">"ZI"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Min_adj_p) <span class="sc">%&gt;%</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Confidence interval before flipping</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">CI_low =</span> Dominant_coef <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> Dominant_se,</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">CI_high =</span> Dominant_coef <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> Dominant_se,</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Flip effect size and CI</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">Dominant_coef =</span> <span class="sc">-</span>Dominant_coef,</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">CI_low =</span> <span class="sc">-</span>CI_low,</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">CI_high =</span> <span class="sc">-</span>CI_high,</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Trend annotation</span></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">Trend =</span> <span class="fu">ifelse</span>(Dominant_coef <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="st">"\u2191 CRC"</span>, <span class="st">"\u2193 CRC"</span>)</span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Trend, <span class="fu">desc</span>(Dominant_coef)) <span class="sc">%&gt;%</span></span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Species =</span> <span class="fu">factor</span>(Species, <span class="at">levels =</span> <span class="fu">rev</span>(<span class="fu">unique</span>(Species))))</span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(zi_summary, <span class="fu">aes</span>(<span class="at">x =</span> Dominant_coef, <span class="at">y =</span> Species, <span class="at">color =</span> Trend)) <span class="sc">+</span></span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">size =</span> N_hits)) <span class="sc">+</span></span>
+<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbarh</span>(<span class="fu">aes</span>(<span class="at">xmin =</span> CI_low, <span class="at">xmax =</span> CI_high), <span class="at">height =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"\u2191 CRC"</span> <span class="ot">=</span> <span class="st">"red"</span>, <span class="st">"\u2193 CRC"</span> <span class="ot">=</span> <span class="st">"blue"</span>)) <span class="sc">+</span></span>
+<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_size_continuous</span>(</span>
+<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">"Strains"</span>,</span>
+<span id="cb31-27"><a href="#cb31-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">range =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">8</span>),  <span class="co"># tweak for your figure aesthetics</span></span>
+<span id="cb31-28"><a href="#cb31-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">45</span>, <span class="dv">90</span>),</span>
+<span id="cb31-29"><a href="#cb31-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"1"</span>, <span class="st">"45"</span>, <span class="st">"90"</span>),</span>
+<span id="cb31-30"><a href="#cb31-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">guide =</span> <span class="fu">guide_legend</span>(<span class="at">override.aes =</span> <span class="fu">list</span>(<span class="at">linetype =</span> <span class="dv">0</span>))  <span class="co"># remove lines from legend</span></span>
+<span id="cb31-31"><a href="#cb31-31" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb31-32"><a href="#cb31-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb31-33"><a href="#cb31-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Effect size"</span>,</span>
+<span id="cb31-34"><a href="#cb31-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Species"</span>,</span>
+<span id="cb31-35"><a href="#cb31-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Trend"</span></span>
+<span id="cb31-36"><a href="#cb31-36" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb31-37"><a href="#cb31-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><img src="CRC_pooled_files/figure-gfm/unnamed-chunk-9-1.png" class="img-fluid"><!-- --></p>
+</section>
+</section>
+<section id="beta-component-hits" class="level2">
+<h2 class="anchored" data-anchor-id="beta-component-hits">Beta component hits</h2>
+<p>When the <code>Dominant_component</code> is Beta, negative and positive <code>Dominant_coef</code> indicates lower and higher cANI in CRC compared to control, reflecting similarity of the strain to the reference. Higher estimates imply possibly larger strain differences in CRC compared to controls.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>beta_summary <span class="ot">&lt;-</span> summary_tbl <span class="sc">%&gt;%</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Dominant_component <span class="sc">==</span> <span class="st">"Beta"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Min_adj_p) <span class="sc">%&gt;%</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">CI_low =</span> Dominant_coef <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> Dominant_se,</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">CI_high =</span> Dominant_coef <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> Dominant_se,</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">Trend =</span> <span class="fu">ifelse</span>(Dominant_coef <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="st">"\u2191 CRC (similar)"</span>, <span class="st">"\u2193 CRC (divergent)"</span>),</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">Species =</span> <span class="fu">factor</span>(Species, <span class="at">levels =</span> <span class="fu">rev</span>(<span class="fu">unique</span>(Species)))</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Dominant_coef)) <span class="sc">%&gt;%</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Species =</span> <span class="fu">factor</span>(Species, <span class="at">levels =</span> <span class="fu">rev</span>(<span class="fu">unique</span>(Species))))</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(beta_summary, <span class="fu">aes</span>(<span class="at">x =</span> Dominant_coef, <span class="at">y =</span> Species, <span class="at">color =</span> Trend)) <span class="sc">+</span></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">size =</span> N_hits)) <span class="sc">+</span></span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbarh</span>(<span class="fu">aes</span>(<span class="at">xmin =</span> CI_low, <span class="at">xmax =</span> CI_high), <span class="at">height =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"\u2191 CRC (similar)"</span> <span class="ot">=</span> <span class="st">"red"</span>,</span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>                                <span class="st">"\u2193 CRC (divergent)"</span> <span class="ot">=</span> <span class="st">"blue"</span>)) <span class="sc">+</span></span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_size_continuous</span>(</span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">"Strains"</span>,</span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">range =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">8</span>),</span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">60</span>, <span class="dv">120</span>),</span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"1"</span>, <span class="st">"60"</span>, <span class="st">"120"</span>)</span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Effect size (difference in ANI, CRC vs HC)"</span>,</span>
+<span id="cb32-27"><a href="#cb32-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Species"</span>,</span>
+<span id="cb32-28"><a href="#cb32-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Trend"</span></span>
+<span id="cb32-29"><a href="#cb32-29" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb32-30"><a href="#cb32-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><img src="CRC_pooled_files/figure-gfm/unnamed-chunk-10-1.png" class="img-fluid"><!-- --></p>
+</section>
+<section id="ani-distribution-of-the-top-strain-of-each-beta-detected-species" class="level2">
+<h2 class="anchored" data-anchor-id="ani-distribution-of-the-top-strain-of-each-beta-detected-species">ANI distribution of the top strain of each beta detected species</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(sy, <span class="at">phenotype =</span> <span class="st">'disease'</span>, <span class="at">contigs =</span> beta_summary<span class="sc">$</span>Dominant_contig, </span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">show_points =</span> T, <span class="at">plot_type =</span> <span class="st">'box'</span>, </span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">contig_names =</span> <span class="fu">as.character</span>(beta_summary<span class="sc">$</span>Species))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Warning: Removed 8234 rows containing non-finite outside the scale range
+## (`stat_boxplot()`).</code></pre>
+<p><img src="CRC_pooled_files/figure-gfm/unnamed-chunk-11-1.png" class="img-fluid"><!-- --></p>
+</section>
+</section>
+<section id="associations-with-other-metadata" class="level1">
+<h1>Associations with other metadata</h1>
+<p>Since <code>tumour_stage_AJCC</code> and <code>tumour_location</code> are highly correlated with <code>disease</code>, we’ll first fit separate models on subsets for direct comparison.</p>
+<section id="tumour-location" class="level2">
+<h2 class="anchored" data-anchor-id="tumour-location">Tumour location</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Directly compare left vs. right</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>meta_lr_acc <span class="ot">=</span> <span class="fu">which</span>(meta<span class="sc">$</span>tumour_location <span class="sc">==</span> <span class="st">'left_sided'</span> <span class="sc">|</span> meta<span class="sc">$</span>tumour_location <span class="sc">==</span> <span class="st">'right_sided'</span>)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>lr_acc <span class="ot">=</span> meta<span class="sc">$</span>run_accession[meta_lr_acc]</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>meta_lr <span class="ot">=</span> meta[meta_lr_acc, <span class="fu">c</span>(<span class="st">'run_accession'</span>, <span class="st">'study'</span>, <span class="st">'age'</span>, <span class="st">'BMI'</span>, <span class="st">'sex'</span>, <span class="st">'tumour_location'</span>)]</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>meta_lr<span class="sc">$</span>tumour_location <span class="ot">=</span> <span class="fu">factor</span>(<span class="fu">as.character</span>(meta_lr<span class="sc">$</span>tumour_location), <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">'left_sided'</span>, <span class="st">'right_sided'</span>))</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Reload sylph q99</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>sy <span class="ot">&lt;-</span> <span class="fu">read_sylph</span>(<span class="st">"./data/segata_pooled_3741/combined_q_99.tsv.gz"</span>) <span class="co"># q99)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Detected Sylph query output file.</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># annoying renames to match meta V sylph file</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(sy) <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_1"</span>, <span class="st">""</span>, <span class="fu">colnames</span>(sy))</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(sy) <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_merged"</span>, <span class="st">""</span>, <span class="fu">colnames</span>(sy))</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colData</span>(sy)<span class="sc">$</span>Sample_file <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_1"</span>, <span class="st">""</span>, <span class="fu">basename</span>(<span class="fu">colData</span>(sy)<span class="sc">$</span>Sample_file))</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colData</span>(sy)<span class="sc">$</span>Sample_file <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_merged"</span>, <span class="st">""</span>, <span class="fu">colnames</span>(sy))</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="co"># only lVr samples</span></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>sy <span class="ot">=</span> sy[, <span class="fu">sapply</span>(lr_acc, <span class="cf">function</span>(x) <span class="fu">which</span>(x <span class="sc">==</span> <span class="fu">colnames</span>(sy)))]</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>sy <span class="ot">&lt;-</span> <span class="fu">filter_by_presence</span>(sy, <span class="at">min_nonzero =</span> <span class="fu">round</span>(<span class="fu">dim</span>(sy)[<span class="dv">2</span>]<span class="sc">/</span><span class="dv">10</span>)) <span class="co"># filter at 10%</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Retained 21496 rows after filtering</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(sy)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## [1] 21496   868</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Checks before merging metadata</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(<span class="fu">colnames</span>(sy) <span class="sc">%in%</span> meta_lr<span class="sc">$</span>run_accession)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## [1] TRUE</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(meta_lr<span class="sc">$</span>run_accession <span class="sc">%in%</span> <span class="fu">colnames</span>(sy))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## [1] TRUE</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>sy <span class="ot">=</span> <span class="fu">modify_metadata</span>(sy, meta_lr)</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>design <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="st">"~ tumour_location + age + sex + BMI + (1 | study)"</span>)</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">&lt;-</span> <span class="st">"output_rds/CRC_zib_q_99_ebp_tumour_location_lVr.rds"</span></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Run with ebp - this looks a bit less noisy</span></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>  ZB_fit_tl <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>  ebp <span class="ot">=</span> <span class="fu">compute_eb_priors</span>(sy, strainspy<span class="sc">:::</span><span class="fu">nobars_</span>(design), <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>(),<span class="at">low_cutoff =</span> <span class="dv">0</span>, <span class="at">high_cutoff =</span> <span class="cn">Inf</span>)</span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>  ZB_fit_tl <span class="ot">&lt;-</span> <span class="fu">glmZiBFit</span>(sy,  design, <span class="at">MAP_prior =</span> ebp, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(ZB_fit_tl, save_path)</span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="build-a-summary-from-top-hits-1" class="level3">
+<h3 class="anchored" data-anchor-id="build-a-summary-from-top-hits-1">Build a summary from top hits</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>th_tl <span class="ot">=</span> <span class="fu">top_hits</span>(ZB_fit_tl, <span class="at">coef =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Found 81 tophits for tumour_locationright_sided at alpha = 0.05 using holm</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># There are no strain identity differences, post hoc testing ignored</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>th_tl<span class="sc">$</span>Species <span class="ot">=</span> taxonomy<span class="sc">$</span>Species[<span class="fu">match</span>(th_tl<span class="sc">$</span>Genome_file, taxonomy<span class="sc">$</span>Genome)]</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Signals detected from 11 species</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">sort</span>(<span class="fu">table</span>(th_tl<span class="sc">$</span>Species), <span class="at">decreasing =</span> T))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## [1] 11</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ask chatGPT for a nice summary table</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>summary_tbl <span class="ot">&lt;-</span> th_tl <span class="sc">%&gt;%</span></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Species)) <span class="sc">%&gt;%</span></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Species) <span class="sc">%&gt;%</span></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">N_hits =</span> <span class="fu">n</span>(),</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">Top_adj_p_beta  =</span> <span class="fu">min</span>(p_adjust, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">Top_coef_beta   =</span> coefficient[<span class="fu">which.min</span>(p_adjust)],</span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">Top_se_beta     =</span> std_error[<span class="fu">which.min</span>(p_adjust)],</span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">Top_contig_beta =</span> Contig_name[<span class="fu">which.min</span>(p_adjust)],</span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">Top_adj_p_ZI    =</span> <span class="fu">min</span>(zi_p_adjust, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">Top_coef_ZI     =</span> zi_coefficient[<span class="fu">which.min</span>(zi_p_adjust)],</span>
+<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">Top_se_ZI       =</span> zi_std_error[<span class="fu">which.min</span>(zi_p_adjust)],</span>
+<span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">Top_contig_ZI   =</span> Contig_name[<span class="fu">which.min</span>(zi_p_adjust)],</span>
+<span id="cb50-17"><a href="#cb50-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb50-18"><a href="#cb50-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb50-19"><a href="#cb50-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb50-20"><a href="#cb50-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb50-21"><a href="#cb50-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">Min_adj_p =</span> <span class="fu">pmin</span>(Top_adj_p_beta, Top_adj_p_ZI, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb50-22"><a href="#cb50-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">Dominant_component =</span> <span class="fu">ifelse</span>(Top_adj_p_beta <span class="sc">&lt;</span> Top_adj_p_ZI, <span class="st">"Beta"</span>, <span class="st">"ZI"</span>),</span>
+<span id="cb50-23"><a href="#cb50-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">Dominant_contig    =</span> <span class="fu">ifelse</span>(Dominant_component <span class="sc">==</span> <span class="st">"Beta"</span>, Top_contig_beta, Top_contig_ZI),</span>
+<span id="cb50-24"><a href="#cb50-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">Dominant_coef      =</span> <span class="fu">ifelse</span>(Dominant_component <span class="sc">==</span> <span class="st">"Beta"</span>, Top_coef_beta, Top_coef_ZI),</span>
+<span id="cb50-25"><a href="#cb50-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">Dominant_se        =</span> <span class="fu">ifelse</span>(Dominant_component <span class="sc">==</span> <span class="st">"Beta"</span>, Top_se_beta, Top_se_ZI)</span>
+<span id="cb50-26"><a href="#cb50-26" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb50-27"><a href="#cb50-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Species, N_hits, Dominant_component, Min_adj_p, Dominant_coef, Dominant_se, Dominant_contig) <span class="sc">%&gt;%</span></span>
+<span id="cb50-28"><a href="#cb50-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Min_adj_p)</span>
+<span id="cb50-29"><a href="#cb50-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-30"><a href="#cb50-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Write as tsv for manual perusal</span></span>
+<span id="cb50-31"><a href="#cb50-31" aria-hidden="true" tabindex="-1"></a><span class="co"># write.table(summary_tbl, "output_tables/CRC_Z99_tVl_direct_summary.tsv", sep = '\t', col.names = T, row.names = F, quote = F)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>There are only presence/absence hits.</p>
+</section>
+<section id="zi-component-hits-1" class="level3">
+<h3 class="anchored" data-anchor-id="zi-component-hits-1">ZI component hits</h3>
+<p>Negative and positive <code>Dominant_coef</code> indicates strain presence in the guts of patients with Left and Right CRC tumors, respectively.</p>
+</section>
+<section id="visualise-this-in-a-forest-plot-1" class="level3">
+<h3 class="anchored" data-anchor-id="visualise-this-in-a-forest-plot-1">Visualise this in a forest plot</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>zi_summary <span class="ot">&lt;-</span> summary_tbl <span class="sc">%&gt;%</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Dominant_component <span class="sc">==</span> <span class="st">"ZI"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Min_adj_p) <span class="sc">%&gt;%</span></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Confidence interval before flipping</span></span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">CI_low =</span> Dominant_coef <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> Dominant_se,</span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">CI_high =</span> Dominant_coef <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> Dominant_se,</span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Flip effect size and CI</span></span>
+<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">Dominant_coef =</span> <span class="sc">-</span>Dominant_coef,</span>
+<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">CI_low =</span> <span class="sc">-</span>CI_low,</span>
+<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">CI_high =</span> <span class="sc">-</span>CI_high,</span>
+<span id="cb51-13"><a href="#cb51-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb51-14"><a href="#cb51-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Trend annotation</span></span>
+<span id="cb51-15"><a href="#cb51-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">Trend =</span> <span class="fu">ifelse</span>(Dominant_coef <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="st">"\u2191 Right"</span>, <span class="st">"\u2193 Left"</span>)</span>
+<span id="cb51-16"><a href="#cb51-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb51-17"><a href="#cb51-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Trend, <span class="fu">desc</span>(Dominant_coef)) <span class="sc">%&gt;%</span></span>
+<span id="cb51-18"><a href="#cb51-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Species =</span> <span class="fu">factor</span>(Species, <span class="at">levels =</span> <span class="fu">rev</span>(<span class="fu">unique</span>(Species))))</span>
+<span id="cb51-19"><a href="#cb51-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-20"><a href="#cb51-20" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(zi_summary, <span class="fu">aes</span>(<span class="at">x =</span> Dominant_coef, <span class="at">y =</span> Species, <span class="at">color =</span> Trend)) <span class="sc">+</span></span>
+<span id="cb51-21"><a href="#cb51-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">size =</span> N_hits)) <span class="sc">+</span></span>
+<span id="cb51-22"><a href="#cb51-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbarh</span>(<span class="fu">aes</span>(<span class="at">xmin =</span> CI_low, <span class="at">xmax =</span> CI_high), <span class="at">height =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb51-23"><a href="#cb51-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb51-24"><a href="#cb51-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"\u2191 Right"</span> <span class="ot">=</span> <span class="st">"orange"</span>, <span class="st">"\u2193 Left"</span> <span class="ot">=</span> <span class="st">"violet"</span>)) <span class="sc">+</span></span>
+<span id="cb51-25"><a href="#cb51-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_size_continuous</span>(</span>
+<span id="cb51-26"><a href="#cb51-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">"Strains"</span>,</span>
+<span id="cb51-27"><a href="#cb51-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">range =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">8</span>),  <span class="co"># tweak for your figure aesthetics</span></span>
+<span id="cb51-28"><a href="#cb51-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">45</span>, <span class="dv">90</span>),</span>
+<span id="cb51-29"><a href="#cb51-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"1"</span>, <span class="st">"45"</span>, <span class="st">"90"</span>),</span>
+<span id="cb51-30"><a href="#cb51-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">guide =</span> <span class="fu">guide_legend</span>(<span class="at">override.aes =</span> <span class="fu">list</span>(<span class="at">linetype =</span> <span class="dv">0</span>))  <span class="co"># remove lines from legend</span></span>
+<span id="cb51-31"><a href="#cb51-31" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb51-32"><a href="#cb51-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb51-33"><a href="#cb51-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Effect size"</span>,</span>
+<span id="cb51-34"><a href="#cb51-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Species"</span>,</span>
+<span id="cb51-35"><a href="#cb51-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Trend"</span></span>
+<span id="cb51-36"><a href="#cb51-36" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb51-37"><a href="#cb51-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><img src="CRC_pooled_files/figure-gfm/unnamed-chunk-14-1.png" class="img-fluid"><!-- --></p>
+<p>Looks like it is mostly dominated by <em>Veillonella sp.</em> and <em>Pullichristensenella sp.</em>. <em>Veillonella parvula</em> is one of the top hits in 10.1016/j.chom.2025.03.012, but we are not detecting any of the other hits.</p>
+</section>
+</section>
+<section id="cancer-stage" class="level2">
+<h2 class="anchored" data-anchor-id="cancer-stage">Cancer stage</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(meta<span class="sc">$</span>tumour_stage_AJCC)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## 
+## NoTumour  Adenoma        0        I       II      III       IV Unstaged 
+##     1478      614       90      231      230      258      289      224</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Directly compare left vs. right</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>meta_stage_acc <span class="ot">=</span> <span class="fu">which</span>(meta<span class="sc">$</span>tumour_stage_AJCC <span class="sc">==</span> <span class="st">'0'</span> <span class="sc">|</span> </span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>                         meta<span class="sc">$</span>tumour_stage_AJCC <span class="sc">==</span> <span class="st">'I'</span> <span class="sc">|</span> </span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>                         meta<span class="sc">$</span>tumour_stage_AJCC <span class="sc">==</span> <span class="st">'II'</span> <span class="sc">|</span> </span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>                         meta<span class="sc">$</span>tumour_stage_AJCC <span class="sc">==</span> <span class="st">'III'</span> <span class="sc">|</span> </span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>                         meta<span class="sc">$</span>tumour_stage_AJCC <span class="sc">==</span> <span class="st">'IV'</span>)</span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>stage_acc <span class="ot">=</span> meta<span class="sc">$</span>run_accession[meta_stage_acc]</span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>meta_stage <span class="ot">=</span> meta[meta_stage_acc, <span class="fu">c</span>(<span class="st">'run_accession'</span>, <span class="st">'study'</span>, <span class="st">'age'</span>, <span class="st">'BMI'</span>, <span class="st">'sex'</span>, <span class="st">'tumour_stage_AJCC'</span>)]</span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a>meta_stage<span class="sc">$</span>tumour_stage_AJCC <span class="ot">=</span> <span class="fu">factor</span>(<span class="fu">as.character</span>(meta_stage<span class="sc">$</span>tumour_stage_AJCC), <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">'0'</span>, <span class="st">'I'</span>, <span class="st">'II'</span>, <span class="st">'III'</span>, <span class="st">'IV'</span>))</span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a><span class="do">###################</span></span>
+<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a><span class="do">##### No HITS #####</span></span>
+<span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a><span class="do">###################</span></span>
+<span id="cb54-15"><a href="#cb54-15" aria-hidden="true" tabindex="-1"></a><span class="do">#### Model 1 - compare stages 1,2,3 and 4 vs. stage 0</span></span>
+<span id="cb54-16"><a href="#cb54-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Reload sylph q99</span></span>
+<span id="cb54-17"><a href="#cb54-17" aria-hidden="true" tabindex="-1"></a>sy <span class="ot">&lt;-</span> <span class="fu">read_sylph</span>(<span class="st">"./data/segata_pooled_3741/combined_q_99.tsv.gz"</span>) <span class="co"># q99)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Detected Sylph query output file.</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co"># annoying renames to match meta V sylph file</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(sy) <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_1"</span>, <span class="st">""</span>, <span class="fu">colnames</span>(sy))</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(sy) <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_merged"</span>, <span class="st">""</span>, <span class="fu">colnames</span>(sy))</span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colData</span>(sy)<span class="sc">$</span>Sample_file <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_1"</span>, <span class="st">""</span>, <span class="fu">basename</span>(<span class="fu">colData</span>(sy)<span class="sc">$</span>Sample_file))</span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colData</span>(sy)<span class="sc">$</span>Sample_file <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_merged"</span>, <span class="st">""</span>, <span class="fu">colnames</span>(sy))</span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a><span class="co"># only lVr samples</span></span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>sy <span class="ot">=</span> sy[, <span class="fu">sapply</span>(meta_stage<span class="sc">$</span>run_accession, <span class="cf">function</span>(x) <span class="fu">which</span>(x <span class="sc">==</span> <span class="fu">colnames</span>(sy)))]</span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a>sy <span class="ot">&lt;-</span> <span class="fu">filter_by_presence</span>(sy, <span class="at">min_nonzero =</span> <span class="fu">round</span>(<span class="fu">dim</span>(sy)[<span class="dv">2</span>]<span class="sc">/</span><span class="dv">10</span>)) <span class="co"># filter at 10%</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Retained 21722 rows after filtering</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(sy)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## [1] 21722  1098</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Checks before merging metadata</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(<span class="fu">colnames</span>(sy) <span class="sc">%in%</span> meta_stage<span class="sc">$</span>run_accession)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## [1] TRUE</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(meta_stage<span class="sc">$</span>run_accession <span class="sc">%in%</span> <span class="fu">colnames</span>(sy))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## [1] TRUE</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>sy <span class="ot">=</span> <span class="fu">modify_metadata</span>(sy, meta_stage)</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">&lt;-</span> <span class="st">"output_rds/CRC_zib_q_99_ebp_tumour_stage_0v.rds"</span></span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>design <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="st">'~tumour_stage_AJCC + age + sex + BMI + (1 | study)'</span>)</span>
+<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Run with ebp</span></span>
+<span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
+<span id="cb64-8"><a href="#cb64-8" aria-hidden="true" tabindex="-1"></a>  ZB_fit_stage_full <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
+<span id="cb64-9"><a href="#cb64-9" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb64-10"><a href="#cb64-10" aria-hidden="true" tabindex="-1"></a>  ebp <span class="ot">=</span> <span class="fu">compute_eb_priors</span>(sy, strainspy<span class="sc">:::</span><span class="fu">nobars_</span>(design), <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>(),<span class="at">low_cutoff =</span> <span class="dv">0</span>, <span class="at">high_cutoff =</span> <span class="cn">Inf</span>)</span>
+<span id="cb64-11"><a href="#cb64-11" aria-hidden="true" tabindex="-1"></a>  ZB_fit_stage_full <span class="ot">&lt;-</span> <span class="fu">glmZiBFit</span>(sy,  design, <span class="at">MAP_prior =</span> ebp, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
+<span id="cb64-12"><a href="#cb64-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(ZB_fit_stage_full, save_path)</span>
+<span id="cb64-13"><a href="#cb64-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb64-14"><a href="#cb64-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-15"><a href="#cb64-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Variables</span></span>
+<span id="cb64-16"><a href="#cb64-16" aria-hidden="true" tabindex="-1"></a><span class="fu">top_hits</span>(ZB_fit_stage_full, <span class="at">coef =</span> <span class="dv">2</span>, <span class="at">method =</span> <span class="st">"BH"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Warning in top_hits(ZB_fit_stage_full, coef = 2, method = "BH"): Multiple
+## testing correction using `BH`: No significant associations detected for coef =
+## 2 at alpha = 0.050000
+
+## # A tibble: 0 × 10
+## # ℹ 10 variables: Contig_name &lt;chr&gt;, Genome_file &lt;chr&gt;, coefficient &lt;dbl&gt;,
+## #   std_error &lt;dbl&gt;, p_value &lt;dbl&gt;, p_adjust &lt;dbl&gt;, zi_coefficient &lt;dbl&gt;,
+## #   zi_std_error &lt;dbl&gt;, zi_p_value &lt;dbl&gt;, zi_p_adjust &lt;dbl&gt;</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">top_hits</span>(ZB_fit_stage_full, <span class="at">coef =</span> <span class="dv">3</span>, <span class="at">method =</span> <span class="st">"BH"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Warning in top_hits(ZB_fit_stage_full, coef = 3, method = "BH"): Multiple
+## testing correction using `BH`: No significant associations detected for coef =
+## 3 at alpha = 0.050000
+
+## # A tibble: 0 × 10
+## # ℹ 10 variables: Contig_name &lt;chr&gt;, Genome_file &lt;chr&gt;, coefficient &lt;dbl&gt;,
+## #   std_error &lt;dbl&gt;, p_value &lt;dbl&gt;, p_adjust &lt;dbl&gt;, zi_coefficient &lt;dbl&gt;,
+## #   zi_std_error &lt;dbl&gt;, zi_p_value &lt;dbl&gt;, zi_p_adjust &lt;dbl&gt;</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">top_hits</span>(ZB_fit_stage_full, <span class="at">coef =</span> <span class="dv">4</span>, <span class="at">method =</span> <span class="st">"BH"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Warning in top_hits(ZB_fit_stage_full, coef = 4, method = "BH"): Multiple
+## testing correction using `BH`: No significant associations detected for coef =
+## 4 at alpha = 0.050000
+
+## # A tibble: 0 × 10
+## # ℹ 10 variables: Contig_name &lt;chr&gt;, Genome_file &lt;chr&gt;, coefficient &lt;dbl&gt;,
+## #   std_error &lt;dbl&gt;, p_value &lt;dbl&gt;, p_adjust &lt;dbl&gt;, zi_coefficient &lt;dbl&gt;,
+## #   zi_std_error &lt;dbl&gt;, zi_p_value &lt;dbl&gt;, zi_p_adjust &lt;dbl&gt;</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">top_hits</span>(ZB_fit_stage_full, <span class="at">coef =</span> <span class="dv">5</span>, <span class="at">method =</span> <span class="st">"BH"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Warning in top_hits(ZB_fit_stage_full, coef = 5, method = "BH"): Multiple
+## testing correction using `BH`: No significant associations detected for coef =
+## 5 at alpha = 0.050000
+
+## # A tibble: 0 × 10
+## # ℹ 10 variables: Contig_name &lt;chr&gt;, Genome_file &lt;chr&gt;, coefficient &lt;dbl&gt;,
+## #   std_error &lt;dbl&gt;, p_value &lt;dbl&gt;, p_adjust &lt;dbl&gt;, zi_coefficient &lt;dbl&gt;,
+## #   zi_std_error &lt;dbl&gt;, zi_p_value &lt;dbl&gt;, zi_p_adjust &lt;dbl&gt;</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="do">#### Model 2 - merge stages 0 and 1 as early and compare with 2, 3 and 4.</span></span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a><span class="do">###################</span></span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a><span class="do">##### HAS HITS ####</span></span>
+<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a><span class="do">###################</span></span>
+<span id="cb72-5"><a href="#cb72-5" aria-hidden="true" tabindex="-1"></a>meta_stage<span class="sc">$</span>tumour_stage_merged <span class="ot">=</span> <span class="fu">sapply</span>(<span class="fu">as.character</span>(meta_stage<span class="sc">$</span>tumour_stage_AJCC), <span class="cf">function</span>(x) <span class="fu">ifelse</span>( (x<span class="sc">==</span><span class="st">'0'</span><span class="sc">|</span>x<span class="sc">==</span><span class="st">'I'</span>), <span class="st">'Early'</span>, x)) </span>
+<span id="cb72-6"><a href="#cb72-6" aria-hidden="true" tabindex="-1"></a>meta_stage<span class="sc">$</span>tumour_stage_merged <span class="ot">=</span> <span class="fu">factor</span>(<span class="fu">as.character</span>(meta_stage<span class="sc">$</span>tumour_stage_merged), <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">'Early'</span>, <span class="st">'II'</span>, <span class="st">'III'</span>, <span class="st">'IV'</span>))</span>
+<span id="cb72-7"><a href="#cb72-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-8"><a href="#cb72-8" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">&lt;-</span> <span class="st">"output_rds/with_intercept/CRC_zib_q_99_ebp_tumour_stage_early0Iv.rds"</span></span>
+<span id="cb72-9"><a href="#cb72-9" aria-hidden="true" tabindex="-1"></a>design <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="st">'~tumour_stage_merged + age + sex + BMI + (1 | study)'</span>)</span>
+<span id="cb72-10"><a href="#cb72-10" aria-hidden="true" tabindex="-1"></a>sy <span class="ot">=</span> <span class="fu">modify_metadata</span>(sy, meta_stage)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Warning in modify_metadata(sy, meta_stage): The following metadata columns already exist in `se` and will not be modified. To replace with provided meta_data, set run again with `replace = TRUE`:
+## 
+## study, age, BMI, sex, tumour_stage_AJCC</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run with ebp</span></span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>  ZB_fit_stage_early012V <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a>  ebp <span class="ot">=</span> <span class="fu">compute_eb_priors</span>(sy, strainspy<span class="sc">:::</span><span class="fu">nobars_</span>(design), <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>(),<span class="at">low_cutoff =</span> <span class="dv">0</span>, <span class="at">high_cutoff =</span> <span class="cn">Inf</span>)</span>
+<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a>  ZB_fit_stage_early012V <span class="ot">&lt;-</span> <span class="fu">glmZiBFit</span>(sy,  design, <span class="at">MAP_prior =</span> ebp, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
+<span id="cb74-7"><a href="#cb74-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(ZB_fit_stage_early012V, save_path)</span>
+<span id="cb74-8"><a href="#cb74-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb74-9"><a href="#cb74-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb74-10"><a href="#cb74-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Variables</span></span>
+<span id="cb74-11"><a href="#cb74-11" aria-hidden="true" tabindex="-1"></a>th_stage_1 <span class="ot">=</span> <span class="fu">cbind</span>(<span class="fu">top_hits</span>(ZB_fit_stage_early012V, <span class="at">coef =</span> <span class="dv">2</span>, <span class="at">method =</span> <span class="st">"BH"</span>), <span class="at">model =</span> <span class="st">'early01V'</span>, <span class="at">stage =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Found 24 tophits for tumour_stage_mergedII at alpha = 0.05 using BH</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">top_hits</span>(ZB_fit_stage_early012V, <span class="at">coef =</span> <span class="dv">3</span>, <span class="at">method =</span> <span class="st">"BH"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Warning in top_hits(ZB_fit_stage_early012V, coef = 3, method = "BH"): Multiple
+## testing correction using `BH`: No significant associations detected for coef =
+## 3 at alpha = 0.050000
+
+## # A tibble: 0 × 10
+## # ℹ 10 variables: Contig_name &lt;chr&gt;, Genome_file &lt;chr&gt;, coefficient &lt;dbl&gt;,
+## #   std_error &lt;dbl&gt;, p_value &lt;dbl&gt;, p_adjust &lt;dbl&gt;, zi_coefficient &lt;dbl&gt;,
+## #   zi_std_error &lt;dbl&gt;, zi_p_value &lt;dbl&gt;, zi_p_adjust &lt;dbl&gt;</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>th_stage_2 <span class="ot">=</span> <span class="fu">cbind</span>(<span class="fu">top_hits</span>(ZB_fit_stage_early012V, <span class="at">coef =</span> <span class="dv">4</span>, <span class="at">method =</span> <span class="st">"BH"</span>), <span class="at">model =</span> <span class="st">'early01V'</span>, <span class="at">stage =</span> <span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Found 6 tophits for tumour_stage_mergedIV at alpha = 0.05 using BH</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="do">#### No results - Fig 3B from Segata paper - merge 0, 1 and 2 as early and compare with merged 3 and 4 (late)</span></span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>meta_stage<span class="sc">$</span>tumour_stage_merged_earlyVlate <span class="ot">=</span> <span class="fu">sapply</span>(<span class="fu">as.character</span>(meta_stage<span class="sc">$</span>tumour_stage_AJCC), <span class="cf">function</span>(x) <span class="fu">ifelse</span>( (x<span class="sc">==</span><span class="st">'0'</span><span class="sc">|</span>x<span class="sc">==</span><span class="st">'I'</span><span class="sc">|</span>x<span class="sc">==</span><span class="st">'II'</span>), <span class="st">'Early'</span>, <span class="st">'Late'</span>)) </span>
+<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>meta_stage<span class="sc">$</span>tumour_stage_merged_earlyVlate <span class="ot">=</span> <span class="fu">factor</span>(<span class="fu">as.character</span>(meta_stage<span class="sc">$</span>tumour_stage_merged_earlyVlate), <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">'Early'</span>, <span class="st">'Late'</span>))</span>
+<span id="cb80-4"><a href="#cb80-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb80-5"><a href="#cb80-5" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">&lt;-</span> <span class="st">"output_rds/CRC_zib_q_99_ebp_tumour_stage_early012Vlate34.rds"</span></span>
+<span id="cb80-6"><a href="#cb80-6" aria-hidden="true" tabindex="-1"></a>design <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="st">'~tumour_stage_merged_earlyVlate + age + sex + BMI + (1 | study)'</span>)</span>
+<span id="cb80-7"><a href="#cb80-7" aria-hidden="true" tabindex="-1"></a>sy <span class="ot">=</span> <span class="fu">modify_metadata</span>(sy, meta_stage)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Warning in modify_metadata(sy, meta_stage): The following metadata columns already exist in `se` and will not be modified. To replace with provided meta_data, set run again with `replace = TRUE`:
+## 
+## study, age, BMI, sex, tumour_stage_AJCC, tumour_stage_merged</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run with ebp</span></span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
+<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a>  ZB_fit_stage_early012Vlate34 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
+<span id="cb82-4"><a href="#cb82-4" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb82-5"><a href="#cb82-5" aria-hidden="true" tabindex="-1"></a>  ebp <span class="ot">=</span> <span class="fu">compute_eb_priors</span>(sy, strainspy<span class="sc">:::</span><span class="fu">nobars_</span>(design), <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>(),<span class="at">low_cutoff =</span> <span class="dv">0</span>, <span class="at">high_cutoff =</span> <span class="cn">Inf</span>)</span>
+<span id="cb82-6"><a href="#cb82-6" aria-hidden="true" tabindex="-1"></a>  ZB_fit_stage_early012Vlate34 <span class="ot">&lt;-</span> <span class="fu">glmZiBFit</span>(sy,  design, <span class="at">MAP_prior =</span> ebp, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
+<span id="cb82-7"><a href="#cb82-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(ZB_fit_stage_early012Vlate34, save_path)</span>
+<span id="cb82-8"><a href="#cb82-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb82-9"><a href="#cb82-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-10"><a href="#cb82-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Variables</span></span>
+<span id="cb82-11"><a href="#cb82-11" aria-hidden="true" tabindex="-1"></a><span class="fu">top_hits</span>(ZB_fit_stage_early012Vlate34, <span class="at">coef =</span> <span class="dv">2</span>, <span class="at">method =</span> <span class="st">"BH"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Warning in top_hits(ZB_fit_stage_early012Vlate34, coef = 2, method = "BH"):
+## Multiple testing correction using `BH`: No significant associations detected
+## for coef = 2 at alpha = 0.050000
+
+## # A tibble: 0 × 10
+## # ℹ 10 variables: Contig_name &lt;chr&gt;, Genome_file &lt;chr&gt;, coefficient &lt;dbl&gt;,
+## #   std_error &lt;dbl&gt;, p_value &lt;dbl&gt;, p_adjust &lt;dbl&gt;, zi_coefficient &lt;dbl&gt;,
+## #   zi_std_error &lt;dbl&gt;, zi_p_value &lt;dbl&gt;, zi_p_adjust &lt;dbl&gt;</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="do">#### Has results - Fig 3C from Segata paper - merge 0, 1, 2, 3 as early and compare with 4</span></span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>meta_stage<span class="sc">$</span>tumour_stage_merged_early3Vlate <span class="ot">=</span> <span class="fu">sapply</span>(<span class="fu">as.character</span>(meta_stage<span class="sc">$</span>tumour_stage_AJCC), <span class="cf">function</span>(x) <span class="fu">ifelse</span>( (x<span class="sc">==</span><span class="st">'0'</span><span class="sc">|</span>x<span class="sc">==</span><span class="st">'I'</span><span class="sc">|</span>x<span class="sc">==</span><span class="st">'II'</span><span class="sc">|</span>x<span class="sc">==</span><span class="st">"III"</span>), <span class="st">'Early'</span>, x)) </span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a>meta_stage<span class="sc">$</span>tumour_stage_merged_early3Vlate <span class="ot">=</span> <span class="fu">factor</span>(<span class="fu">as.character</span>(meta_stage<span class="sc">$</span>tumour_stage_merged_early3Vlate), <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">'Early'</span>, <span class="st">'IV'</span>))</span>
+<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a>sy <span class="ot">=</span> <span class="fu">modify_metadata</span>(sy, meta_stage)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Warning in modify_metadata(sy, meta_stage): The following metadata columns already exist in `se` and will not be modified. To replace with provided meta_data, set run again with `replace = TRUE`:
+## 
+## study, age, BMI, sex, tumour_stage_AJCC, tumour_stage_merged, tumour_stage_merged_earlyVlate</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">&lt;-</span> <span class="st">"output_rds/CRC_zib_q_99_ebp_tumour_stage_early0123V4.rds"</span></span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a>design <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="st">'~tumour_stage_merged_early3Vlate + age + sex + BMI + (1 | study)'</span>)</span>
+<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-4"><a href="#cb86-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Run with ebp</span></span>
+<span id="cb86-5"><a href="#cb86-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
+<span id="cb86-6"><a href="#cb86-6" aria-hidden="true" tabindex="-1"></a>  ZB_fit_stage_early0123V4 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
+<span id="cb86-7"><a href="#cb86-7" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb86-8"><a href="#cb86-8" aria-hidden="true" tabindex="-1"></a>  ebp <span class="ot">=</span> <span class="fu">compute_eb_priors</span>(sy, strainspy<span class="sc">:::</span><span class="fu">nobars_</span>(design), <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>(),<span class="at">low_cutoff =</span> <span class="dv">0</span>, <span class="at">high_cutoff =</span> <span class="cn">Inf</span>)</span>
+<span id="cb86-9"><a href="#cb86-9" aria-hidden="true" tabindex="-1"></a>  ZB_fit_stage_early0123V4 <span class="ot">&lt;-</span> <span class="fu">glmZiBFit</span>(sy,  design, <span class="at">MAP_prior =</span> ebp, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
+<span id="cb86-10"><a href="#cb86-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(ZB_fit_stage_early0123V4, save_path)</span>
+<span id="cb86-11"><a href="#cb86-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb86-12"><a href="#cb86-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-13"><a href="#cb86-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-14"><a href="#cb86-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Variables</span></span>
+<span id="cb86-15"><a href="#cb86-15" aria-hidden="true" tabindex="-1"></a>th_stage_3 <span class="ot">=</span> <span class="fu">cbind</span>(<span class="fu">top_hits</span>(ZB_fit_stage_early0123V4, <span class="at">coef =</span> <span class="dv">2</span>, <span class="at">method =</span> <span class="st">"BH"</span>), <span class="at">model =</span> <span class="st">'early0123V'</span>, <span class="at">stage =</span> <span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Found 5 tophits for tumour_stage_merged_early3VlateIV at alpha = 0.05 using BH</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>th_stage <span class="ot">=</span> <span class="fu">rbind</span>(th_stage_1, th_stage_2, th_stage_3)</span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a>th_stage<span class="sc">$</span>Species <span class="ot">=</span> taxonomy<span class="sc">$</span>Species[<span class="fu">match</span>(th_stage<span class="sc">$</span>Genome_file, taxonomy<span class="sc">$</span>Genome)]</span>
+<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-4"><a href="#cb88-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-5"><a href="#cb88-5" aria-hidden="true" tabindex="-1"></a>summary_tbl <span class="ot">&lt;-</span> th_stage <span class="sc">%&gt;%</span></span>
+<span id="cb88-6"><a href="#cb88-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Species)) <span class="sc">%&gt;%</span></span>
+<span id="cb88-7"><a href="#cb88-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Species, stage) <span class="sc">%&gt;%</span></span>
+<span id="cb88-8"><a href="#cb88-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb88-9"><a href="#cb88-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">N_hits =</span> <span class="fu">n</span>(), </span>
+<span id="cb88-10"><a href="#cb88-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb88-11"><a href="#cb88-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">Top_adj_p_beta  =</span> <span class="fu">min</span>(p_adjust, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb88-12"><a href="#cb88-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">Top_coef_beta   =</span> coefficient[<span class="fu">which.min</span>(p_adjust)],</span>
+<span id="cb88-13"><a href="#cb88-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">Top_se_beta     =</span> std_error[<span class="fu">which.min</span>(p_adjust)],</span>
+<span id="cb88-14"><a href="#cb88-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">Top_contig_beta =</span> Contig_name[<span class="fu">which.min</span>(p_adjust)],</span>
+<span id="cb88-15"><a href="#cb88-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb88-16"><a href="#cb88-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">Top_adj_p_ZI    =</span> <span class="fu">min</span>(zi_p_adjust, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb88-17"><a href="#cb88-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">Top_coef_ZI     =</span> zi_coefficient[<span class="fu">which.min</span>(zi_p_adjust)],</span>
+<span id="cb88-18"><a href="#cb88-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">Top_se_ZI       =</span> zi_std_error[<span class="fu">which.min</span>(zi_p_adjust)],</span>
+<span id="cb88-19"><a href="#cb88-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">Top_contig_ZI   =</span> Contig_name[<span class="fu">which.min</span>(zi_p_adjust)],</span>
+<span id="cb88-20"><a href="#cb88-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb88-21"><a href="#cb88-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb88-22"><a href="#cb88-22" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb88-23"><a href="#cb88-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb88-24"><a href="#cb88-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">stage =</span> stage,</span>
+<span id="cb88-25"><a href="#cb88-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">Min_adj_p =</span> <span class="fu">pmin</span>(Top_adj_p_beta, Top_adj_p_ZI, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb88-26"><a href="#cb88-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">Dominant_component =</span> <span class="fu">ifelse</span>(Top_adj_p_beta <span class="sc">&lt;</span> Top_adj_p_ZI, <span class="st">"Beta"</span>, <span class="st">"ZI"</span>),</span>
+<span id="cb88-27"><a href="#cb88-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">Dominant_contig    =</span> <span class="fu">ifelse</span>(Dominant_component <span class="sc">==</span> <span class="st">"Beta"</span>, Top_contig_beta, Top_contig_ZI),</span>
+<span id="cb88-28"><a href="#cb88-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">Dominant_coef      =</span> <span class="fu">ifelse</span>(Dominant_component <span class="sc">==</span> <span class="st">"Beta"</span>, Top_coef_beta, Top_coef_ZI),</span>
+<span id="cb88-29"><a href="#cb88-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">Dominant_se        =</span> <span class="fu">ifelse</span>(Dominant_component <span class="sc">==</span> <span class="st">"Beta"</span>, Top_se_beta, Top_se_ZI)</span>
+<span id="cb88-30"><a href="#cb88-30" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb88-31"><a href="#cb88-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Species, N_hits, stage, Dominant_component, Min_adj_p, Dominant_coef, Dominant_se, Dominant_contig) <span class="sc">%&gt;%</span></span>
+<span id="cb88-32"><a href="#cb88-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Min_adj_p)</span>
+<span id="cb88-33"><a href="#cb88-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-34"><a href="#cb88-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Write as tsv for manual perusal</span></span>
+<span id="cb88-35"><a href="#cb88-35" aria-hidden="true" tabindex="-1"></a><span class="co"># write.table(summary_tbl, "output_tables/CRC_Z99_ebp_stage_hits_summary.tsv", sep = '\t', col.names = T, row.names = F, quote = F)</span></span>
+<span id="cb88-36"><a href="#cb88-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-37"><a href="#cb88-37" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(sy, <span class="at">phenotype =</span> <span class="st">'tumour_stage_merged_early3Vlate'</span>, <span class="at">contigs =</span> summary_tbl<span class="sc">$</span>Dominant_contig, <span class="at">plot_type =</span> <span class="st">'box'</span>, <span class="at">show_points =</span> F, <span class="at">contig_names =</span> strainspy<span class="sc">:::</span><span class="fu">clean_contig_names</span>(summary_tbl<span class="sc">$</span>Species))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>## Warning: Removed 7430 rows containing non-finite outside the scale range
+## (`stat_boxplot()`).
+
+## Warning: No shared levels found between `names(values)` of the manual scale and the
+## data's colour values.</code></pre>
+<p><img src="CRC_pooled_files/figure-gfm/unnamed-chunk-15-1.png" class="img-fluid"><!-- --></p>
+<p>In short, it looks like species such as <em>Fusobacterium animalis</em>, <em>Peptostreptococcus stomatis</em> and <em>Allisonella pneumosintes</em> grow in prevalence as CRC progresses from very early stages and remains stable. Beneficial species such as <em>Agathobacter faecis</em> seems to get replaced by other different strains at later stages - possibly consistent with treatment intensity.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

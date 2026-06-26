@@ -1,0 +1,23 @@
+---
+title: "StrainSpy"
+---
+
+StrainSpy is a computational framework for **strain-level association testing and prediction in metagenomic data**.
+
+It identifies associations between microbial strain variation and host phenotypes using high-resolution genomic similarity signals derived from metagenomic profiling tools such as Sylph, Sourmash, and MetaPhlAn. The framework supports both association testing and predictive modelling across diverse study designs.
+
+StrainSpy complements traditional differential abundance approaches by operating at strain resolution. This enables finer-scale interrogation of microbial variation that is often obscured at the species level. Across analyses, this approach improves sensitivity to biologically meaningful signals while reducing spurious associations driven by factors such as variation in microbial load.
+
+---
+
+## Overview
+
+![](assets/strainspy.svg){width="90%" fig-align="center"}
+
+**Fig 1. Overview of the StrainSpy workflow.**
+
+Left: Strain-level associations are identified through differences in containment ANI (cANI) distributions between sample groups, even when the causal strain is not present in the reference collection.
+
+Centre: Association testing is performed using a zero-inflated beta (ZiB) model by default, with optional empirical Bayes regularisation to stabilise inference and reduce false-positive associations, particularly in small or sparse datasets.
+
+Right: cANI can be modelled against diverse predictors to support flexible study designs, with taxonomy-aware multiple testing correction and downstream phenotype prediction from strain-level profiles.

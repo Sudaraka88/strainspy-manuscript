@@ -1,0 +1,11 @@
+---
+title: "Prediction"
+---
+
+Using StrainSpy detected features for phenotype prediction.
+
+## Available reports
+
+- [Predicting colorectal cancer status](pred_CRC_lodo+single.html)
+
+- [Predicting immunotherapy success](immunotherapy_preds.html)

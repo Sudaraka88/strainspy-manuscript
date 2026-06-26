@@ -168,7 +168,7 @@ beta_summary <- summary_tbl %>%
 
 ggplot(beta_summary, aes(x = Dominant_coef, y = Species, color = Trend)) +
   geom_point(aes(size = N_hits)) +
-  geom_errorbarh(aes(xmin = CI_low, xmax = CI_high), width = 0.2) +
+  geom_errorbar(aes(xmin = CI_low, xmax = CI_high), width = 0.2) +
   geom_vline(xintercept = 0, linetype = "dashed") +
   scale_color_manual(values = c("\u2191 R (similar)" = "red",
                                 "\u2193 R (divergent)" = "blue")) +

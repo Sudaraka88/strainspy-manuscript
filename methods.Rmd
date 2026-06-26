@@ -1,0 +1,20 @@
+---
+title: "Methods & Simulations"
+---
+
+This section describes the methodological development and simulation framework used throughout the manuscript.
+
+## Available reports
+
+- [Case/Control simulations](simulations.html)
+
+- [E. coli spike-in simulations](Sims_spike_query.html)
+
+- [P. distasonis spike-in simulations and AnPan analysis](sims_spike_query_pdis.html)
+
+- [Comparison with logistic regression](logistic_ID.html)
+
+- [Using MAP priors](varyingPrior.html)
+
+- [Applying a MAP prior on dispersion](prior_on_dispersion.html)
+
