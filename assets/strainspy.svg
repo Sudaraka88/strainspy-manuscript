@@ -17,7 +17,8 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg"><sodipodi:namedview
+   xmlns:svg="http://www.w3.org/2000/svg">
+<rect id="readme-backdrop" x="0" y="0" width="312.38149" height="144.71979" fill="#ffffff" /><sodipodi:namedview
      id="namedview1"
      pagecolor="#ffffff"
      bordercolor="#cccccc"

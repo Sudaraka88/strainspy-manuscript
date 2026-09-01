@@ -1,7 +1,5 @@
 <div align="center">
 
-<img src="assets/icon.svg" alt="StrainSpy" height="80">
-
 # StrainSpy — Manuscript Analyses
 
 **Code, figures and results behind the StrainSpy manuscript.**
@@ -63,9 +61,8 @@ version control (several tens of GB uncompressed), so they are archived separate
 
 > [!IMPORTANT]
 > ### 📥 Download the data here
-
-[**figshare:** ](https://doi.org/10.26188/33408658)
-
+>
+> [**figshare: 10.26188/33408658**](https://doi.org/10.26188/33408658)
 
 Once downloaded, unpack the archives **into the root of this repository** so that the relative paths
 used inside the `.Rmd` files resolve. The expected layout is:
@@ -73,7 +70,7 @@ used inside the `.Rmd` files resolve. The expected layout is:
 ```
 strainspy-manuscript/
 ├── data/
-│   ├── TAXONOMY/              # Sylph GTDB database taxonomies (95% and 99% identity). Available from [Zenodo](https://zenodo.org/records/21796878)
+│   ├── TAXONOMY/              # Sylph GTDB database taxonomies (98% and 99% identity). Available from [Zenodo](https://zenodo.org/records/21796878)
 │   ├── ani_adjust/            # small worked example for the cANI adjustment comparison
 │   ├── ash_pancancer/         # rare-cancer immunotherapy cohort + phylogeny
 │   ├── melanoma_pooled/       # pooled melanoma immunotherapy cohorts + metadata
@@ -81,6 +78,7 @@ strainspy-manuscript/
 │   └── segata_pooled_3741/    # pooled colorectal cancer metagenomes (n = 3,414 analysed)
 ├── TEST_DATA/
 │   └── zeevi/                 # Zeevi et al. (PRJEB11532) — used for case/control simulations
+│       └── TEMP_FITS/         # pre-computed null model fits (see note below)
 ├── ecoli_sims/                # E. coli spike-in simulations (Sylph query + profile modes)
 └── p_distasonis_sims/         # P. distasonis spike-in simulations + spiked phylogeny
 ```
@@ -118,7 +116,6 @@ document, with all figures committed alongside it.
 |---|---|
 | [`pred_CRC_lodo+single.md`](GitHub_docs/pred_CRC_lodo+single.md) | Predicting colorectal cancer status from strain-level features, using leave-one-dataset-out (LODO) and per-dataset training. |
 | [`immunotherapy_preds.md`](GitHub_docs/immunotherapy_preds.md) | Predicting immunotherapy response from StrainSpy-selected strain features. |
-| [`immunotherapy_cross.md`](GitHub_docs/immunotherapy_cross.md) | Cross-cohort prediction between the rare-cancer and melanoma datasets, with the tree-annotated feature summaries. |
 
 ---
 
