@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="dcterms.date" content="2026-04-27">
 
-<title>prior_on_dispersion – StrainSpy Manuscript</title>
+<title>Re-analysing pancancer dataset with dispersion priors – StrainSpy Manuscript</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -107,6 +108,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<link rel="stylesheet" href="resources.css">
 </head>
 
 <body class="nav-sidebar docked nav-fixed quarto-light">
@@ -223,6 +225,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./Sims_spike_profile.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simulations with spiked E. coli strain analysed using Sylph Profile</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./sims_spike_query_pdis.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Simulations with spiked P. dis strain analysed using Sylph Query</span></a>
   </div>
@@ -236,13 +244,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./logistic_ID.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Logistic Regression Model”</span></a>
+ <span class="menu-text">Logistic Regression Model</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./varyingPrior.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">varyingPrior</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aniAdjust.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">ANI Adjustment Comparison and Model Fitting</span></a>
   </div>
 </li>
       </ul>
@@ -309,9 +323,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#re-analysing-pancancer-dataset-with-dispersion-priors" id="toc-re-analysing-pancancer-dataset-with-dispersion-priors" class="nav-link active" data-scroll-target="#re-analysing-pancancer-dataset-with-dispersion-priors">Re-analysing pancancer dataset with dispersion priors</a>
-  <ul class="collapse">
-  <li><a href="#load-dependencies" id="toc-load-dependencies" class="nav-link" data-scroll-target="#load-dependencies">Load dependencies</a></li>
+  <li><a href="#load-dependencies" id="toc-load-dependencies" class="nav-link active" data-scroll-target="#load-dependencies">Load dependencies</a></li>
   <li><a href="#load-metadata" id="toc-load-metadata" class="nav-link" data-scroll-target="#load-metadata">Load metadata</a></li>
   <li><a href="#load-sylph-outputs" id="toc-load-sylph-outputs" class="nav-link" data-scroll-target="#load-sylph-outputs">Load sylph outputs</a></li>
   <li><a href="#empirical-bayes-priors-without-dispersion-term" id="toc-empirical-bayes-priors-without-dispersion-term" class="nav-link" data-scroll-target="#empirical-bayes-priors-without-dispersion-term">Empirical Bayes priors without dispersion term</a>
@@ -326,373 +338,474 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#post-hoc-testing-1" id="toc-post-hoc-testing-1" class="nav-link" data-scroll-target="#post-hoc-testing-1">Post-hoc testing</a></li>
   <li><a href="#commondifferent-hits" id="toc-commondifferent-hits" class="nav-link" data-scroll-target="#commondifferent-hits">Common/different hits</a></li>
   </ul></li>
-  </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./methods.html">Methods &amp; Simulations</a></li><li class="breadcrumb-item"><a href="./prior_on_dispersion.html">Re-analysing pancancer dataset with dispersion priors</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./methods.html">Methods &amp; Simulations</a></li><li class="breadcrumb-item"><a href="./prior_on_dispersion.html">Re-analysing pancancer dataset with dispersion priors</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Re-analysing pancancer dataset with dispersion priors</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
 
-<section id="re-analysing-pancancer-dataset-with-dispersion-priors" class="level1">
-<h1>Re-analysing pancancer dataset with dispersion priors</h1>
-<p>2026-02-17</p>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 27, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
 <section id="load-dependencies" class="level2">
 <h2 class="anchored" data-anchor-id="load-dependencies">Load dependencies</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(strainspy)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(SummarizedExperiment)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet) <span class="co"># elastic net</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ranger) <span class="co"># RF</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pROC)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(doParallel)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(foreach)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(parallel)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="load-metadata" class="level2">
 <h2 class="anchored" data-anchor-id="load-metadata">Load metadata</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">WARNING</span><span class="co">! THIS INCLUDES UNPIBLISHED DATA</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>meta_path <span class="ot">&lt;-</span> <span class="st">"./data/ash_pancancer/metadata_full.tsv"</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>meta <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(meta_path, <span class="at">sep =</span> <span class="st">'</span><span class="sc">\t</span><span class="st">'</span>) </span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>meta <span class="ot">=</span> <span class="fu">cbind</span>(<span class="at">run_acc =</span> meta<span class="sc">$</span>run_accession, meta)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># From paper:</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># RvsP = CR or PR VS. PD or cPD - excluded patients with a BOR of stable disease (SD) (n=29)</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Outcome</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>RvsP <span class="ot">=</span> <span class="st">"R"</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>RvsP[<span class="fu">which</span>(meta<span class="sc">$</span>BOR <span class="sc">==</span> <span class="st">"PD"</span> <span class="sc">|</span> meta<span class="sc">$</span>BOR <span class="sc">==</span> <span class="st">"cPD"</span>)] <span class="ot">=</span> <span class="st">"NR"</span> </span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>RvsP <span class="ot">=</span> <span class="fu">factor</span>(meta<span class="sc">$</span>RvsP, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"NR"</span>, <span class="st">"R"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">WARNING</span><span class="co">! THIS INCLUDES UNPIBLISHED DATA</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>meta_path <span class="ot">&lt;-</span> <span class="st">"./data/ash_pancancer/metadata_full.tsv"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>meta <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(meta_path, <span class="at">sep =</span> <span class="st">'</span><span class="sc">\t</span><span class="st">'</span>) </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>meta <span class="ot">=</span> <span class="fu">cbind</span>(<span class="at">run_acc =</span> meta<span class="sc">$</span>run_accession, meta)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># From paper:</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># RvsP = CR or PR VS. PD or cPD - excluded patients with a BOR of stable disease (SD) (n=29)</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Outcome</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>RvsP <span class="ot">=</span> <span class="st">"R"</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>RvsP[<span class="fu">which</span>(meta<span class="sc">$</span>BOR <span class="sc">==</span> <span class="st">"PD"</span> <span class="sc">|</span> meta<span class="sc">$</span>BOR <span class="sc">==</span> <span class="st">"cPD"</span>)] <span class="ot">=</span> <span class="st">"NR"</span> </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>RvsP <span class="ot">=</span> <span class="fu">factor</span>(meta<span class="sc">$</span>RvsP, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"NR"</span>, <span class="st">"R"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
 </section>
 <section id="load-sylph-outputs" class="level2">
 <h2 class="anchored" data-anchor-id="load-sylph-outputs">Load sylph outputs</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>sy <span class="ot">&lt;-</span> <span class="fu">read_sylph</span>(<span class="st">"./data/ash_pancancer/combined_q_99.tsv.gz"</span>) <span class="co"># q99)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>## Detected Sylph query output file.</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># annoying renames to match meta V sylph file</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(sy) <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_1"</span>, <span class="st">""</span>, <span class="fu">colnames</span>(sy))</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colData</span>(sy)<span class="sc">$</span>Sample_file <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_1"</span>, <span class="st">""</span>, <span class="fu">basename</span>(<span class="fu">colData</span>(sy)<span class="sc">$</span>Sample_file))</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Reorder meta </span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>meta <span class="ot">=</span> meta[<span class="fu">match</span>(<span class="fu">colnames</span>(sy), meta<span class="sc">$</span>run_accession), ]</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># get rid of SD</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>rmidx <span class="ot">=</span> <span class="fu">which</span>(meta<span class="sc">$</span>BOR <span class="sc">==</span> <span class="st">"SD"</span>)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">length</span>(rmidx) <span class="sc">&gt;</span> <span class="dv">0</span>){</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  meta <span class="ot">=</span> meta[<span class="sc">-</span>rmidx, ]</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  sy <span class="ot">=</span> sy[, <span class="sc">-</span>rmidx]</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>sy <span class="ot">&lt;-</span> <span class="fu">filter_by_presence</span>(sy, <span class="at">min_nonzero =</span> <span class="dv">8</span>) <span class="co"># filter at 10%</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>## Retained 19139 rows after filtering</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(sy)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>## [1] 19139    77</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Checks before merging metadata</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(<span class="fu">colnames</span>(sy) <span class="sc">%in%</span> meta<span class="sc">$</span>run_accession)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>## [1] TRUE</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(meta<span class="sc">$</span>run_accession <span class="sc">%in%</span> <span class="fu">colnames</span>(sy))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>## [1] TRUE</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>sy <span class="ot">=</span> <span class="fu">modify_metadata</span>(sy, meta)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>sy <span class="ot">&lt;-</span> <span class="fu">read_sylph</span>(<span class="st">"./data/ash_pancancer/combined_q_99.tsv.gz"</span>) <span class="co"># q99)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Detected Sylph query output file.</code></pre>
+</div>
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># annoying renames to match meta V sylph file</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(sy) <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_1"</span>, <span class="st">""</span>, <span class="fu">colnames</span>(sy))</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colData</span>(sy)<span class="sc">$</span>Sample_file <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_1"</span>, <span class="st">""</span>, <span class="fu">basename</span>(<span class="fu">colData</span>(sy)<span class="sc">$</span>Sample_file))</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Reorder meta </span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>meta <span class="ot">=</span> meta[<span class="fu">match</span>(<span class="fu">colnames</span>(sy), meta<span class="sc">$</span>run_accession), ]</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># get rid of SD</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>rmidx <span class="ot">=</span> <span class="fu">which</span>(meta<span class="sc">$</span>BOR <span class="sc">==</span> <span class="st">"SD"</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">length</span>(rmidx) <span class="sc">&gt;</span> <span class="dv">0</span>){</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  meta <span class="ot">=</span> meta[<span class="sc">-</span>rmidx, ]</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  sy <span class="ot">=</span> sy[, <span class="sc">-</span>rmidx]</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>sy <span class="ot">&lt;-</span> <span class="fu">filter_by_presence</span>(sy, <span class="at">min_nonzero =</span> <span class="dv">8</span>) <span class="co"># filter at 10%</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Retained 19139 rows after filtering</code></pre>
+</div>
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(sy)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 19139    77</code></pre>
+</div>
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Checks before merging metadata</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(<span class="fu">colnames</span>(sy) <span class="sc">%in%</span> meta<span class="sc">$</span>run_accession)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(meta<span class="sc">$</span>run_accession <span class="sc">%in%</span> <span class="fu">colnames</span>(sy))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>sy <span class="ot">=</span> <span class="fu">modify_metadata</span>(sy, meta)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
 </section>
 <section id="empirical-bayes-priors-without-dispersion-term" class="level2">
 <h2 class="anchored" data-anchor-id="empirical-bayes-priors-without-dispersion-term">Empirical Bayes priors without dispersion term</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>design <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="st">"~ RvsP + histology_cohort.x + age + sex + BMI"</span>) </span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">&lt;-</span> <span class="st">"output_rds/ASH_prior_analysis_zib_q_99_ebp.rds"</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  ZB_fit <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  ebp <span class="ot">=</span> <span class="fu">compute_eb_priors</span>(sy, design, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>(), <span class="at">low_cutoff =</span> <span class="dv">0</span>,</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>                          <span class="at">high_cutoff =</span> <span class="cn">Inf</span>)</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Run with weak prior for prediction</span></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  ZB_fit <span class="ot">&lt;-</span> <span class="fu">glmZiBFit</span>(sy, design, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>(), <span class="at">MAP_prior =</span> ebp)</span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(ZB_fit, save_path)</span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>design <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="st">"~ RvsP + histology_cohort.x + age + sex + BMI"</span>) </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">&lt;-</span> <span class="st">"output_rds/ASH_prior_analysis_zib_q_99_ebp.rds"</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  ZB_fit <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  ebp <span class="ot">=</span> <span class="fu">compute_eb_priors</span>(sy, design, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>(), <span class="at">low_cutoff =</span> <span class="dv">0</span>,</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>                          <span class="at">high_cutoff =</span> <span class="cn">Inf</span>)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Run with weak prior for prediction</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  ZB_fit <span class="ot">&lt;-</span> <span class="fu">glmZiBFit</span>(sy, design, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>(), <span class="at">MAP_prior =</span> ebp)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(ZB_fit, save_path)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
 <p>There are 167 top hits, some of them dodgy</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>th <span class="ot">=</span> <span class="fu">top_hits</span>(ZB_fit) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>## Found 167 tophits for RvsPR at alpha = 0.05 using holm</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Looking at the first 10</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(sy, <span class="st">'RvsP'</span>, th<span class="sc">$</span>Contig_name[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>## Warning: Removed 689 rows containing non-finite outside the scale range
-## (`stat_boxplot()`).</code></pre>
-<p><img src="prior_on_dispersion_files/figure-gfm/unnamed-chunk-5-1.png" class="img-fluid"><!-- --></p>
-<p>Clearly, at least <em>B. animalis</em> and <em>F. nucleatum</em> should not be picked…</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>th <span class="ot">=</span> <span class="fu">top_hits</span>(ZB_fit) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Found 167 tophits for RvsPR at alpha = 0.05 using holm </code></pre>
+</div>
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Looking at the first 10</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(sy, <span class="st">'RvsP'</span>, th<span class="sc">$</span>Contig_name[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 689 rows containing non-finite outside the scale range
+(`stat_boxplot()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="prior_on_dispersion_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Clearly, at least <em>B. animalis</em> and <em>F. nucleatum</em> should NOT be picked…</p>
 <section id="post-hoc-testing" class="level3">
 <h3 class="anchored" data-anchor-id="post-hoc-testing">Post-hoc testing</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>th_ph <span class="ot">=</span> <span class="fu">estimate_effect_sizes</span>(sy, ZB_fit, th)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>##   |                                                                              |                                                                      |   0%
-
-## Warning in finalizeTMB(TMBStruc, obj, fit, h, data.tmb.old): Model convergence
-## problem; false convergence (8). See vignette('troubleshooting'),
-## help('diagnose')
-
-##   |                                                                              |                                                                      |   1%  |                                                                              |=                                                                     |   1%  |                                                                              |=                                                                     |   2%  |                                                                              |==                                                                    |   2%  |                                                                              |==                                                                    |   3%
-
-## Warning in finalizeTMB(TMBStruc, obj, fit, h, data.tmb.old): Model convergence
-## problem; false convergence (8). See vignette('troubleshooting'),
-## help('diagnose')
-
-##   |                                                                              |===                                                                   |   4%
-
-## Warning in finalizeTMB(TMBStruc, obj, fit, h, data.tmb.old): Model convergence
-## problem; false convergence (8). See vignette('troubleshooting'),
-## help('diagnose')
-
-##   |                                                                              |===                                                                   |   5%  |                                                                              |====                                                                  |   5%  |                                                                              |====                                                                  |   6%  |                                                                              |=====                                                                 |   7%
-
-## Warning in finalizeTMB(TMBStruc, obj, fit, h, data.tmb.old): Model convergence
-## problem; false convergence (8). See vignette('troubleshooting'),
-## help('diagnose')
-
-##   |                                                                              |=====                                                                 |   8%  |                                                                              |======                                                                |   8%  |                                                                              |======                                                                |   9%  |                                                                              |=======                                                               |  10%  |                                                                              |========                                                              |  11%  |                                                                              |========                                                              |  12%  |                                                                              |=========                                                             |  13%  |                                                                              |==========                                                            |  14%  |                                                                              |==========                                                            |  15%  |                                                                              |===========                                                           |  16%
-
-## Warning in finalizeTMB(TMBStruc, obj, fit, h, data.tmb.old): Model convergence
-## problem; false convergence (8). See vignette('troubleshooting'),
-## help('diagnose')
-
-##   |                                                                              |============                                                          |  17%  |                                                                              |=============                                                         |  18%  |                                                                              |=============                                                         |  19%  |                                                                              |==============                                                        |  20%  |                                                                              |===============                                                       |  21%  |                                                                              |===============                                                       |  22%  |                                                                              |================                                                      |  22%  |                                                                              |================                                                      |  23%
-
-## Warning in finalizeTMB(TMBStruc, obj, fit, h, data.tmb.old): Model convergence
-## problem; false convergence (8). See vignette('troubleshooting'),
-## help('diagnose')
-
-##   |                                                                              |=================                                                     |  24%  |                                                                              |=================                                                     |  25%  |                                                                              |==================                                                    |  25%  |                                                                              |==================                                                    |  26%  |                                                                              |===================                                                   |  27%  |                                                                              |===================                                                   |  28%  |                                                                              |====================                                                  |  28%  |                                                                              |====================                                                  |  29%  |                                                                              |=====================                                                 |  29%  |                                                                              |=====================                                                 |  30%  |                                                                              |=====================                                                 |  31%  |                                                                              |======================                                                |  31%  |                                                                              |======================                                                |  32%  |                                                                              |=======================                                               |  32%  |                                                                              |=======================                                               |  33%  |                                                                              |=======================                                               |  34%  |                                                                              |========================                                              |  34%  |                                                                              |========================                                              |  35%  |                                                                              |=========================                                             |  35%  |                                                                              |=========================                                             |  36%  |                                                                              |==========================                                            |  37%  |                                                                              |==========================                                            |  38%  |                                                                              |===========================                                           |  38%  |                                                                              |===========================                                           |  39%  |                                                                              |============================                                          |  40%  |                                                                              |=============================                                         |  41%  |                                                                              |=============================                                         |  42%
-
-## Warning in finalizeTMB(TMBStruc, obj, fit, h, data.tmb.old): Model convergence
-## problem; false convergence (8). See vignette('troubleshooting'),
-## help('diagnose')
-
-##   |                                                                              |==============================                                        |  43%  |                                                                              |===============================                                       |  44%  |                                                                              |===============================                                       |  45%  |                                                                              |================================                                      |  46%  |                                                                              |=================================                                     |  47%  |                                                                              |==================================                                    |  48%  |                                                                              |==================================                                    |  49%  |                                                                              |===================================                                   |  50%  |                                                                              |====================================                                  |  51%  |                                                                              |====================================                                  |  52%  |                                                                              |=====================================                                 |  53%  |                                                                              |======================================                                |  54%
-
-## Warning in finalizeTMB(TMBStruc, obj, fit, h, data.tmb.old): Model convergence
-## problem; false convergence (8). See vignette('troubleshooting'),
-## help('diagnose')
-
-##   |                                                                              |=======================================                               |  55%  |                                                                              |=======================================                               |  56%  |                                                                              |========================================                              |  57%  |                                                                              |=========================================                             |  58%  |                                                                              |=========================================                             |  59%  |                                                                              |==========================================                            |  60%  |                                                                              |===========================================                           |  61%  |                                                                              |===========================================                           |  62%  |                                                                              |============================================                          |  62%  |                                                                              |============================================                          |  63%  |                                                                              |=============================================                         |  64%  |                                                                              |=============================================                         |  65%  |                                                                              |==============================================                        |  65%  |                                                                              |==============================================                        |  66%  |                                                                              |===============================================                       |  66%  |                                                                              |===============================================                       |  67%  |                                                                              |===============================================                       |  68%  |                                                                              |================================================                      |  68%  |                                                                              |================================================                      |  69%  |                                                                              |=================================================                     |  69%  |                                                                              |=================================================                     |  70%  |                                                                              |=================================================                     |  71%  |                                                                              |==================================================                    |  71%  |                                                                              |==================================================                    |  72%  |                                                                              |===================================================                   |  72%  |                                                                              |===================================================                   |  73%  |                                                                              |====================================================                  |  74%  |                                                                              |====================================================                  |  75%  |                                                                              |=====================================================                 |  75%  |                                                                              |=====================================================                 |  76%  |                                                                              |======================================================                |  77%  |                                                                              |======================================================                |  78%  |                                                                              |=======================================================               |  78%  |                                                                              |=======================================================               |  79%  |                                                                              |========================================================              |  80%  |                                                                              |=========================================================             |  81%  |                                                                              |=========================================================             |  82%  |                                                                              |==========================================================            |  83%  |                                                                              |===========================================================           |  84%  |                                                                              |============================================================          |  85%  |                                                                              |============================================================          |  86%  |                                                                              |=============================================================         |  87%  |                                                                              |==============================================================        |  88%  |                                                                              |==============================================================        |  89%  |                                                                              |===============================================================       |  90%  |                                                                              |================================================================      |  91%  |                                                                              |================================================================      |  92%  |                                                                              |=================================================================     |  92%  |                                                                              |=================================================================     |  93%  |                                                                              |==================================================================    |  94%  |                                                                              |==================================================================    |  95%  |                                                                              |===================================================================   |  95%  |                                                                              |===================================================================   |  96%  |                                                                              |====================================================================  |  97%  |                                                                              |====================================================================  |  98%  |                                                                              |===================================================================== |  98%  |                                                                              |===================================================================== |  99%  |                                                                              |======================================================================|  99%  |                                                                              |======================================================================| 100%</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(th_ph<span class="sc">$</span>Comment, <span class="at">useNA =</span> <span class="st">'always'</span>) <span class="co"># now there are only 16 hits</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>## 
-##                                failed convergence 
-##                                                 1 
-##               failed convergence; too few nonzero 
-##                                                 2 
-## failed convergence; too few nonzero; small effect 
-##                                                 5 
-##                                      small effect 
-##                                                41 
-##                                   too few nonzero 
-##                                                54 
-##                     too few nonzero; small effect 
-##                                                48 
-##                                              &lt;NA&gt; 
-##                                                16</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(sy, <span class="st">'RvsP'</span>, th_ph<span class="sc">$</span>Contig_name[<span class="fu">is.na</span>(th_ph<span class="sc">$</span>Comment)]) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>## Warning: Removed 1031 rows containing non-finite outside the scale range
-## (`stat_boxplot()`).</code></pre>
-<p><img src="prior_on_dispersion_files/figure-gfm/unnamed-chunk-6-1.png" class="img-fluid"><!-- --></p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>th_ph <span class="ot">=</span> strainspy<span class="sc">::</span><span class="fu">comp_ani_diff_and_posthoc_test</span>(sy, ZB_fit, th, <span class="at">progress =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(th_ph<span class="sc">$</span>Comment, <span class="at">useNA =</span> <span class="st">'always'</span>) <span class="co"># now there are only 16 hits</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+                 &lt;3 nonzero &lt;3 nonzero; too few nonzero 
+                         17                          83 
+            too few nonzero                        &lt;NA&gt; 
+                         26                          41 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(sy, <span class="st">'RvsP'</span>, th_ph<span class="sc">$</span>Contig_name[<span class="fu">is.na</span>(th_ph<span class="sc">$</span>Comment)]) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 2554 rows containing non-finite outside the scale range
+(`stat_boxplot()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="prior_on_dispersion_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
 </section>
 <section id="empirical-bayes-prior-with-dispersion-terms" class="level2">
 <h2 class="anchored" data-anchor-id="empirical-bayes-prior-with-dispersion-terms">Empirical Bayes prior with dispersion terms</h2>
 <section id="weak" class="level3">
 <h3 class="anchored" data-anchor-id="weak">Weak</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">&lt;-</span> <span class="st">"output_rds/ASH_prior_analysis_zib_q_99_ebp_disp5.rds"</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>ebp <span class="ot">=</span> ZB_fit<span class="sc">@</span>priors <span class="co"># priors are the same</span></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co"># manually add the dispersion parameter</span></span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>ebp<span class="sc">@</span>priors_df <span class="ot">=</span> <span class="fu">rbind</span>(ebp<span class="sc">@</span>priors_df, <span class="fu">data.frame</span>(<span class="at">prior =</span> <span class="st">'normal(0,5)'</span>, <span class="at">class =</span> <span class="st">'fixef_disp'</span>, <span class="at">coef =</span> <span class="dv">1</span>))</span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>ebp<span class="sc">@</span>priors_df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>##             prior      class                  coef
-## 1  normal(0,0.27)      fixef                 RvsPR
-## 2  normal(0,0.35)      fixef histology_cohort.xNEN
-## 3  normal(0,0.32)      fixef histology_cohort.xUGB
-## 4  normal(0,0.18)      fixef                   age
-## 5  normal(0,0.34)      fixef                  sexM
-## 6  normal(0,0.12)      fixef                   BMI
-## 7  normal(0,1.55)   fixef_zi                 RvsPR
-## 8  normal(0,3.22)   fixef_zi histology_cohort.xNEN
-## 9  normal(0,2.65)   fixef_zi histology_cohort.xUGB
-## 10  normal(0,0.6)   fixef_zi                   age
-## 11 normal(0,2.11)   fixef_zi                  sexM
-## 12 normal(0,3.26)   fixef_zi                   BMI
-## 13    normal(0,5) fixef_disp                     1</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  ZB_fit_d5 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  ZB_fit_d5 <span class="ot">&lt;-</span> <span class="fu">glmZiBFit</span>(sy, design, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>(), <span class="at">MAP_prior =</span> ebp)</span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(ZB_fit_d5, save_path)</span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>##   |                                                                              |                                                                      |   0%  |                                                                              |=                                                                     |   1%  |                                                                              |=                                                                     |   2%  |                                                                              |==                                                                    |   3%  |                                                                              |===                                                                   |   4%  |                                                                              |====                                                                  |   5%  |                                                                              |====                                                                  |   6%  |                                                                              |=====                                                                 |   7%  |                                                                              |======                                                                |   8%  |                                                                              |=======                                                               |   9%  |                                                                              |=======                                                               |  10%  |                                                                              |========                                                              |  11%  |                                                                              |=========                                                             |  12%  |                                                                              |=========                                                             |  14%  |                                                                              |==========                                                            |  15%  |                                                                              |===========                                                           |  16%  |                                                                              |============                                                          |  17%  |                                                                              |============                                                          |  18%  |                                                                              |=============                                                         |  19%  |                                                                              |==============                                                        |  20%  |                                                                              |===============                                                       |  21%  |                                                                              |===============                                                       |  22%  |                                                                              |================                                                      |  23%  |                                                                              |=================                                                     |  24%  |                                                                              |==================                                                    |  25%  |                                                                              |==================                                                    |  26%  |                                                                              |===================                                                   |  27%  |                                                                              |====================                                                  |  28%  |                                                                              |====================                                                  |  29%  |                                                                              |=====================                                                 |  30%  |                                                                              |======================                                                |  31%  |                                                                              |=======================                                               |  32%  |                                                                              |=======================                                               |  33%  |                                                                              |========================                                              |  34%  |                                                                              |=========================                                             |  35%  |                                                                              |==========================                                            |  36%  |                                                                              |==========================                                            |  38%  |                                                                              |===========================                                           |  39%  |                                                                              |============================                                          |  40%  |                                                                              |============================                                          |  41%  |                                                                              |=============================                                         |  42%  |                                                                              |==============================                                        |  43%  |                                                                              |===============================                                       |  44%  |                                                                              |===============================                                       |  45%  |                                                                              |================================                                      |  46%  |                                                                              |=================================                                     |  47%  |                                                                              |==================================                                    |  48%  |                                                                              |==================================                                    |  49%  |                                                                              |===================================                                   |  50%  |                                                                              |====================================                                  |  51%  |                                                                              |====================================                                  |  52%  |                                                                              |=====================================                                 |  53%  |                                                                              |======================================                                |  54%  |                                                                              |=======================================                               |  55%  |                                                                              |=======================================                               |  56%  |                                                                              |========================================                              |  57%  |                                                                              |=========================================                             |  58%  |                                                                              |==========================================                            |  59%  |                                                                              |==========================================                            |  60%  |                                                                              |===========================================                           |  61%  |                                                                              |============================================                          |  62%  |                                                                              |============================================                          |  64%  |                                                                              |=============================================                         |  65%  |                                                                              |==============================================                        |  66%  |                                                                              |===============================================                       |  67%  |                                                                              |===============================================                       |  68%  |                                                                              |================================================                      |  69%  |                                                                              |=================================================                     |  70%  |                                                                              |==================================================                    |  71%  |                                                                              |==================================================                    |  72%  |                                                                              |===================================================                   |  73%  |                                                                              |====================================================                  |  74%  |                                                                              |====================================================                  |  75%  |                                                                              |=====================================================                 |  76%  |                                                                              |======================================================                |  77%  |                                                                              |=======================================================               |  78%  |                                                                              |=======================================================               |  79%  |                                                                              |========================================================              |  80%  |                                                                              |=========================================================             |  81%  |                                                                              |==========================================================            |  82%  |                                                                              |==========================================================            |  83%  |                                                                              |===========================================================           |  84%  |                                                                              |============================================================          |  85%  |                                                                              |=============================================================         |  86%  |                                                                              |=============================================================         |  88%  |                                                                              |==============================================================        |  89%  |                                                                              |===============================================================       |  90%  |                                                                              |===============================================================       |  91%  |                                                                              |================================================================      |  92%  |                                                                              |=================================================================     |  93%  |                                                                              |==================================================================    |  94%  |                                                                              |==================================================================    |  95%  |                                                                              |===================================================================   |  96%  |                                                                              |====================================================================  |  97%  |                                                                              |===================================================================== |  98%  |                                                                              |===================================================================== |  99%  |                                                                              |======================================================================| 100%
-## 
-## Fitting model...</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>th_d5 <span class="ot">=</span> <span class="fu">top_hits</span>(ZB_fit_d5)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>## Found 150 tophits for RvsPR at alpha = 0.05 using holm</code></pre>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">&lt;-</span> <span class="st">"output_rds/ASH_prior_analysis_zib_q_99_ebp_disp5.rds"</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>ebp <span class="ot">=</span> ZB_fit<span class="sc">@</span>priors <span class="co"># priors are the same</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># manually add the dispersion parameter</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>ebp<span class="sc">@</span>priors_df <span class="ot">=</span> <span class="fu">rbind</span>(ebp<span class="sc">@</span>priors_df, <span class="fu">data.frame</span>(<span class="at">prior =</span> <span class="st">'normal(0,5)'</span>, <span class="at">class =</span> <span class="st">'fixef_disp'</span>, <span class="at">coef =</span> <span class="dv">1</span>))</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>ebp<span class="sc">@</span>priors_df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            prior      class                  coef
+1  normal(0,0.27)      fixef                 RvsPR
+2  normal(0,0.35)      fixef histology_cohort.xNEN
+3  normal(0,0.32)      fixef histology_cohort.xUGB
+4  normal(0,0.18)      fixef                   age
+5  normal(0,0.34)      fixef                  sexM
+6  normal(0,0.12)      fixef                   BMI
+7  normal(0,1.55)   fixef_zi                 RvsPR
+8  normal(0,3.21)   fixef_zi histology_cohort.xNEN
+9  normal(0,2.66)   fixef_zi histology_cohort.xUGB
+10 normal(0,0.61)   fixef_zi                   age
+11 normal(0,2.12)   fixef_zi                  sexM
+12 normal(0,3.21)   fixef_zi                   BMI
+13    normal(0,5) fixef_disp                     1</code></pre>
+</div>
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  ZB_fit_d5 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  ZB_fit_d5 <span class="ot">&lt;-</span> <span class="fu">glmZiBFit</span>(sy, design, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>(), <span class="at">MAP_prior =</span> ebp)</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(ZB_fit_d5, save_path)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>th_d5 <span class="ot">=</span> <span class="fu">top_hits</span>(ZB_fit_d5)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Found 150 tophits for RvsPR at alpha = 0.05 using holm </code></pre>
+</div>
+</div>
 <p>We still have 150 top hits, prior is likely too weak. Sensitivity analysis:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(sy, <span class="st">'RvsP'</span>, th_d5<span class="sc">$</span>Contig_name[<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>]) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>## Warning: Removed 1376 rows containing non-finite outside the scale range
-## (`stat_boxplot()`).</code></pre>
-<p><img src="prior_on_dispersion_files/figure-gfm/unnamed-chunk-8-1.png" class="img-fluid"><!-- --></p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(sy, <span class="st">'RvsP'</span>, th_d5<span class="sc">$</span>Contig_name[<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>]) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1376 rows containing non-finite outside the scale range
+(`stat_boxplot()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="prior_on_dispersion_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
 <p><em>B. animalis</em> is also still there…</p>
 </section>
 <section id="strong" class="level3">
 <h3 class="anchored" data-anchor-id="strong">Strong</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">&lt;-</span> <span class="st">"output_rds/ASH_prior_analysis_zib_q_99_ebp_disp1.rds"</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>ebp <span class="ot">=</span> ZB_fit<span class="sc">@</span>priors <span class="co"># priors are the same</span></span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="co"># manually add the dispersion parameter</span></span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>ebp<span class="sc">@</span>priors_df <span class="ot">=</span> <span class="fu">rbind</span>(ebp<span class="sc">@</span>priors_df, <span class="fu">data.frame</span>(<span class="at">prior =</span> <span class="st">'normal(0,1)'</span>, <span class="at">class =</span> <span class="st">'fixef_disp'</span>, <span class="at">coef =</span> <span class="dv">1</span>))</span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>ebp<span class="sc">@</span>priors_df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>##             prior      class                  coef
-## 1  normal(0,0.27)      fixef                 RvsPR
-## 2  normal(0,0.35)      fixef histology_cohort.xNEN
-## 3  normal(0,0.32)      fixef histology_cohort.xUGB
-## 4  normal(0,0.18)      fixef                   age
-## 5  normal(0,0.34)      fixef                  sexM
-## 6  normal(0,0.12)      fixef                   BMI
-## 7  normal(0,1.55)   fixef_zi                 RvsPR
-## 8  normal(0,3.22)   fixef_zi histology_cohort.xNEN
-## 9  normal(0,2.65)   fixef_zi histology_cohort.xUGB
-## 10  normal(0,0.6)   fixef_zi                   age
-## 11 normal(0,2.11)   fixef_zi                  sexM
-## 12 normal(0,3.26)   fixef_zi                   BMI
-## 13    normal(0,1) fixef_disp                     1</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  ZB_fit_d1 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  ZB_fit_d1 <span class="ot">&lt;-</span> <span class="fu">glmZiBFit</span>(sy, design, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>(), <span class="at">MAP_prior =</span> ebp)</span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(ZB_fit_d1, save_path)</span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>th_d1 <span class="ot">=</span> <span class="fu">top_hits</span>(ZB_fit_d1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>## Warning in top_hits(ZB_fit_d1): Multiple testing correction using `holm`: No
-## significant associations detected for coef = 2 at alpha = 0.050000</code></pre>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">&lt;-</span> <span class="st">"output_rds/ASH_prior_analysis_zib_q_99_ebp_disp1.rds"</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>ebp <span class="ot">=</span> ZB_fit<span class="sc">@</span>priors <span class="co"># priors are the same</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co"># manually add the dispersion parameter</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>ebp<span class="sc">@</span>priors_df <span class="ot">=</span> <span class="fu">rbind</span>(ebp<span class="sc">@</span>priors_df, <span class="fu">data.frame</span>(<span class="at">prior =</span> <span class="st">'normal(0,1)'</span>, <span class="at">class =</span> <span class="st">'fixef_disp'</span>, <span class="at">coef =</span> <span class="dv">1</span>))</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>ebp<span class="sc">@</span>priors_df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            prior      class                  coef
+1  normal(0,0.27)      fixef                 RvsPR
+2  normal(0,0.35)      fixef histology_cohort.xNEN
+3  normal(0,0.32)      fixef histology_cohort.xUGB
+4  normal(0,0.18)      fixef                   age
+5  normal(0,0.34)      fixef                  sexM
+6  normal(0,0.12)      fixef                   BMI
+7  normal(0,1.55)   fixef_zi                 RvsPR
+8  normal(0,3.21)   fixef_zi histology_cohort.xNEN
+9  normal(0,2.66)   fixef_zi histology_cohort.xUGB
+10 normal(0,0.61)   fixef_zi                   age
+11 normal(0,2.12)   fixef_zi                  sexM
+12 normal(0,3.21)   fixef_zi                   BMI
+13    normal(0,1) fixef_disp                     1</code></pre>
+</div>
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  ZB_fit_d1 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  ZB_fit_d1 <span class="ot">&lt;-</span> <span class="fu">glmZiBFit</span>(sy, design, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>(), <span class="at">MAP_prior =</span> ebp)</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(ZB_fit_d1, save_path)</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>th_d1 <span class="ot">=</span> <span class="fu">top_hits</span>(ZB_fit_d1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in top_hits(ZB_fit_d1): Multiple testing correction using `holm`: No
+significant associations detected for coef = 2 at alpha = 0.050000</code></pre>
+</div>
+</div>
 <p>Now there are no hits. This has killed all signal. Let’s try with an empirical approach.</p>
 </section>
 <section id="ebp-prior" class="level3">
 <h3 class="anchored" data-anchor-id="ebp-prior">Ebp prior</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">&lt;-</span> <span class="st">"output_rds/ASH_prior_analysis_zib_q_99_ebp_disp_ebp.rds"</span></span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>ebp <span class="ot">=</span>  <span class="fu">compute_eb_priors</span>(sy, design, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>(), <span class="at">low_cutoff =</span> <span class="dv">0</span>,</span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>                          <span class="at">high_cutoff =</span> <span class="cn">Inf</span>, <span class="at">est_disperion_prior =</span> T)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>## Computing fixef_zi priors...
-##   |                                                                              |                                                                      |   0%  |                                                                              |==                                                                    |   3%  |                                                                              |====                                                                  |   5%  |                                                                              |=====                                                                 |   8%  |                                                                              |=======                                                               |  10%  |                                                                              |=========                                                             |  13%  |                                                                              |===========                                                           |  15%  |                                                                              |=============                                                         |  18%  |                                                                              |==============                                                        |  21%  |                                                                              |================                                                      |  23%  |                                                                              |==================                                                    |  26%  |                                                                              |====================                                                  |  28%  |                                                                              |======================                                                |  31%  |                                                                              |=======================                                               |  33%  |                                                                              |=========================                                             |  36%  |                                                                              |===========================                                           |  38%  |                                                                              |=============================                                         |  41%  |                                                                              |===============================                                       |  44%  |                                                                              |================================                                      |  46%  |                                                                              |==================================                                    |  49%  |                                                                              |====================================                                  |  51%  |                                                                              |======================================                                |  54%  |                                                                              |=======================================                               |  56%  |                                                                              |=========================================                             |  59%  |                                                                              |===========================================                           |  62%  |                                                                              |=============================================                         |  64%  |                                                                              |===============================================                       |  67%  |                                                                              |================================================                      |  69%  |                                                                              |==================================================                    |  72%  |                                                                              |====================================================                  |  74%  |                                                                              |======================================================                |  77%  |                                                                              |========================================================              |  79%  |                                                                              |=========================================================             |  82%  |                                                                              |===========================================================           |  85%  |                                                                              |=============================================================         |  87%  |                                                                              |===============================================================       |  90%  |                                                                              |=================================================================     |  92%  |                                                                              |==================================================================    |  95%  |                                                                              |====================================================================  |  97%  |                                                                              |======================================================================| 100%
-## 
-##   |                                                                              |                                                                      |   0%  |                                                                              |==========                                                            |  14%  |                                                                              |====================                                                  |  29%  |                                                                              |==============================                                        |  43%  |                                                                              |========================================                              |  57%  |                                                                              |==================================================                    |  71%  |                                                                              |============================================================          |  86%  |                                                                              |======================================================================| 100%
-## 
-## Computing fixef priors...
-##   |                                                                              |                                                                      |   0%  |                                                                              |==                                                                    |   3%  |                                                                              |====                                                                  |   5%  |                                                                              |=====                                                                 |   8%  |                                                                              |=======                                                               |  10%  |                                                                              |=========                                                             |  13%  |                                                                              |===========                                                           |  15%  |                                                                              |=============                                                         |  18%  |                                                                              |==============                                                        |  21%  |                                                                              |================                                                      |  23%  |                                                                              |==================                                                    |  26%  |                                                                              |====================                                                  |  28%  |                                                                              |======================                                                |  31%  |                                                                              |=======================                                               |  33%  |                                                                              |=========================                                             |  36%  |                                                                              |===========================                                           |  38%  |                                                                              |=============================                                         |  41%  |                                                                              |===============================                                       |  44%  |                                                                              |================================                                      |  46%  |                                                                              |==================================                                    |  49%  |                                                                              |====================================                                  |  51%  |                                                                              |======================================                                |  54%  |                                                                              |=======================================                               |  56%  |                                                                              |=========================================                             |  59%  |                                                                              |===========================================                           |  62%  |                                                                              |=============================================                         |  64%  |                                                                              |===============================================                       |  67%  |                                                                              |================================================                      |  69%  |                                                                              |==================================================                    |  72%  |                                                                              |====================================================                  |  74%  |                                                                              |======================================================                |  77%  |                                                                              |========================================================              |  79%  |                                                                              |=========================================================             |  82%  |                                                                              |===========================================================           |  85%  |                                                                              |=============================================================         |  87%  |                                                                              |===============================================================       |  90%  |                                                                              |=================================================================     |  92%  |                                                                              |==================================================================    |  95%  |                                                                              |====================================================================  |  97%  |                                                                              |======================================================================| 100%
-## 
-##   |                                                                              |                                                                      |   0%  |                                                                              |==========                                                            |  14%  |                                                                              |====================                                                  |  29%  |                                                                              |==============================                                        |  43%  |                                                                              |========================================                              |  57%  |                                                                              |==================================================                    |  71%  |                                                                              |============================================================          |  86%  |                                                                              |======================================================================| 100%</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_prior_bootstrap</span>(ebp, <span class="st">'dispersion'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><img src="prior_on_dispersion_files/figure-gfm/unnamed-chunk-10-1.png" class="img-fluid"><!-- --></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>ebp<span class="sc">@</span>priors_df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>##                prior      class                  coef
-## 1     normal(0,0.27)      fixef                 RvsPR
-## 2     normal(0,0.35)      fixef histology_cohort.xNEN
-## 3     normal(0,0.32)      fixef histology_cohort.xUGB
-## 4     normal(0,0.18)      fixef                   age
-## 5     normal(0,0.34)      fixef                  sexM
-## 6     normal(0,0.12)      fixef                   BMI
-## 7     normal(0,1.55)   fixef_zi                 RvsPR
-## 8     normal(0,3.21)   fixef_zi histology_cohort.xNEN
-## 9     normal(0,2.65)   fixef_zi histology_cohort.xUGB
-## 10     normal(0,0.6)   fixef_zi                   age
-## 11    normal(0,2.11)   fixef_zi                  sexM
-## 12    normal(0,3.26)   fixef_zi                   BMI
-## 13 normal(6.99,1.25) fixef_disp                     1</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  ZB_fit_d_ebp <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  ZB_fit_d_ebp <span class="ot">&lt;-</span> <span class="fu">glmZiBFit</span>(sy, design, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>(), <span class="at">MAP_prior =</span> ebp)</span>
-<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(ZB_fit_d_ebp, save_path)</span>
-<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>##   |                                                                              |                                                                      |   0%  |                                                                              |=                                                                     |   1%  |                                                                              |=                                                                     |   2%  |                                                                              |==                                                                    |   3%  |                                                                              |===                                                                   |   4%  |                                                                              |====                                                                  |   5%  |                                                                              |====                                                                  |   6%  |                                                                              |=====                                                                 |   7%  |                                                                              |======                                                                |   8%  |                                                                              |=======                                                               |   9%  |                                                                              |=======                                                               |  10%  |                                                                              |========                                                              |  11%  |                                                                              |=========                                                             |  12%  |                                                                              |=========                                                             |  14%  |                                                                              |==========                                                            |  15%  |                                                                              |===========                                                           |  16%  |                                                                              |============                                                          |  17%  |                                                                              |============                                                          |  18%  |                                                                              |=============                                                         |  19%  |                                                                              |==============                                                        |  20%  |                                                                              |===============                                                       |  21%  |                                                                              |===============                                                       |  22%  |                                                                              |================                                                      |  23%  |                                                                              |=================                                                     |  24%  |                                                                              |==================                                                    |  25%  |                                                                              |==================                                                    |  26%  |                                                                              |===================                                                   |  27%  |                                                                              |====================                                                  |  28%  |                                                                              |====================                                                  |  29%  |                                                                              |=====================                                                 |  30%  |                                                                              |======================                                                |  31%  |                                                                              |=======================                                               |  32%  |                                                                              |=======================                                               |  33%  |                                                                              |========================                                              |  34%  |                                                                              |=========================                                             |  35%  |                                                                              |==========================                                            |  36%  |                                                                              |==========================                                            |  38%  |                                                                              |===========================                                           |  39%  |                                                                              |============================                                          |  40%  |                                                                              |============================                                          |  41%  |                                                                              |=============================                                         |  42%  |                                                                              |==============================                                        |  43%  |                                                                              |===============================                                       |  44%  |                                                                              |===============================                                       |  45%  |                                                                              |================================                                      |  46%  |                                                                              |=================================                                     |  47%  |                                                                              |==================================                                    |  48%  |                                                                              |==================================                                    |  49%  |                                                                              |===================================                                   |  50%  |                                                                              |====================================                                  |  51%  |                                                                              |====================================                                  |  52%  |                                                                              |=====================================                                 |  53%  |                                                                              |======================================                                |  54%  |                                                                              |=======================================                               |  55%  |                                                                              |=======================================                               |  56%  |                                                                              |========================================                              |  57%  |                                                                              |=========================================                             |  58%  |                                                                              |==========================================                            |  59%  |                                                                              |==========================================                            |  60%  |                                                                              |===========================================                           |  61%  |                                                                              |============================================                          |  62%  |                                                                              |============================================                          |  64%  |                                                                              |=============================================                         |  65%  |                                                                              |==============================================                        |  66%  |                                                                              |===============================================                       |  67%  |                                                                              |===============================================                       |  68%  |                                                                              |================================================                      |  69%  |                                                                              |=================================================                     |  70%  |                                                                              |==================================================                    |  71%  |                                                                              |==================================================                    |  72%  |                                                                              |===================================================                   |  73%  |                                                                              |====================================================                  |  74%  |                                                                              |====================================================                  |  75%  |                                                                              |=====================================================                 |  76%  |                                                                              |======================================================                |  77%  |                                                                              |=======================================================               |  78%  |                                                                              |=======================================================               |  79%  |                                                                              |========================================================              |  80%  |                                                                              |=========================================================             |  81%  |                                                                              |==========================================================            |  82%  |                                                                              |==========================================================            |  83%  |                                                                              |===========================================================           |  84%  |                                                                              |============================================================          |  85%  |                                                                              |=============================================================         |  86%  |                                                                              |=============================================================         |  88%  |                                                                              |==============================================================        |  89%  |                                                                              |===============================================================       |  90%  |                                                                              |===============================================================       |  91%  |                                                                              |================================================================      |  92%  |                                                                              |=================================================================     |  93%  |                                                                              |==================================================================    |  94%  |                                                                              |==================================================================    |  95%  |                                                                              |===================================================================   |  96%  |                                                                              |====================================================================  |  97%  |                                                                              |===================================================================== |  98%  |                                                                              |===================================================================== |  99%  |                                                                              |======================================================================| 100%
-## 
-## Fitting model...</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>th_debp <span class="ot">=</span> <span class="fu">top_hits</span>(ZB_fit_d_ebp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>## Found 97 tophits for RvsPR at alpha = 0.05 using holm</code></pre>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">&lt;-</span> <span class="st">"output_rds/ASH_prior_analysis_zib_q_99_ebp_disp_ebp.rds"</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>ebp <span class="ot">=</span>  <span class="fu">compute_eb_priors</span>(sy, design, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>(), <span class="at">low_cutoff =</span> <span class="dv">0</span>,</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>                          <span class="at">high_cutoff =</span> <span class="cn">Inf</span>, <span class="at">est_disperion_prior =</span> T, <span class="at">progress =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_prior_bootstrap</span>(ebp, <span class="st">'dispersion'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="prior_on_dispersion_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>ebp<span class="sc">@</span>priors_df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>               prior      class                  coef
+1     normal(0,0.27)      fixef                 RvsPR
+2     normal(0,0.35)      fixef histology_cohort.xNEN
+3     normal(0,0.32)      fixef histology_cohort.xUGB
+4     normal(0,0.17)      fixef                   age
+5     normal(0,0.34)      fixef                  sexM
+6     normal(0,0.12)      fixef                   BMI
+7     normal(0,1.55)   fixef_zi                 RvsPR
+8     normal(0,3.22)   fixef_zi histology_cohort.xNEN
+9     normal(0,2.66)   fixef_zi histology_cohort.xUGB
+10     normal(0,0.6)   fixef_zi                   age
+11    normal(0,2.12)   fixef_zi                  sexM
+12    normal(0,3.26)   fixef_zi                   BMI
+13 normal(6.99,1.25) fixef_disp                     1</code></pre>
+</div>
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  ZB_fit_d_ebp <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  ZB_fit_d_ebp <span class="ot">&lt;-</span> <span class="fu">glmZiBFit</span>(sy, design, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>(), <span class="at">MAP_prior =</span> ebp)</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(ZB_fit_d_ebp, save_path)</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>th_debp <span class="ot">=</span> <span class="fu">top_hits</span>(ZB_fit_d_ebp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Found 97 tophits for RvsPR at alpha = 0.05 using holm </code></pre>
+</div>
+</div>
 <p>Down to 97 hits…</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(sy, <span class="st">'RvsP'</span>, th_debp<span class="sc">$</span>Contig_name[<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>]) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>## Warning: Removed 1367 rows containing non-finite outside the scale range
-## (`stat_boxplot()`).</code></pre>
-<p><img src="prior_on_dispersion_files/figure-gfm/unnamed-chunk-11-1.png" class="img-fluid"><!-- --></p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(sy, <span class="st">'RvsP'</span>, th_debp<span class="sc">$</span>Contig_name[<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>]) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1367 rows containing non-finite outside the scale range
+(`stat_boxplot()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="prior_on_dispersion_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
 <p>Not enough to kill <em>B. animalis</em> though…</p>
 </section>
 <section id="post-hoc-testing-1" class="level3">
 <h3 class="anchored" data-anchor-id="post-hoc-testing-1">Post-hoc testing</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>th_debp_ph <span class="ot">=</span> <span class="fu">estimate_effect_sizes</span>(sy, ZB_fit, th_debp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>##   |                                                                              |                                                                      |   0%
-
-## Warning in finalizeTMB(TMBStruc, obj, fit, h, data.tmb.old): Model convergence
-## problem; false convergence (8). See vignette('troubleshooting'),
-## help('diagnose')
-
-##   |                                                                              |=                                                                     |   1%  |                                                                              |=                                                                     |   2%  |                                                                              |==                                                                    |   3%  |                                                                              |===                                                                   |   4%
-
-## Warning in finalizeTMB(TMBStruc, obj, fit, h, data.tmb.old): Model convergence
-## problem; false convergence (8). See vignette('troubleshooting'),
-## help('diagnose')
-
-##   |                                                                              |====                                                                  |   5%  |                                                                              |====                                                                  |   6%  |                                                                              |=====                                                                 |   7%  |                                                                              |======                                                                |   8%  |                                                                              |======                                                                |   9%  |                                                                              |=======                                                               |  10%  |                                                                              |========                                                              |  11%  |                                                                              |=========                                                             |  12%  |                                                                              |=========                                                             |  13%  |                                                                              |==========                                                            |  14%  |                                                                              |===========                                                           |  15%  |                                                                              |============                                                          |  16%  |                                                                              |============                                                          |  18%  |                                                                              |=============                                                         |  19%  |                                                                              |==============                                                        |  20%  |                                                                              |==============                                                        |  21%
-
-## Warning in finalizeTMB(TMBStruc, obj, fit, h, data.tmb.old): Model convergence
-## problem; false convergence (8). See vignette('troubleshooting'),
-## help('diagnose')
-
-##   |                                                                              |===============                                                       |  22%  |                                                                              |================                                                      |  23%  |                                                                              |=================                                                     |  24%  |                                                                              |=================                                                     |  25%  |                                                                              |==================                                                    |  26%  |                                                                              |===================                                                   |  27%  |                                                                              |===================                                                   |  28%  |                                                                              |====================                                                  |  29%  |                                                                              |=====================                                                 |  30%  |                                                                              |======================                                                |  31%  |                                                                              |======================                                                |  32%  |                                                                              |=======================                                               |  33%  |                                                                              |========================                                              |  34%  |                                                                              |=========================                                             |  35%  |                                                                              |=========================                                             |  36%  |                                                                              |==========================                                            |  37%  |                                                                              |===========================                                           |  38%  |                                                                              |===========================                                           |  39%  |                                                                              |============================                                          |  40%  |                                                                              |=============================                                         |  41%
-
-## Warning in finalizeTMB(TMBStruc, obj, fit, h, data.tmb.old): Model convergence
-## problem; false convergence (8). See vignette('troubleshooting'),
-## help('diagnose')
-
-##   |                                                                              |==============================                                        |  42%  |                                                                              |==============================                                        |  43%  |                                                                              |===============================                                       |  44%  |                                                                              |================================                                      |  45%  |                                                                              |================================                                      |  46%  |                                                                              |=================================                                     |  47%  |                                                                              |==================================                                    |  48%  |                                                                              |===================================                                   |  49%  |                                                                              |===================================                                   |  51%  |                                                                              |====================================                                  |  52%  |                                                                              |=====================================                                 |  53%  |                                                                              |======================================                                |  54%  |                                                                              |======================================                                |  55%  |                                                                              |=======================================                               |  56%  |                                                                              |========================================                              |  57%  |                                                                              |========================================                              |  58%  |                                                                              |=========================================                             |  59%  |                                                                              |==========================================                            |  60%  |                                                                              |===========================================                           |  61%  |                                                                              |===========================================                           |  62%  |                                                                              |============================================                          |  63%  |                                                                              |=============================================                         |  64%  |                                                                              |=============================================                         |  65%  |                                                                              |==============================================                        |  66%  |                                                                              |===============================================                       |  67%  |                                                                              |================================================                      |  68%  |                                                                              |================================================                      |  69%  |                                                                              |=================================================                     |  70%  |                                                                              |==================================================                    |  71%  |                                                                              |===================================================                   |  72%  |                                                                              |===================================================                   |  73%  |                                                                              |====================================================                  |  74%  |                                                                              |=====================================================                 |  75%  |                                                                              |=====================================================                 |  76%  |                                                                              |======================================================                |  77%  |                                                                              |=======================================================               |  78%  |                                                                              |========================================================              |  79%  |                                                                              |========================================================              |  80%  |                                                                              |=========================================================             |  81%  |                                                                              |==========================================================            |  82%  |                                                                              |==========================================================            |  84%  |                                                                              |===========================================================           |  85%  |                                                                              |============================================================          |  86%  |                                                                              |=============================================================         |  87%  |                                                                              |=============================================================         |  88%  |                                                                              |==============================================================        |  89%  |                                                                              |===============================================================       |  90%  |                                                                              |================================================================      |  91%  |                                                                              |================================================================      |  92%  |                                                                              |=================================================================     |  93%  |                                                                              |==================================================================    |  94%  |                                                                              |==================================================================    |  95%  |                                                                              |===================================================================   |  96%  |                                                                              |====================================================================  |  97%  |                                                                              |===================================================================== |  98%  |                                                                              |===================================================================== |  99%  |                                                                              |======================================================================| 100%</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(th_debp_ph<span class="sc">$</span>Comment, <span class="at">useNA =</span> <span class="st">'always'</span>) <span class="co"># now there are only 15 hits, one less from before</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>## 
-##                                failed convergence 
-##                                                 1 
-##               failed convergence; too few nonzero 
-##                                                 1 
-## failed convergence; too few nonzero; small effect 
-##                                                 2 
-##                                      small effect 
-##                                                21 
-##                                   too few nonzero 
-##                                                35 
-##                     too few nonzero; small effect 
-##                                                22 
-##                                              &lt;NA&gt; 
-##                                                15</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(sy, <span class="st">'RvsP'</span>, th_debp_ph<span class="sc">$</span>Contig_name[<span class="fu">is.na</span>(th_debp_ph<span class="sc">$</span>Comment)]) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>## Warning: Removed 947 rows containing non-finite outside the scale range
-## (`stat_boxplot()`).</code></pre>
-<p><img src="prior_on_dispersion_files/figure-gfm/unnamed-chunk-12-1.png" class="img-fluid"><!-- --></p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>th_debp_ph <span class="ot">=</span> strainspy<span class="sc">::</span><span class="fu">comp_ani_diff_and_posthoc_test</span>(sy, ZB_fit, th_debp, <span class="at">progress =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(th_debp_ph<span class="sc">$</span>Comment, <span class="at">useNA =</span> <span class="st">'always'</span>) <span class="co"># now there are only 15 hits, one less from before</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+                 &lt;3 nonzero &lt;3 nonzero; too few nonzero 
+                         10                          48 
+            too few nonzero                        &lt;NA&gt; 
+                         12                          27 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(sy, <span class="st">'RvsP'</span>, th_debp_ph<span class="sc">$</span>Contig_name[<span class="fu">is.na</span>(th_debp_ph<span class="sc">$</span>Comment)]) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1658 rows containing non-finite outside the scale range
+(`stat_boxplot()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="prior_on_dispersion_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
 <section id="commondifferent-hits" class="level3">
 <h3 class="anchored" data-anchor-id="commondifferent-hits">Common/different hits</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>disp_hits <span class="ot">=</span> th_debp_ph<span class="sc">$</span>Contig_name[<span class="fu">is.na</span>(th_debp_ph<span class="sc">$</span>Comment)]</span>
-<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>ndisp_hits <span class="ot">=</span> th_ph<span class="sc">$</span>Contig_name[<span class="fu">is.na</span>(th_ph<span class="sc">$</span>Comment)]</span>
-<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Common ones</span></span>
-<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(sy, <span class="st">'RvsP'</span>, <span class="fu">intersect</span>(disp_hits,ndisp_hits))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>## Warning: Removed 831 rows containing non-finite outside the scale range
-## (`stat_boxplot()`).</code></pre>
-<p><img src="prior_on_dispersion_files/figure-gfm/unnamed-chunk-13-1.png" class="img-fluid"><!-- --></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Only in model without dispersion prior:</span></span>
-<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(sy, <span class="st">'RvsP'</span>, <span class="fu">setdiff</span>(ndisp_hits, disp_hits))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>## Warning: Removed 200 rows containing non-finite outside the scale range
-## (`stat_boxplot()`).</code></pre>
-<p><img src="prior_on_dispersion_files/figure-gfm/unnamed-chunk-13-2.png" class="img-fluid"><!-- --></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Only in model WITH dispersion prior:</span></span>
-<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(sy, <span class="st">'RvsP'</span>, <span class="fu">setdiff</span>(disp_hits, ndisp_hits))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>## Warning: Removed 116 rows containing non-finite outside the scale range
-## (`stat_boxplot()`).</code></pre>
-<p><img src="prior_on_dispersion_files/figure-gfm/unnamed-chunk-13-3.png" class="img-fluid"><!-- --></p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>disp_hits <span class="ot">=</span> th_debp_ph<span class="sc">$</span>Contig_name[<span class="fu">is.na</span>(th_debp_ph<span class="sc">$</span>Comment)]</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>ndisp_hits <span class="ot">=</span> th_ph<span class="sc">$</span>Contig_name[<span class="fu">is.na</span>(th_ph<span class="sc">$</span>Comment)]</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Common ones</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(sy, <span class="st">'RvsP'</span>, <span class="fu">intersect</span>(disp_hits,ndisp_hits))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1542 rows containing non-finite outside the scale range
+(`stat_boxplot()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="prior_on_dispersion_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Only in model without dispersion prior:</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(sy, <span class="st">'RvsP'</span>, <span class="fu">setdiff</span>(ndisp_hits, disp_hits))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1012 rows containing non-finite outside the scale range
+(`stat_boxplot()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="prior_on_dispersion_files/figure-html/unnamed-chunk-12-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Only in model WITH dispersion prior:</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(sy, <span class="st">'RvsP'</span>, <span class="fu">setdiff</span>(disp_hits, ndisp_hits))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 116 rows containing non-finite outside the scale range
+(`stat_boxplot()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="prior_on_dispersion_files/figure-html/unnamed-chunk-12-3.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
 
 
-</section>
 </section>
 </section>
 
@@ -1098,6 +1211,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   });
   </script>
 </div> <!-- /content -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const toc = document.querySelector("#TOC");
+
+  if (!toc) return;
+
+  const resources = document.createElement("div");
+  resources.className = "strainspy-resources";
+
+  resources.innerHTML = `
+    <div class="strainspy-resources-title">Resources</div>
+
+    <a href="https://github.com/gtonkinhill/strainspy"
+       target="_blank"
+       rel="noopener noreferrer"
+       class="strainspy-resource">
+      <i class="bi bi-github"></i>
+      <span>
+        <strong>StrainSpy</strong>
+        <small>GitHub repository</small>
+      </span>
+    </a>
+
+    <a href="https://github.com/Sudaraka88/strainspy-manuscript"
+       target="_blank"
+       rel="noopener noreferrer"
+       class="strainspy-resource">
+      <i class="bi bi-github"></i>
+      <span>
+        <strong>Analysis repository</strong>
+        <small>Code and analyses</small>
+      </span>
+    </a>
+  `;
+  
+  toc.appendChild(resources);
+});
+</script>
 
 
 

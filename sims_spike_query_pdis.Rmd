@@ -8,8 +8,11 @@ editor_options:
 
 ### Load data and prepare for testing
 
-```{r}
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 library(strainspy)
+library(ggplot2)
+library(dplyr)
+library(ggrepel)
 # Queries
 d_q99 <- read_sylph("p_distasonis_sims/pdis_q99.tsv")
 
@@ -395,11 +398,7 @@ The phylogenetic model seems to fit better, and the difference seems clear (more
 AnPan works as well - when there is signal in the phylogeny, it can detect it accurately. However, building the tree can be tricky if the strain coverage is low. StrainSpy can work equally well in the lower coverage simulations as well, without requiring a phylogeny. 
 
 ## Figure for paper
-```{r}
-library(ggplot2)
-library(dplyr)
-library(ggrepel)
-
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
 # strainspy result
 
 spike = "GCF_024791025.1"

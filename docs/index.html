@@ -72,6 +72,7 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
+<link rel="stylesheet" href="resources.css">
 </head>
 
 <body class="nav-sidebar docked nav-fixed quarto-light">
@@ -188,6 +189,12 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./Sims_spike_profile.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simulations with spiked E. coli strain analysed using Sylph Profile</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./sims_spike_query_pdis.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Simulations with spiked P. dis strain analysed using Sylph Query</span></a>
   </div>
@@ -201,13 +208,19 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./logistic_ID.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Logistic Regression Model”</span></a>
+ <span class="menu-text">Logistic Regression Model</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./varyingPrior.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">varyingPrior</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aniAdjust.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">ANI Adjustment Comparison and Model Fitting</span></a>
   </div>
 </li>
       </ul>
@@ -721,6 +734,44 @@ ul.task-list li input[type="checkbox"] {
   });
   </script>
 </div> <!-- /content -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const toc = document.querySelector("#TOC");
+
+  if (!toc) return;
+
+  const resources = document.createElement("div");
+  resources.className = "strainspy-resources";
+
+  resources.innerHTML = `
+    <div class="strainspy-resources-title">Resources</div>
+
+    <a href="https://github.com/gtonkinhill/strainspy"
+       target="_blank"
+       rel="noopener noreferrer"
+       class="strainspy-resource">
+      <i class="bi bi-github"></i>
+      <span>
+        <strong>StrainSpy</strong>
+        <small>GitHub repository</small>
+      </span>
+    </a>
+
+    <a href="https://github.com/Sudaraka88/strainspy-manuscript"
+       target="_blank"
+       rel="noopener noreferrer"
+       class="strainspy-resource">
+      <i class="bi bi-github"></i>
+      <span>
+        <strong>Analysis repository</strong>
+        <small>Code and analyses</small>
+      </span>
+    </a>
+  `;
+  
+  toc.appendChild(resources);
+});
+</script>
 
 
 

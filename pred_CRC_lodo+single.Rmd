@@ -8,7 +8,7 @@ editor_options:
 # Set up prediction model
 
 ## Load deps
-```{r, warning=FALSE, message=FALSE}
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 library(strainspy)
 library(SummarizedExperiment)
 library(caret)
@@ -21,6 +21,7 @@ library(parallel)
 library(ggplot2)
 library(tidyr)
 library(dplyr)
+library(tidyverse)
 ```
 
 ## Using query99 data and fit
@@ -92,14 +93,14 @@ for(i_train in 1:length(studies)){
   
   if(study_x == "YangY_2021"){
     # manual override for this study - it does not contain age,sex,BMI data. Can't train the usual model using it
-    # cat("YangY_2021 dataset does not contain age, sex, BMI data, skipping...\n")
+    cat("YangY_2021 dataset does not contain age, sex, BMI data, skipping...\n")
     output[i_train, ] = 0
     next
   }
   
   if(study_x == "c5_NSHII"){
     # manual override for this study - it does not contain age,sex,BMI data. Can't train the usual model using it
-    # cat("c5_NSHII is an adenoma dataset (only 14/897 CRC)...\n")
+    cat("c5_NSHII is an adenoma dataset (only 14/897 CRC)...\n")
     output[i_train, ] = 0
     next
   }
@@ -120,7 +121,7 @@ for(i_train in 1:length(studies)){
       ZB_fit_x <- glmZiBFit(sy_x, design, MAP_prior = ebp, nthreads = parallel::detectCores())
       saveRDS(ZB_fit_x, save_path)
     } else {
-      # cat("No variation in outcome in:", study_x, " - skipping... \n")
+      cat("No variation in outcome in:", study_x, " - skipping... \n")
       output[i_train, ] = 0
       next
     }
@@ -150,7 +151,7 @@ for(i_train in 1:length(studies)){
     # Predict each study
     i_test = 1
     for (study_test in studies){
-      # cat("Predicting", study_test, "\n")
+      cat("Predicting", study_test, "\n")
       hold_out_sy = subset(sy, select = colData(sy)$study %in% as.character(study_test))
       
       if("CRC" %in% hold_out_sy@colData$disease & "None" %in% hold_out_sy@colData$disease){
@@ -166,7 +167,7 @@ for(i_train in 1:length(studies)){
       i_test = i_test + 1
     }
   } else {
-    # cat("Train dataset has <10 observation of one class in:", study_x, " - skipping... \n")
+    cat("Train dataset has <10 observation of one class in:", study_x, " - skipping... \n")
     output[i_train, ] = 0
     next
   }
@@ -176,7 +177,7 @@ for(i_train in 1:length(studies)){
 ```
 
 ## Predict the AUC for all datasets using global predictors 
-```{r}
+```{r, message=FALSE, warning=FALSE, include=FALSE}
 AUCs_enet =  list()
 for(d in studies){
   
@@ -231,9 +232,9 @@ for(d in studies){
     pred_lodo <- predict(enet_fit_lodo, hold_out_mx , type = "prob")$CRC
     roc_lodo <- roc(factor(hold_out_mx$disease, levels = c("None", "CRC")), pred_lodo, levels = c("None","CRC"))
     AUCs_enet[[d]] = auc(roc_lodo)
-    # cat('Done with', d, 'AUC = ', AUCs_enet[[d]], '\n')
+    cat('Done with', d, 'AUC = ', AUCs_enet[[d]], '\n')
   } else {
-    # cat('Done with', d, 'cannot compute AUC, dataset is all:', as.character(unique(hold_out_mx$disease)), '\n')
+    cat('Done with', d, 'cannot compute AUC, dataset is all:', as.character(unique(hold_out_mx$disease)), '\n')
   }
   
   
@@ -245,10 +246,7 @@ summary(unlist(AUCs_enet))
 
 
 ## Plot to see how it looks
-```{r, fig.width=12, fig.height=12}
-library(tidyverse)
-library(ggplot2)
-
+```{r, fig.width=18, fig.align='default', fig.height=18}
 output_mod = output
 
 rownames(output_mod) = studies
@@ -382,7 +380,7 @@ ggplot(df_plot, aes(x = test, y = train, fill = AUC)) +
 
 
 ### LODO
-```{r, fig.width=12, fig.height=12}
+```{r, fig.width=12}
 sylph_path <- "data/segata_pooled_3741/combined_q_99.tsv.gz"
 ### --- ------ --- ###
 
@@ -496,9 +494,9 @@ for(d in studies){
     pred_lodo <- predict(enet_fit_lodo, hold_out_mx , type = "prob")$CRC
     roc_lodo <- roc(factor(hold_out_mx$disease, levels = c("None", "CRC")), pred_lodo, levels = c("None","CRC"))
     AUCs_enet_lodo[[d]] = auc(roc_lodo)
-    # cat('Done with', d, 'AUC = ', AUCs_enet_lodo[[d]], '\n')
+    cat('Done with', d, 'AUC = ', AUCs_enet_lodo[[d]], '\n')
   } else {
-    # cat('Done with', d, 'cannot compute AUC, dataset is all:', as.character(unique(hold_out_mx$disease)), '\n')
+    cat('Done with', d, 'cannot compute AUC, dataset is all:', as.character(unique(hold_out_mx$disease)), '\n')
   }
   
   

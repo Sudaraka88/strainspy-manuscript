@@ -8,7 +8,7 @@ editor_options:
 ---
 ## Load dependencies
 
-```{r, warning=FALSE, message=FALSE}
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 library(strainspy)
 library(SummarizedExperiment)
 library(caret)
@@ -83,7 +83,8 @@ if(file.exists(save_path)){
   ZB_fit <- readRDS(save_path)
 } else {
   # Run with weak prior for prediction
-  ebp = compute_eb_priors(sy_ash, design, nthreads = 10L, low_cutoff = 0, high_cutoff = Inf)
+  ebp = compute_eb_priors(sy_ash, design, nthreads = 10L, low_cutoff = 0, 
+                          high_cutoff = Inf, progress = FALSE)
   ZB_fit <- glmZiBFit(sy_ash, design, nthreads = parallel::detectCores(), MAP_prior = ebp)
   saveRDS(ZB_fit, save_path)
 }
@@ -97,7 +98,7 @@ th = top_hits = top_hits(ZB_fit, coef = 2, alpha = 0.05)
 ```{r}
 tax_99 = read_taxonomy("data/TAXONOMY/sylph_DB_taxonomy_99.tsv")
 
-th_ph = comp_ani_diff_and_posthoc_test(sy_ash, ZB_fit, th)
+th_ph = comp_ani_diff_and_posthoc_test(sy_ash, ZB_fit, th, progress = FALSE)
 
 # Interestingly, these are all beta hits (differences in strain identity)
 table(th_ph$hit_component)
@@ -306,7 +307,7 @@ for (set in sets){
   th_out = top_hits(ZB_fit)
   if(nrow(th_out) > 0)
   {
-    th_out = comp_ani_diff_and_posthoc_test(sy1, ZB_fit, th_out) # drop poorly supported ones on the fly
+    th_out = comp_ani_diff_and_posthoc_test(sy1, ZB_fit, th_out, progress = FALSE) # drop poorly supported ones on the fly
     op_th_melanoma_ind = rbind(op_th_melanoma_ind, 
                                cbind(th_out, dset = set)
     )
@@ -357,7 +358,7 @@ for (set in sets){
     th_out = top_hits(ZB_fit)
     if(nrow(th_out) > 0)
     {
-      th_out = comp_ani_diff_and_posthoc_test(sy1, ZB_fit, th_out) # drop poorly supported ones on the fly
+      th_out = comp_ani_diff_and_posthoc_test(sy1, ZB_fit, th_out, progress = FALSE) # drop poorly supported ones on the fly
       op_th_melanoma_ind_tt = rbind(op_th_melanoma_ind_tt, 
                                     cbind(th_out, dset = set)
       )

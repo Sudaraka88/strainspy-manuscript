@@ -8,7 +8,7 @@ editor_options:
 ---
 ## Load dependencies
 
-```{r, warning=FALSE, message=FALSE}
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 library(strainspy)
 library(SummarizedExperiment)
 library(caret)
@@ -86,7 +86,7 @@ if(file.exists(save_path)){
 ```
 
 There are 167 top hits, some of them dodgy
-```{r}
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
 th = top_hits(ZB_fit) 
 
 # Looking at the first 10
@@ -98,8 +98,8 @@ Clearly, at least *B. animalis* and *F. nucleatum* should NOT be picked...
 
 ### Post-hoc testing
 
-```{r}
-th_ph = strainspy::comp_ani_diff_and_posthoc_test(sy, ZB_fit, th)
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
+th_ph = strainspy::comp_ani_diff_and_posthoc_test(sy, ZB_fit, th, progress = FALSE)
 
 table(th_ph$Comment, useNA = 'always') # now there are only 16 hits
 
@@ -131,7 +131,7 @@ th_d5 = top_hits(ZB_fit_d5)
 
 We still have 150 top hits, prior is likely too weak. Sensitivity analysis:
 
-```{r}
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
 plot_ani_dist(sy, 'RvsP', th_d5$Contig_name[1:20]) 
 ```
 
@@ -166,7 +166,7 @@ Now there are no hits. This has killed all signal. Let's try with an empirical a
 ```{r}
 save_path <- "output_rds/ASH_prior_analysis_zib_q_99_ebp_disp_ebp.rds"
 ebp =  compute_eb_priors(sy, design, nthreads = parallel::detectCores(), low_cutoff = 0,
-                          high_cutoff = Inf, est_disperion_prior = T)
+                          high_cutoff = Inf, est_disperion_prior = T, progress = FALSE)
 
 plot_prior_bootstrap(ebp, 'dispersion')
 ebp@priors_df
@@ -184,15 +184,15 @@ th_debp = top_hits(ZB_fit_d_ebp)
 
 Down to 97 hits...
 
-```{r}
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
 plot_ani_dist(sy, 'RvsP', th_debp$Contig_name[1:20]) 
 ```
 
 Not enough to kill *B. animalis* though...
 
 ###  Post-hoc testing
-```{r}
-th_debp_ph = strainspy::comp_ani_diff_and_posthoc_test(sy, ZB_fit, th_debp)
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
+th_debp_ph = strainspy::comp_ani_diff_and_posthoc_test(sy, ZB_fit, th_debp, progress = FALSE)
 
 table(th_debp_ph$Comment, useNA = 'always') # now there are only 15 hits, one less from before
 
@@ -200,7 +200,7 @@ plot_ani_dist(sy, 'RvsP', th_debp_ph$Contig_name[is.na(th_debp_ph$Comment)])
 ```
 
 ### Common/different hits
-```{r}
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
 
 disp_hits = th_debp_ph$Contig_name[is.na(th_debp_ph$Comment)]
 ndisp_hits = th_ph$Contig_name[is.na(th_ph$Comment)]

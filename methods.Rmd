@@ -8,7 +8,9 @@ This section describes the methodological development and simulation framework u
 
 - [Case/Control simulations](simulations.html)
 
-- [E. coli spike-in simulations](Sims_spike_query.html)
+- [E. coli spike-in simulations (Sylph query)](Sims_spike_query.html)
+
+- [E. coli spike-in simulations (Sylph profile)](Sims_spike_profile.html)
 
 - [P. distasonis spike-in simulations and AnPan analysis](sims_spike_query_pdis.html)
 
@@ -17,4 +19,6 @@ This section describes the methodological development and simulation framework u
 - [Using MAP priors](varyingPrior.html)
 
 - [Applying a MAP prior on dispersion](prior_on_dispersion.html)
+
+- [Comparison of cANI adjustment strategies](aniAdjust.html)
 

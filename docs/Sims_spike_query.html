@@ -108,6 +108,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<link rel="stylesheet" href="resources.css">
 </head>
 
 <body class="nav-sidebar docked nav-fixed quarto-light">
@@ -224,6 +225,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./Sims_spike_profile.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simulations with spiked E. coli strain analysed using Sylph Profile</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./sims_spike_query_pdis.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Simulations with spiked P. dis strain analysed using Sylph Query</span></a>
   </div>
@@ -237,13 +244,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./logistic_ID.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Logistic Regression Model”</span></a>
+ <span class="menu-text">Logistic Regression Model</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./varyingPrior.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">varyingPrior</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aniAdjust.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">ANI Adjustment Comparison and Model Fitting</span></a>
   </div>
 </li>
       </ul>
@@ -356,75 +369,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="load-data-and-prepare-for-simulations" class="level3">
 <h3 class="anchored" data-anchor-id="load-data-and-prepare-for-simulations">Load data and prepare for simulations</h3>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(strainspy)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Queries</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>d_q95 <span class="ot">&lt;-</span> <span class="fu">read_sylph</span>(<span class="st">"ecoli_sims/test/sylph_q_95.tsv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stderr">
-<pre><code>Detected Sylph query output file.</code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>d_q98 <span class="ot">&lt;-</span> <span class="fu">read_sylph</span>(<span class="st">"ecoli_sims/test/sylph_q_98.tsv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stderr">
-<pre><code>Detected Sylph query output file.</code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>d_q99 <span class="ot">&lt;-</span> <span class="fu">read_sylph</span>(<span class="st">"ecoli_sims/test/sylph_q_99.tsv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stderr">
-<pre><code>Detected Sylph query output file.</code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># spiked samples</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>ss <span class="ot">=</span> <span class="fu">readLines</span>(<span class="st">"ecoli_sims/test/sampled.txt"</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># add the metadata</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>d_q95 <span class="ot">=</span> strainspy<span class="sc">:::</span><span class="fu">modify_metadata</span>(<span class="at">se =</span> d_q95, <span class="at">meta_data =</span> <span class="fu">data.frame</span>(<span class="at">run_accession =</span> <span class="fu">colnames</span>(d_q95),</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>                       <span class="at">spiked =</span> <span class="fu">as.factor</span>(<span class="fu">sapply</span>(<span class="fu">colnames</span>(d_q95), <span class="cf">function</span>(x) x<span class="sc">%in%</span> ss))))</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>d_q98 <span class="ot">=</span> strainspy<span class="sc">:::</span><span class="fu">modify_metadata</span>(<span class="at">se =</span> d_q98, <span class="at">meta_data =</span> <span class="fu">data.frame</span>(<span class="at">run_accession =</span> <span class="fu">colnames</span>(d_q98),</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>                       <span class="at">spiked =</span> <span class="fu">as.factor</span>(<span class="fu">sapply</span>(<span class="fu">colnames</span>(d_q98), <span class="cf">function</span>(x) x<span class="sc">%in%</span> ss))))</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>d_q99 <span class="ot">=</span> strainspy<span class="sc">:::</span><span class="fu">modify_metadata</span>(<span class="at">se =</span> d_q99, <span class="at">meta_data =</span> <span class="fu">data.frame</span>(<span class="at">run_accession =</span> <span class="fu">colnames</span>(d_q99),</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>                       <span class="at">spiked =</span> <span class="fu">as.factor</span>(<span class="fu">sapply</span>(<span class="fu">colnames</span>(d_q99), <span class="cf">function</span>(x) x<span class="sc">%in%</span> ss))))</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>d_q95 <span class="ot">&lt;-</span> <span class="fu">filter_by_presence</span>(d_q95, <span class="at">min_nonzero =</span> <span class="dv">20</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Retained 1737 rows after filtering</code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>d_q98 <span class="ot">&lt;-</span> <span class="fu">filter_by_presence</span>(d_q98, <span class="at">min_nonzero =</span> <span class="dv">50</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Retained 6124 rows after filtering</code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>d_q99 <span class="ot">&lt;-</span> <span class="fu">filter_by_presence</span>(d_q99, <span class="at">min_nonzero =</span> <span class="dv">100</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Retained 9320 rows after filtering</code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># taxonomies</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>tax_95 <span class="ot">=</span> <span class="fu">read_taxonomy</span>(<span class="fu">system.file</span>(<span class="st">"extdata"</span>, <span class="st">"example_taxonomy.tsv.gz"</span>, <span class="at">package =</span> <span class="st">"strainspy"</span>))</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>tax_98 <span class="ot">=</span> <span class="fu">read_taxonomy</span>(<span class="st">"data/TAXONOMY/sylph_DB_taxonomy_98.tsv"</span>)</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>tax_99 <span class="ot">=</span> <span class="fu">read_taxonomy</span>(<span class="st">"data/TAXONOMY/sylph_DB_taxonomy_99.tsv"</span>)</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>design <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="st">" ~ spiked"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
 </section>
 <section id="fit-zib-models" class="level2">
 <h2 class="anchored" data-anchor-id="fit-zib-models">Fit ZIB models</h2>
@@ -432,18 +376,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="query-95">query 95</h3>
 <div class="cell">
 <details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">=</span> <span class="st">"output_rds/spike_ecoli_zib_q_95.rds"</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  fit_zib_95 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">system.time</span>({</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    fit_zib_95 <span class="ot">&lt;-</span> <span class="fu">glmZiBFit</span>(d_q95, design, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  })</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(fit_zib_95, save_path)</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_manhattan</span>(fit_zib_95, <span class="at">taxonomy =</span> tax_95, <span class="at">method =</span> <span class="st">"BH"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">=</span> <span class="st">"output_rds/spike_ecoli_zib_q_95.rds"</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  fit_zib_95 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">system.time</span>({</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    fit_zib_95 <span class="ot">&lt;-</span> <span class="fu">glmZiBFit</span>(d_q95, design, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(fit_zib_95, save_path)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_manhattan</span>(fit_zib_95, <span class="at">taxonomy =</span> tax_95, <span class="at">method =</span> <span class="st">"BH"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stderr">
 <pre><code>! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
@@ -455,18 +399,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
 ℹ Please use `linewidth` instead.
 ℹ The deprecated feature was likely used in the strainspy package.
-  Please report the issue to the authors.</code></pre>
+  Please report the issue at &lt;https://github.com/gtonkinhill/strainspy/issues&gt;.</code></pre>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Sims_spike_query_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<p><img src="Sims_spike_query_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
 </figure>
 </div>
 </div>
 <details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_manhattan</span>(fit_zib_95, <span class="at">taxonomy =</span> tax_95, <span class="at">aggregate_by_taxa =</span> F)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_manhattan</span>(fit_zib_95, <span class="at">taxonomy =</span> tax_95, <span class="at">aggregate_by_taxa =</span> F)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stderr">
 <pre><code>! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
@@ -479,13 +423,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Sims_spike_query_files/figure-html/unnamed-chunk-2-2.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<p><img src="Sims_spike_query_files/figure-html/unnamed-chunk-1-2.png" class="img-fluid figure-img" style="width:100.0%"></p>
 </figure>
 </div>
 </div>
 <details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_volcano</span>(fit_zib_95, <span class="at">label =</span> T)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_volcano</span>(fit_zib_95, <span class="at">label =</span> T)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Found 1737 tophits for spikedTRUE at alpha = 1 using holm </code></pre>
@@ -493,13 +437,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Sims_spike_query_files/figure-html/unnamed-chunk-2-3.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<p><img src="Sims_spike_query_files/figure-html/unnamed-chunk-1-3.png" class="img-fluid figure-img" style="width:100.0%"></p>
 </figure>
 </div>
 </div>
 <details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(d_q95, <span class="at">phenotype =</span> <span class="st">'spiked'</span>, <span class="at">contigs =</span> <span class="fu">top_hits</span>(fit_zib_95)<span class="sc">$</span>Contig_name, <span class="at">show_points =</span> T, <span class="at">plot_type =</span> <span class="st">'violin'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(d_q95, <span class="at">phenotype =</span> <span class="st">'spiked'</span>, <span class="at">contigs =</span> <span class="fu">top_hits</span>(fit_zib_95)<span class="sc">$</span>Contig_name, <span class="at">show_points =</span> T, <span class="at">plot_type =</span> <span class="st">'violin'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Found 2 tophits for spikedTRUE at alpha = 0.05 using holm </code></pre>
@@ -511,7 +455,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Sims_spike_query_files/figure-html/unnamed-chunk-2-4.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<p><img src="Sims_spike_query_files/figure-html/unnamed-chunk-1-4.png" class="img-fluid figure-img" style="width:100.0%"></p>
 </figure>
 </div>
 </div>
@@ -521,19 +465,83 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="query-98">query 98</h3>
 <div class="cell">
 <details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">=</span> <span class="st">"output_rds/spike_ecoli_zib_q_98.rds"</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  fit_zib_98 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">system.time</span>({</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    fit_zib_98 <span class="ot">&lt;-</span> <span class="fu">glmZiBFit</span>(d_q98, design, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  })</span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(fit_zib_98, save_path)</span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_manhattan</span>(fit_zib_98, <span class="at">taxonomy =</span> tax_98, <span class="at">method =</span> <span class="st">"BH"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">=</span> <span class="st">"output_rds/spike_ecoli_zib_q_98.rds"</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  fit_zib_98 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">system.time</span>({</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    fit_zib_98 <span class="ot">&lt;-</span> <span class="fu">glmZiBFit</span>(d_q98, design, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(fit_zib_98, save_path)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_manhattan</span>(fit_zib_98, <span class="at">taxonomy =</span> tax_98, <span class="at">method =</span> <span class="st">"BH"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
+! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
+! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
+! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Sims_spike_query_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_volcano</span>(fit_zib_98, <span class="at">label =</span> T)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Found 6124 tophits for spikedTRUE at alpha = 1 using holm </code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Sims_spike_query_files/figure-html/unnamed-chunk-2-2.png" class="img-fluid figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(d_q98, <span class="at">phenotype =</span> <span class="st">'spiked'</span>, <span class="at">contigs =</span> <span class="fu">top_hits</span>(fit_zib_98, <span class="at">alpha =</span> <span class="fl">0.05</span>)<span class="sc">$</span>Contig_name)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Found 4 tophits for spikedTRUE at alpha = 0.05 using holm </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 282 rows containing non-finite outside the scale range
+(`stat_boxplot()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Sims_spike_query_files/figure-html/unnamed-chunk-2-3.png" class="img-fluid figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="query-99" class="level3">
+<h3 class="anchored" data-anchor-id="query-99">query 99</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">=</span> <span class="st">"output_rds/spike_ecoli_zib_q_99.rds"</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  fit_zib_99 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">system.time</span>({</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    fit_zib_99 <span class="ot">&lt;-</span> <span class="fu">glmZiBFit</span>(d_q99, design, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(fit_zib_99, save_path)</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_manhattan</span>(fit_zib_99, <span class="at">taxonomy =</span> tax_99, <span class="at">method =</span> <span class="st">"BH"</span>, <span class="at">tax_levels =</span> <span class="fu">c</span>(<span class="st">"Order"</span>, <span class="st">"Phylum"</span>, <span class="st">"Genus"</span>, <span class="st">"Species"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stderr">
 <pre><code>! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
@@ -549,11 +557,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_volcano</span>(fit_zib_98, <span class="at">label =</span> T)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_manhattan</span>(fit_zib_99, <span class="at">taxonomy =</span> tax_99, <span class="at">aggregate_by_taxa =</span> F)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Found 6124 tophits for spikedTRUE at alpha = 1 using holm </code></pre>
+<div class="cell-output cell-output-stderr">
+<pre><code>! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
+! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
+! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
+! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
+! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
+! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.</code></pre>
 </div>
 <div class="cell-output-display">
 <div>
@@ -563,15 +576,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(d_q98, <span class="at">phenotype =</span> <span class="st">'spiked'</span>, <span class="at">contigs =</span> <span class="fu">top_hits</span>(fit_zib_98, <span class="at">alpha =</span> <span class="fl">0.05</span>)<span class="sc">$</span>Contig_name)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_volcano</span>(fit_zib_99, <span class="at">label =</span> T)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Found 4 tophits for spikedTRUE at alpha = 0.05 using holm </code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 282 rows containing non-finite outside the scale range
-(`stat_boxplot()`).</code></pre>
+<pre><code>Found 9320 tophits for spikedTRUE at alpha = 1 using holm </code></pre>
 </div>
 <div class="cell-output-display">
 <div>
@@ -580,24 +589,70 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </figure>
 </div>
 </div>
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(d_q99, <span class="at">phenotype =</span> <span class="st">'spiked'</span>, <span class="at">contigs =</span> <span class="fu">top_hits</span>(fit_zib_99)<span class="sc">$</span>Contig_name)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Found 18 tophits for spikedTRUE at alpha = 0.05 using holm </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1258 rows containing non-finite outside the scale range
+(`stat_boxplot()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Sims_spike_query_files/figure-html/unnamed-chunk-3-4.png" class="img-fluid figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>contigs_to_plot <span class="ot">=</span> <span class="fu">top_hits</span>(fit_zib_99)<span class="sc">$</span>Contig_name</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Found 18 tophits for spikedTRUE at alpha = 0.05 using holm </code></pre>
+</div>
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(d_q99, <span class="at">phenotype =</span> <span class="st">'spiked'</span>, <span class="at">contigs =</span> <span class="fu">top_hits</span>(fit_zib_99)<span class="sc">$</span>Contig_name, <span class="at">plot_type =</span> <span class="st">'box'</span>, <span class="at">show_points =</span> T, <span class="at">contig_names =</span> <span class="fu">sub</span>(<span class="st">"NZ_"</span>, <span class="st">""</span>, <span class="fu">unname</span>(<span class="fu">sapply</span>(contigs_to_plot, <span class="cf">function</span>(x) <span class="fu">unlist</span>(<span class="fu">strsplit</span>(x,<span class="st">" "</span>))[<span class="dv">1</span>])) ))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Found 18 tophits for spikedTRUE at alpha = 0.05 using holm </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1258 rows containing non-finite outside the scale range
+(`stat_boxplot()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Sims_spike_query_files/figure-html/unnamed-chunk-3-5.png" class="img-fluid figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
 </div>
 </section>
-<section id="query-99" class="level3">
-<h3 class="anchored" data-anchor-id="query-99">query 99</h3>
+</section>
+<section id="fit-ob-models" class="level2">
+<h2 class="anchored" data-anchor-id="fit-ob-models">Fit OB models</h2>
+<section id="query-95-1" class="level3">
+<h3 class="anchored" data-anchor-id="query-95-1">query 95</h3>
 <div class="cell">
 <details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">=</span> <span class="st">"output_rds/spike_ecoli_zib_q_99.rds"</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  fit_zib_99 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">system.time</span>({</span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    fit_zib_99 <span class="ot">&lt;-</span> <span class="fu">glmZiBFit</span>(d_q99, design, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>  })</span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(fit_zib_99, save_path)</span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_manhattan</span>(fit_zib_99, <span class="at">taxonomy =</span> tax_99, <span class="at">method =</span> <span class="st">"BH"</span>, <span class="at">tax_levels =</span> <span class="fu">c</span>(<span class="st">"Order"</span>, <span class="st">"Phylum"</span>, <span class="st">"Genus"</span>, <span class="st">"Species"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">=</span> <span class="st">"output_rds/spike_ecoli_ob_q_95.rds"</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  fit_ob_95 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">system.time</span>({</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    fit_ob_95 <span class="ot">&lt;-</span> <span class="fu">glmObFit</span>(d_q95, design, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(fit_ob_95, save_path)</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_manhattan</span>(fit_ob_95, <span class="at">taxonomy =</span> tax_95, <span class="at">method =</span> <span class="st">"BH"</span>, <span class="at">tax_levels =</span> <span class="fu">c</span>(<span class="st">"Phylum"</span>, <span class="st">"Order"</span>, <span class="st">"Class"</span>, <span class="st">"Genus"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stderr">
 <pre><code>! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
@@ -613,13 +668,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_manhattan</span>(fit_zib_99, <span class="at">taxonomy =</span> tax_99, <span class="at">aggregate_by_taxa =</span> F)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_manhattan</span>(fit_ob_95, <span class="at">taxonomy =</span> tax_95, <span class="at">aggregate_by_taxa =</span> F)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stderr">
 <pre><code>! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
-! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
-! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
 ! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
 ! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
 ! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.</code></pre>
@@ -632,11 +685,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_volcano</span>(fit_zib_99, <span class="at">label =</span> T)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_volcano</span>(fit_ob_95, <span class="at">label =</span> T)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Found 9320 tophits for spikedTRUE at alpha = 1 using holm </code></pre>
+<pre><code>Found 1737 tophits for spikedTRUE at alpha = 1 using holm </code></pre>
 </div>
 <div class="cell-output-display">
 <div>
@@ -646,15 +699,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(d_q99, <span class="at">phenotype =</span> <span class="st">'spiked'</span>, <span class="at">contigs =</span> <span class="fu">top_hits</span>(fit_zib_99)<span class="sc">$</span>Contig_name)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(d_q95, <span class="at">phenotype =</span> <span class="st">'spiked'</span>, <span class="at">contigs =</span> <span class="fu">top_hits</span>(fit_ob_95, <span class="at">alpha =</span> <span class="fl">0.05</span>)<span class="sc">$</span>Contig_name, <span class="at">show_points =</span> T, <span class="at">plot_type =</span> <span class="st">'violin'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Found 18 tophits for spikedTRUE at alpha = 0.05 using holm </code></pre>
+<pre><code>Found 2 tophits for spikedTRUE at alpha = 0.05 using holm </code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 1258 rows containing non-finite outside the scale range
-(`stat_boxplot()`).</code></pre>
+<pre><code>Warning: Removed 218 rows containing non-finite outside the scale range
+(`stat_ydensity()`).</code></pre>
 </div>
 <div class="cell-output-display">
 <div>
@@ -663,52 +716,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </figure>
 </div>
 </div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>contigs_to_plot <span class="ot">=</span> <span class="fu">top_hits</span>(fit_zib_99)<span class="sc">$</span>Contig_name</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Found 18 tophits for spikedTRUE at alpha = 0.05 using holm </code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(d_q99, <span class="at">phenotype =</span> <span class="st">'spiked'</span>, <span class="at">contigs =</span> <span class="fu">top_hits</span>(fit_zib_99)<span class="sc">$</span>Contig_name, <span class="at">plot_type =</span> <span class="st">'box'</span>, <span class="at">show_points =</span> T, <span class="at">contig_names =</span> <span class="fu">sub</span>(<span class="st">"NZ_"</span>, <span class="st">""</span>, <span class="fu">unname</span>(<span class="fu">sapply</span>(contigs_to_plot, <span class="cf">function</span>(x) <span class="fu">unlist</span>(<span class="fu">strsplit</span>(x,<span class="st">" "</span>))[<span class="dv">1</span>])) ))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Found 18 tophits for spikedTRUE at alpha = 0.05 using holm </code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 1258 rows containing non-finite outside the scale range
-(`stat_boxplot()`).</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="Sims_spike_query_files/figure-html/unnamed-chunk-4-5.png" class="img-fluid figure-img" style="width:100.0%"></p>
-</figure>
-</div>
-</div>
 </div>
 </section>
-</section>
-<section id="fit-ob-models" class="level2">
-<h2 class="anchored" data-anchor-id="fit-ob-models">Fit OB models</h2>
-<section id="query-95-1" class="level3">
-<h3 class="anchored" data-anchor-id="query-95-1">query 95</h3>
+<section id="query-98-1" class="level3">
+<h3 class="anchored" data-anchor-id="query-98-1">query 98</h3>
 <div class="cell">
 <details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">=</span> <span class="st">"output_rds/spike_ecoli_ob_q_95.rds"</span></span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  fit_ob_95 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
-<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">system.time</span>({</span>
-<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>    fit_ob_95 <span class="ot">&lt;-</span> <span class="fu">glmObFit</span>(d_q95, design, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
-<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>  })</span>
-<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(fit_ob_95, save_path)</span>
-<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_manhattan</span>(fit_ob_95, <span class="at">taxonomy =</span> tax_95, <span class="at">method =</span> <span class="st">"BH"</span>, <span class="at">tax_levels =</span> <span class="fu">c</span>(<span class="st">"Phylum"</span>, <span class="st">"Order"</span>, <span class="st">"Class"</span>, <span class="st">"Genus"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">=</span> <span class="st">"output_rds/spike_ecoli_ob_q_98.rds"</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  fit_ob_98 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">system.time</span>({</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>    fit_ob_98 <span class="ot">&lt;-</span> <span class="fu">glmObFit</span>(d_q98, design, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(fit_ob_98, save_path)</span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_manhattan</span>(fit_ob_98, <span class="at">taxonomy =</span> tax_98, <span class="at">method =</span> <span class="st">"BH"</span>, <span class="at">tax_levels =</span> <span class="fu">c</span>(<span class="st">"Phylum"</span>, <span class="st">"Order"</span>, <span class="st">"Class"</span>, <span class="st">"Genus"</span>, <span class="st">"Species"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stderr">
 <pre><code>! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
@@ -724,8 +750,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_manhattan</span>(fit_ob_95, <span class="at">taxonomy =</span> tax_95, <span class="at">aggregate_by_taxa =</span> F)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_manhattan</span>(fit_ob_98, <span class="at">taxonomy =</span> tax_98, <span class="at">aggregate_by_taxa =</span> F)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stderr">
 <pre><code>! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
@@ -741,11 +767,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_volcano</span>(fit_ob_95, <span class="at">label =</span> T)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_volcano</span>(fit_ob_98, <span class="at">label =</span> T)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Found 1737 tophits for spikedTRUE at alpha = 1 using holm </code></pre>
+<pre><code>Found 6124 tophits for spikedTRUE at alpha = 1 using holm </code></pre>
 </div>
 <div class="cell-output-display">
 <div>
@@ -755,14 +781,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(d_q95, <span class="at">phenotype =</span> <span class="st">'spiked'</span>, <span class="at">contigs =</span> <span class="fu">top_hits</span>(fit_ob_95, <span class="at">alpha =</span> <span class="fl">0.05</span>)<span class="sc">$</span>Contig_name, <span class="at">show_points =</span> T, <span class="at">plot_type =</span> <span class="st">'violin'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(d_q98, <span class="at">phenotype =</span> <span class="st">'spiked'</span>, <span class="at">contigs =</span> <span class="fu">top_hits</span>(fit_ob_98, <span class="at">alpha =</span> <span class="fl">0.05</span>)<span class="sc">$</span>Contig_name, <span class="at">show_points =</span> T, <span class="at">plot_type =</span> <span class="st">'violin'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Found 2 tophits for spikedTRUE at alpha = 0.05 using holm </code></pre>
+<pre><code>Found 4 tophits for spikedTRUE at alpha = 0.05 using holm </code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 218 rows containing non-finite outside the scale range
+<pre><code>Warning: Removed 282 rows containing non-finite outside the scale range
 (`stat_ydensity()`).</code></pre>
 </div>
 <div class="cell-output-display">
@@ -774,23 +800,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="query-98-1" class="level3">
-<h3 class="anchored" data-anchor-id="query-98-1">query 98</h3>
+<section id="query-99-1" class="level3">
+<h3 class="anchored" data-anchor-id="query-99-1">query 99</h3>
 <div class="cell">
 <details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">=</span> <span class="st">"output_rds/spike_ecoli_ob_q_98.rds"</span></span>
-<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
-<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>  fit_ob_98 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
-<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">system.time</span>({</span>
-<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>    fit_ob_98 <span class="ot">&lt;-</span> <span class="fu">glmObFit</span>(d_q98, design, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
-<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>  })</span>
-<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(fit_ob_98, save_path)</span>
-<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_manhattan</span>(fit_ob_98, <span class="at">taxonomy =</span> tax_98, <span class="at">method =</span> <span class="st">"BH"</span>, <span class="at">tax_levels =</span> <span class="fu">c</span>(<span class="st">"Phylum"</span>, <span class="st">"Order"</span>, <span class="st">"Class"</span>, <span class="st">"Genus"</span>, <span class="st">"Species"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">=</span> <span class="st">"output_rds/spike_ecoli_ob_q_99.rds"</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  fit_ob_99 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">system.time</span>({</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>    fit_ob_99 <span class="ot">&lt;-</span> <span class="fu">glmObFit</span>(d_q99, design, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(fit_ob_99, save_path)</span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_manhattan</span>(fit_ob_99, <span class="at">taxonomy =</span> tax_99, <span class="at">tax_levels =</span> <span class="fu">c</span>(<span class="st">"Phylum"</span>, <span class="st">"Order"</span>, <span class="st">"Class"</span>, <span class="st">"Genus"</span>, <span class="st">"Species"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stderr">
 <pre><code>! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
@@ -806,8 +831,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_manhattan</span>(fit_ob_98, <span class="at">taxonomy =</span> tax_98, <span class="at">aggregate_by_taxa =</span> F)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_manhattan</span>(fit_ob_99, <span class="at">taxonomy =</span> tax_99, <span class="at">aggregate_by_taxa =</span> F)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stderr">
 <pre><code>! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
@@ -823,11 +848,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_volcano</span>(fit_ob_98, <span class="at">label =</span> T)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_volcano</span>(fit_ob_99, <span class="at">label =</span> T)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Found 6124 tophits for spikedTRUE at alpha = 1 using holm </code></pre>
+<pre><code>Found 9320 tophits for spikedTRUE at alpha = 1 using holm </code></pre>
 </div>
 <div class="cell-output-display">
 <div>
@@ -837,89 +862,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(d_q98, <span class="at">phenotype =</span> <span class="st">'spiked'</span>, <span class="at">contigs =</span> <span class="fu">top_hits</span>(fit_ob_98, <span class="at">alpha =</span> <span class="fl">0.05</span>)<span class="sc">$</span>Contig_name, <span class="at">show_points =</span> T, <span class="at">plot_type =</span> <span class="st">'violin'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Found 4 tophits for spikedTRUE at alpha = 0.05 using holm </code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 282 rows containing non-finite outside the scale range
-(`stat_ydensity()`).</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="Sims_spike_query_files/figure-html/unnamed-chunk-6-4.png" class="img-fluid figure-img" style="width:100.0%"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="query-99-1" class="level3">
-<h3 class="anchored" data-anchor-id="query-99-1">query 99</h3>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>save_path <span class="ot">=</span> <span class="st">"output_rds/spike_ecoli_ob_q_99.rds"</span></span>
-<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(save_path)){</span>
-<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>  fit_ob_99 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_path)</span>
-<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">system.time</span>({</span>
-<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>    fit_ob_99 <span class="ot">&lt;-</span> <span class="fu">glmObFit</span>(d_q99, design, <span class="at">nthreads =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
-<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>  })</span>
-<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(fit_ob_99, save_path)</span>
-<span id="cb63-9"><a href="#cb63-9" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb63-10"><a href="#cb63-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-11"><a href="#cb63-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_manhattan</span>(fit_ob_99, <span class="at">taxonomy =</span> tax_99, <span class="at">tax_levels =</span> <span class="fu">c</span>(<span class="st">"Phylum"</span>, <span class="st">"Order"</span>, <span class="st">"Class"</span>, <span class="st">"Genus"</span>, <span class="st">"Species"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stderr">
-<pre><code>! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
-! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
-! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
-! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="Sims_spike_query_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
-</figure>
-</div>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_manhattan</span>(fit_ob_99, <span class="at">taxonomy =</span> tax_99, <span class="at">aggregate_by_taxa =</span> F)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stderr">
-<pre><code>! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
-! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
-! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
-! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="Sims_spike_query_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid figure-img" style="width:100.0%"></p>
-</figure>
-</div>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_volcano</span>(fit_ob_99, <span class="at">label =</span> T)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Found 9320 tophits for spikedTRUE at alpha = 1 using holm </code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="Sims_spike_query_files/figure-html/unnamed-chunk-7-3.png" class="img-fluid figure-img" style="width:100.0%"></p>
-</figure>
-</div>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(d_q99, <span class="at">phenotype =</span> <span class="st">'spiked'</span>, <span class="at">contigs =</span> <span class="fu">top_hits</span>(fit_ob_99, <span class="at">alpha =</span> <span class="fl">0.05</span>)<span class="sc">$</span>Contig_name, <span class="at">show_points =</span> T, <span class="at">plot_type =</span> <span class="st">'violin'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ani_dist</span>(d_q99, <span class="at">phenotype =</span> <span class="st">'spiked'</span>, <span class="at">contigs =</span> <span class="fu">top_hits</span>(fit_ob_99, <span class="at">alpha =</span> <span class="fl">0.05</span>)<span class="sc">$</span>Contig_name, <span class="at">show_points =</span> T, <span class="at">plot_type =</span> <span class="st">'violin'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Found 18 tophits for spikedTRUE at alpha = 0.05 using holm </code></pre>
@@ -931,7 +875,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Sims_spike_query_files/figure-html/unnamed-chunk-7-4.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<p><img src="Sims_spike_query_files/figure-html/unnamed-chunk-6-4.png" class="img-fluid figure-img" style="width:100.0%"></p>
 </figure>
 </div>
 </div>
@@ -1343,6 +1287,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   });
   </script>
 </div> <!-- /content -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const toc = document.querySelector("#TOC");
+
+  if (!toc) return;
+
+  const resources = document.createElement("div");
+  resources.className = "strainspy-resources";
+
+  resources.innerHTML = `
+    <div class="strainspy-resources-title">Resources</div>
+
+    <a href="https://github.com/gtonkinhill/strainspy"
+       target="_blank"
+       rel="noopener noreferrer"
+       class="strainspy-resource">
+      <i class="bi bi-github"></i>
+      <span>
+        <strong>StrainSpy</strong>
+        <small>GitHub repository</small>
+      </span>
+    </a>
+
+    <a href="https://github.com/Sudaraka88/strainspy-manuscript"
+       target="_blank"
+       rel="noopener noreferrer"
+       class="strainspy-resource">
+      <i class="bi bi-github"></i>
+      <span>
+        <strong>Analysis repository</strong>
+        <small>Code and analyses</small>
+      </span>
+    </a>
+  `;
+  
+  toc.appendChild(resources);
+});
+</script>
 
 
 

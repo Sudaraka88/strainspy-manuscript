@@ -46,10 +46,11 @@ po/*~
 # RStudio Connect folder
 rsconnect/
 
-# We should include test data at some point, waiting for clean up
+# Test data is now in figshare, so we don't need to keep it in the repo
 TEST_DATA
 ecoli_sims
 data
+p_distasonis_sims
 
 .DS_Store
 
@@ -71,10 +72,13 @@ GCF*
 OLD
 .positai
 
-
+# Excluding outputs 
+output_tables
 output_rds
 Paper_Figures
-p_distasonis_sims
 
+# website stuff
 /.quarto/
 **/*.quarto_ipynb
+_extensions
+_freeze

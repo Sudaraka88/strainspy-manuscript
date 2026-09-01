@@ -6,22 +6,8 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-# Run Sylph v0.8.0
-
-Examples:
-
-```
-sylph profile ../db/gtdb_95_ordered_DB/gtdb_ordered_95.syldb -u --read-seq-id 99.9 -t 8 -1 ./*_1.fastq.gz -2 /*_2.fastq.gz -o palleja_p_95.tsv
-
-sylph query ../db/gtdb_99_ordered_DB/gtdb_ordered_99.syldb -u --read-seq-id 99.9 -t 8 -1 ./*_1.fastq.gz -2 /*_2.fastq.gz -o palleja_q_99.tsv
-
-```
 ## Load deps
-```{r, warning=FALSE, message=FALSE}
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(data.table)
 library(ggbeeswarm)
@@ -109,7 +95,7 @@ if(file.exists(save_path)){
   fit_zib_q <- readRDS(save_path)
 } else {
   ebp_q = compute_eb_priors(se = se_q, design = as.formula('~ days'),
-                            nthreads = parallel::detectCores(), low_cutoff = 0, high_cutoff = Inf)
+                            nthreads = parallel::detectCores(), low_cutoff = 0, high_cutoff = Inf, progress = FALSE)
   
   fit_zib_q = glmZiBFit(se_q, conv_design, nthreads = parallel::detectCores(), MAP_prior = ebp_q)
   saveRDS(fit_zib_q, save_path)
@@ -117,7 +103,7 @@ if(file.exists(save_path)){
 
 # Day 0 to day 8
 th_q0 = top_hits(fit_zib_q, 3)
-th_q0 = comp_ani_diff_and_posthoc_test(se = se_q, fit = fit_zib_q, th = th_q0)
+th_q0 = comp_ani_diff_and_posthoc_test(se = se_q, fit = fit_zib_q, th = th_q0, progress = FALSE)
 th_q = th_q0[is.na(th_q0$Comment), ]
 
 # Reorder so that the highest ani difference ones come on top
@@ -298,22 +284,22 @@ Let's redo top hist using very permissive settings, i.e., use `BH` and `alpha = 
 ```{r}
 
 th2 = top_hits(fit_zib_q, coef = 2, method = "BH")
-th2_ph = comp_ani_diff_and_posthoc_test(se_q, fit_zib_q, th2, nthreads = parallel::detectCores())
+th2_ph = comp_ani_diff_and_posthoc_test(se_q, fit_zib_q, th2, nthreads = parallel::detectCores(), progress = FALSE)
 th2 = th2_ph[is.na(th2_ph$Comment) | th2_ph$hit_component == "both",,]; rownames(th2) = NULL
 th2 = strainspy:::add_tax2tophits(th2, tax99, columns = c("Phylum", "Genus", "Species"))
 
 th3 = top_hits(fit_zib_q, coef = 3, method = "BH")
-th3_ph = comp_ani_diff_and_posthoc_test(se_q, fit_zib_q, th3, nthreads = parallel::detectCores())
+th3_ph = comp_ani_diff_and_posthoc_test(se_q, fit_zib_q, th3, nthreads = parallel::detectCores(), progress = FALSE)
 th3 = th3_ph[is.na(th3_ph$Comment) | th3_ph$hit_component == "both",,]
 th3 = strainspy:::add_tax2tophits(th3, tax99, columns = c("Phylum", "Genus", "Species"))
 
 th4 = top_hits(fit_zib_q, coef = 4, method = "BH")
-th4_ph = comp_ani_diff_and_posthoc_test(se_q, fit_zib_q, th4, nthreads = parallel::detectCores())
+th4_ph = comp_ani_diff_and_posthoc_test(se_q, fit_zib_q, th4, nthreads = parallel::detectCores(), progress = FALSE)
 th4 = th4_ph[is.na(th4_ph$Comment) | th4_ph$hit_component == "both",]
 th4 = strainspy:::add_tax2tophits(th4, tax99, columns = c("Phylum", "Genus", "Species"))
 
 th5 = top_hits(fit_zib_q, coef = 5, method = "BH")
-th5_ph = comp_ani_diff_and_posthoc_test(se_q, fit_zib_q, th5, nthreads = parallel::detectCores())
+th5_ph = comp_ani_diff_and_posthoc_test(se_q, fit_zib_q, th5, nthreads = parallel::detectCores(), progress = FALSE)
 th5 = th5_ph[is.na(th5_ph$Comment) | th5_ph$hit_component == "both",,]
 th5 = strainspy:::add_tax2tophits(th5, tax99, columns = c("Phylum", "Genus", "Species"))
 
@@ -424,7 +410,7 @@ strain_stats <- ani_filtered_ %>%
 ```
 
 ### Visualise interesting variations of species within genera
-```{r}
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
 genus_dist = function(selected_genera){ 
   selected_species = unique(ani_filtered$Species[ani_filtered$Genus == selected_genera])
   # get genera counts in the database
@@ -522,7 +508,7 @@ genus_dist("Clostridium_AQ")
 ```
 
 ### Check for abundance signal
-```{r}
+```{r, fig.width=12, fig.asp=0.75, out.width='100%'}
 plot_avg_abundance = function(asy_mx, meta){
   # 1. Pivot and Join (as before)
   combined_data <- asy_mx %>% 

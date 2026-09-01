@@ -1,12 +1,25 @@
 project:
   type: website
   output-dir: docs
+  render:
+    - "*.Rmd"
+
+execute:
+  freeze: auto
+
+knitr:
+  opts_chunk:
+    fig.width: 12
+    fig.height: 8
+    fig.align: center
+    out.width: "100%"
 
 website:
   title: "StrainSpy Manuscript"
 
   navbar:
     logo: assets/icon.svg
+
     left:
       - href: index.Rmd
         text: Home
@@ -31,10 +44,12 @@ website:
           - methods.Rmd
           - simulations.Rmd
           - Sims_spike_query.Rmd
+          - Sims_spike_profile.Rmd
           - sims_spike_query_pdis.Rmd
           - prior_on_dispersion.Rmd
           - logistic_ID.Rmd
           - varyingPrior.Rmd
+          - aniAdjust.Rmd
 
       - section: "Association Testing"
         contents:
@@ -52,3 +67,51 @@ format:
     theme: cosmo
     toc: true
     code-fold: true
+    code-summary: "Show code"
+
+    filters:
+      - collapse-output
+
+    css:
+      - resources.css
+
+    include-after-body:
+      - text: |
+          <script>
+          document.addEventListener("DOMContentLoaded", function () {
+            const toc = document.querySelector("#TOC");
+
+            if (!toc) return;
+
+            const resources = document.createElement("div");
+            resources.className = "strainspy-resources";
+
+            resources.innerHTML = `
+              <div class="strainspy-resources-title">Resources</div>
+
+              <a href="https://github.com/gtonkinhill/strainspy"
+                 target="_blank"
+                 rel="noopener noreferrer"
+                 class="strainspy-resource">
+                <i class="bi bi-github"></i>
+                <span>
+                  <strong>StrainSpy</strong>
+                  <small>GitHub repository</small>
+                </span>
+              </a>
+
+              <a href="https://github.com/Sudaraka88/strainspy-manuscript"
+                 target="_blank"
+                 rel="noopener noreferrer"
+                 class="strainspy-resource">
+                <i class="bi bi-github"></i>
+                <span>
+                  <strong>Analysis repository</strong>
+                  <small>Code and analyses</small>
+                </span>
+              </a>
+            `;
+            
+            toc.appendChild(resources);
+          });
+          </script>

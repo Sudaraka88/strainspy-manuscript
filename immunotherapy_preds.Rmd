@@ -8,7 +8,7 @@ editor_options:
 ---
 ## Load dependencies
 
-```{r, warning=FALSE, message=FALSE}
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 library(strainspy)
 library(SummarizedExperiment)
 library(caret)
@@ -90,7 +90,7 @@ print_auc <- function(boot_auc, ret = F){
   ci_lower  <- quantile(boot_auc, 0.025)
   ci_upper  <- quantile(boot_auc, 0.975)
   
-  # cat("AUC =", round(point_est, 3), "[95% CI:", round(ci_lower, 3), "-", round(ci_upper, 3), "]\n")
+  cat("AUC =", round(point_est, 3), "[95% CI:", round(ci_lower, 3), "-", round(ci_upper, 3), "]\n")
   
   if(ret){
     return(c(point_est, ci_lower, ci_upper))
@@ -175,7 +175,7 @@ make_paper_heatmap = function(Op){
 
 ## Classic cross prediction
 
-```{r}
+```{r, warning=FALSE, message=FALSE, include=FALSE}
 # Load the merged dataset
 meta_path <- "./data/ash_pancancer/metadata_full.tsv"
 meta_pan <- read.csv(meta_path, sep = '\t') 
@@ -234,8 +234,8 @@ for(train_dset_nm in dset){
     sy_train = filter_by_presence(sy_train, ceiling(dim(sy_train)[2]/10))
     
     if(length(train_idx) > 20) { # We can train with this
-#       
-      # cat("Running strainspy for", train_type, "in", train_dset_nm, "\n")
+      
+      cat("Running strainspy for", train_type, "in", train_dset_nm, "\n")
       
       save_path = paste("output_rds/pred_enet_imm_fit_train_", train_dset_nm, "_",  train_type ,".rds", sep = "")
       if(file.exists(save_path)){
@@ -251,7 +251,7 @@ for(train_dset_nm in dset){
       
       # Selecting features. If the fit has significant features, use those
       th = top_hits(ZB_fit)
-      th = comp_ani_diff_and_posthoc_test(sy_train, ZB_fit, th)
+      th = comp_ani_diff_and_posthoc_test(sy_train, ZB_fit, th, progress = FALSE)
       th = th[is.na(th$Comment),]
       
       if(nrow(th) > 2){
@@ -260,14 +260,9 @@ for(train_dset_nm in dset){
         # cat("No singificant hits for therapy", train_type, "in", train_dset_nm, "\n")
         # next
         th = top_hits(ZB_fit, alpha = 1)[1:150, ] # This is arbitrary
-        th = comp_ani_diff_and_posthoc_test(sy_train, ZB_fit, th)
+        th = comp_ani_diff_and_posthoc_test(sy_train, ZB_fit, th, progress = FALSE)
         th = th[is.na(th$Comment),]
       }
-      
-      
-      
-      
-      
       
       enet_mdl = run_enet(train_idx = train_idx, test_idx = "", sy = sy, meta = meta, return_fit = T, feature_names)
       
@@ -279,7 +274,7 @@ for(train_dset_nm in dset){
           
           # 4. Evaluate metrics
           if (length(test_idx) > 0) {
-            # cat("Training:", train_dset_nm, ", Therapy:", train_type, " | Testing:", test_dset_nm, ", Therapy:", test_type, "\n")
+            cat("Training:", train_dset_nm, ", Therapy:", train_type, " | Testing:", test_dset_nm, ", Therapy:", test_type, "\n")
             tmp <- evaluate_test_set(fit = enet_mdl, test_idx = test_idx, sy = sy, th_filt_names = feature_names, B = B)
             Op <- rbind(Op, data.frame(
               Train         = train_dset_nm,
@@ -291,7 +286,7 @@ for(train_dset_nm in dset){
               therapy_train = train_type
             ))    
           } else {
-            # cat("No samples of therapy", test_type, "in", test_dset_nm, "\n")
+            cat("No samples of therapy", test_type, "in", test_dset_nm, "\n")
           }
           
           
@@ -299,7 +294,7 @@ for(train_dset_nm in dset){
       }
       
     } else {
-      # cat("Not enough samples of therapy", train_type, "in", train_dset_nm, "\n")
+      cat("Not enough samples of therapy", train_type, "in", train_dset_nm, "\n")
       next
     }
     
@@ -476,7 +471,7 @@ set.seed(1988)
 Op <- data.frame()
 
 for (test_dset_nm in test_dset) {
-  # cat("Training:", "rare", "(", "CICB", ") | Testing set:", test_dset_nm, "\n")
+  cat("Training:", "rare", "(", "CICB", ") | Testing set:", test_dset_nm, "\n")
   
   for (test_type in therapy_types) {
     # Determine test indices based on type criteria (preserving your original != 'CICB' logic for 'Other')
@@ -533,7 +528,7 @@ ggplot(Op, aes(x = bmed, y = Test, color = therapy_test)) +
 
 ### Training and testing
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, include=FALSE}
 # Test and train on all melanoma
 train_dset = unique(sy_melanoma$type)
 test_dset = train_dset
@@ -561,7 +556,7 @@ for (train_dset_nm in train_dset) {
     
     # 3. Process test datasets
     for (test_dset_nm in test_dset) {
-      # cat("Training:", train_dset_nm, "(", train_type, ") | Testing set:", test_dset_nm, "\n")
+      cat("Training:", train_dset_nm, "(", train_type, ") | Testing set:", test_dset_nm, "\n")
       
       for (test_type in therapy_types) {
         # Determine test indices based on type criteria (preserving your original != 'CICB' logic for 'Other')
@@ -714,7 +709,7 @@ make_paper_heatmap(Op_ash2)
 
 ### Build a comparison plot of better visualisation
 
-```{r}
+```{r, fig.width=12, fig.height=12, fig.align='center'}
 
 df_new <- Op2 %>%
   transmute(

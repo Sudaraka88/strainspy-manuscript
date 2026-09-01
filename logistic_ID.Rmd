@@ -1,5 +1,5 @@
 ---
-title: Logistic Regression Model"
+title: Logistic Regression Model
 output:
   github_document
 date: "2026-14-23"
@@ -7,12 +7,16 @@ editor_options:
   chunk_output_type: console
 ---
 
-
 Logistic Regression (`caseControlFit()`) is susceptible to choice of identity threshold (`min_identity`).
 ### Load data and prepare for simulations
 
-```{r}
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 library(strainspy)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(viridis)
+library(patchwork)
 
 # Load Zeevi the GTDB 99% identity dataset
 # data <- read_sylph("~/Documents/strainspy_manuscript/zeevi/zeevi_PRJEB11532_query_gtdb_220_id99.tsv.gz")
@@ -43,11 +47,7 @@ contigs = data@elementMetadata$Contig_name[sel]
 
 ### Functions to generate plots and heatmaps
 ```{r}
-library(ggplot2)
-library(dplyr)
-library(tidyr)
-library(viridis)
-library(patchwork)
+
 
 gg_facet_plot <- function(op, title = NULL){
   if('sf' %in% colnames(op)){
@@ -177,7 +177,7 @@ gg_facet_plot(op_id, "Variation in feature identity")
 ```
 
 ### Simulate changes in presence/absence
-```{r}
+```{r, fig.width=12}
 save_path = "output_rds/logi_sim_pa.rds"
 if(file.exists(save_path)){
   op_pa = readRDS(save_path)

@@ -11,7 +11,7 @@ editor_options:
 
 ## Load data and prepare for simulations
 
-```{r}
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 library(strainspy)
 library(dplyr)
 # Profile 95 - fastest to run
@@ -78,7 +78,7 @@ This fixes the FP issue.
 
 save_path = "output_rds/prior_zib95_ebp.rds"
 
-ebp_full = compute_eb_priors(d_p95_full, design = design, nthreads = parallel::detectCores(), low_cutoff = 0, high_cutoff = Inf)
+ebp_full = compute_eb_priors(d_p95_full, design = design, nthreads = parallel::detectCores(), low_cutoff = 0, high_cutoff = Inf, progress = FALSE)
 ebp_full
 plot_prior_bootstrap(object = ebp_full, "spikedTRUE")
 
@@ -93,7 +93,7 @@ if(file.exists(save_path)){
 
 top_hits(full_zib_95_eb)
 # This plot is redundant - same as (0,1) prior
-plot_ani_dist(d_p95_full, phenotype = 'spiked', contigs = top_hits(full_zib_95_s, alpha = 0.05)$Contig_name, show_points = T, plot_type = 'box')
+plot_ani_dist(d_p95_full, phenotype = 'spiked', contigs = top_hits(full_zib_95_eb, alpha = 0.05)$Contig_name, show_points = T, plot_type = 'box')
 
 ```
 
@@ -184,7 +184,7 @@ Both methods are not great for the small sample size.
 
 ## Fit empirical bayes prior
 ```{r, fig.width=12}
-ebp = compute_eb_priors(d_subset, design = design, nthreads = parallel::detectCores(), low_cutoff = 0, high_cutoff = Inf)
+ebp = compute_eb_priors(d_subset, design = design, nthreads = parallel::detectCores(), low_cutoff = 0, high_cutoff = Inf, progress = FALSE)
 ebp
 plot_prior_bootstrap(ebp, "spikedTRUE")
 

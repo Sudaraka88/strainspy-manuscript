@@ -1,0 +1,50 @@
+.strainspy-resources {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.6rem;
+  background-color: var(--bs-tertiary-bg);
+}
+
+.strainspy-resources-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.7rem;
+}
+
+.strainspy-resource {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.55rem 0;
+  color: var(--bs-body-color);
+  text-decoration: none;
+  border-radius: 0.35rem;
+}
+
+.strainspy-resource:hover {
+  color: var(--bs-primary);
+  text-decoration: none;
+}
+
+.strainspy-resource i {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+
+.strainspy-resource span {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.strainspy-resource strong {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.strainspy-resource small {
+  margin-top: 0.15rem;
+  font-size: 0.72rem;
+  opacity: 0.7;
+}

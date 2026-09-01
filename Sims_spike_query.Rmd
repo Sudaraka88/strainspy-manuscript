@@ -8,7 +8,7 @@ editor_options:
 
 ### Load data and prepare for simulations
 
-```{r}
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 library(strainspy)
 # Queries
 d_q95 <- read_sylph("ecoli_sims/test/sylph_q_95.tsv")

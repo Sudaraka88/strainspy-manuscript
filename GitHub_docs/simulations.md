@@ -1,0 +1,687 @@
+Simulations
+================
+2025-02-04
+
+### Functions to generate plots and heatmaps
+
+``` r
+library(ggplot2)
+library(ggthemes)
+```
+
+    ## Warning: package 'ggthemes' was built under R version 4.6.1
+
+``` r
+library(dplyr)
+```
+
+    ## 
+    ## Attaching package: 'dplyr'
+
+    ## The following objects are masked from 'package:stats':
+    ## 
+    ##     filter, lag
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
+
+``` r
+library(tidyr)
+library(viridis)
+```
+
+    ## Loading required package: viridisLite
+
+``` r
+gg_facet_plot <- function(op, title = NULL, reverse_x = FALSE){
+  if('sf' %in% colnames(op)){
+    op$var = as.numeric(op$sf)
+    xlab_ = "Scale Factor"
+  } else if('z_prop' %in% colnames(op)){
+    op$var = as.numeric(op$z_prop)
+    xlab_ = "Zero Proportion"
+  }
+  
+  
+  op$Test <- factor(op$Test)
+  op$tp = as.numeric(op$tp)
+  op$fn = as.numeric(op$fn)
+  op$fp = as.numeric(op$fp)
+  op$tn = as.numeric(op$tn)
+  
+  op <- op %>% mutate(
+    Sensitivity = tp / (tp + fn) * 100,
+    Specificity = tn / (tn + fn) * 100,
+    Precision   = tp / (tp + fp) * 100,
+    F1          = 2 * tp / (2 * tp + fp + fn) * 100,
+  )
+  
+  long_op <- op %>%
+    pivot_longer(
+      cols = c(Sensitivity, Specificity, Precision, F1),
+      names_to = "Metric",
+      values_to = "Value"
+    )
+  
+  long_op$Metric <- factor(long_op$Metric, levels = c("Sensitivity", "Specificity", "Precision","F1"))
+  
+  p = ggplot(long_op, aes(x = var, y = Value, col = Test)) +
+    geom_point() +
+    geom_line() +
+    facet_wrap(~Metric, scales = "free_y") +
+    theme_clean(base_size = 14) +
+    theme(text = element_text(size = 16)) +
+    labs(
+      title = title,
+      x = xlab_,
+      y = NULL
+    )
+  
+  # Conditionally reverse the x-axis
+  if (reverse_x) {
+    p <- p + scale_x_reverse()
+  }
+  
+  
+  print(p)
+  
+  
+}
+
+
+gg_heatmaps <- function(op){
+  op$sf = as.factor(as.numeric(op$sf))
+  op$z_prop = as.factor(as.numeric(op$z_prop))
+  op$Test <- factor(op$Test)
+  op$tp = as.numeric(op$tp)
+  op$fn = as.numeric(op$fn)
+  op$fp = as.numeric(op$fp)
+  op$tn = as.numeric(op$tn)
+  
+  op <- op %>% mutate(
+    Sensitivity = tp / (tp + fn) * 100,
+    Specificity = tn / (tn + fn) * 100,
+    Precision   = tp / (tp + fp) * 100,
+    F1          = 2 * tp / (2 * tp + fp + fn) * 100,
+  )
+  
+  op_long <- op %>%
+    pivot_longer(cols = c(Sensitivity, Specificity, Precision, F1),
+                 names_to = "Metric", values_to = "Value")
+  
+  op_long$Metric <- factor(op_long$Metric, levels = c("Sensitivity", "Specificity", "Precision", "F1"))
+  
+  ggplot(op_long, aes(x = z_prop, y = sf, fill = Value)) +
+    geom_tile() +
+    facet_grid(Metric ~ Test) +
+    scale_fill_viridis_c(name = "Value") +
+    labs(x = "Zero Proportion", y = "Scale Factor") +
+    theme_minimal() +
+    theme(
+      strip.text = element_text(size = 12, face = "bold"),
+      axis.text.x = element_text(angle = 45, hjust = 1)
+    )
+}
+```
+
+### Load data and prepare for simulations
+
+``` r
+library(strainspy)
+```
+
+    ## Warning in check_dep_version(dep_pkg = "TMB"): package version mismatch: 
+    ## glmmTMB was built with TMB package version 1.9.21
+    ## Current TMB package version is 1.9.25
+    ## Please re-install glmmTMB from source or restore original 'TMB' package (see '?reinstalling' for more information)
+
+``` r
+# Load Zeevi the GTDB 99% identity dataset
+# data <- read_sylph("~/Documents/strainspy_manuscript/zeevi/zeevi_PRJEB11532_query_gtdb_220_id99.tsv.gz")
+data <- read_sylph("TEST_DATA/zeevi/zeevi_PRJEB11532_query_gtdb_220_id99.tsv.gz")
+```
+
+    ## Detected Sylph query output file.
+
+``` r
+data <- filter_by_presence(data, min_nonzero = 20)
+```
+
+    ## Retained 18027 rows after filtering
+
+``` r
+# Get the ids of cases after a random split
+set.seed(789)
+cascon = rbinom(round(SummarizedExperiment::ncol(data)),  1, 0.5)
+cases = which(cascon == 1)
+
+# setup metadata
+meta_data = data.frame(run_accession = colnames(data),
+                       Case_status = cascon)
+
+meta_data$Case_status <- factor(meta_data$Case_status)
+data = modify_metadata(se = data, meta_data = meta_data)
+```
+
+## Sensitivity Analysis
+
+``` r
+# randomly select 100 features (contigs) to rescale abundance - ensure omit NA from cascon model
+
+save_path <- "TEST_DATA/zeevi/TEMP_FITS/null_cascon2.rds"
+if(file.exists(save_path)){
+  fit_cascon_null <- readRDS(save_path)
+} else {
+  fit_cascon_null = strainspy::caseControlFit(data, design = as.formula("Case_status ~ Value"), nthreads = parallel::detectCores())
+  saveRDS(fit_cascon_null, save_path)
+}
+
+save_path <- "TEST_DATA/zeevi/TEMP_FITS/null_ob2.rds"
+if(file.exists(save_path)){
+  fit_ob_null <- readRDS(save_path)
+} else {
+  fit_ob_null = strainspy::glmObFit(data, design = as.formula("~ Case_status"), nthreads = parallel::detectCores())
+  saveRDS(fit_ob_null, save_path)
+}
+
+save_path <- "TEST_DATA/zeevi/TEMP_FITS/null_zib2.rds"
+if(file.exists(save_path)){
+  fit_zib_null <- readRDS(save_path)
+} else {
+  fit_zib_null = strainspy::glmZiBFit(data, design = as.formula("~ Case_status"), nthreads = parallel::detectCores())
+  saveRDS(fit_zib_null, save_path)
+}
+
+set.seed(789)
+sel = sample(which(!is.na(fit_cascon_null@coefficients$X.Intercept.)), 100)
+contigs = data@elementMetadata$Contig_name[sel]
+
+# fit the 3 models using update option
+# fit_ob_null = readRDS("TEST_DATA/zeevi/TEMP_FITS/null_ob.rds")
+# fit_zib_null = readRDS("TEST_DATA/zeevi/TEMP_FITS/null_zib.rds")
+```
+
+### Simulate changes in identity
+
+``` r
+save_path = "output_rds/zeevi_sim_id.rds"
+if(file.exists(save_path)){
+  op_id = readRDS(save_path)
+} else {
+  # run through by varying beta
+  scale_factors = c(seq(0.95, 0.995, by = 0.005),0.999,1)
+  
+  op_id = data.frame()
+  for(scale_factor in scale_factors){
+    exp_beta = c()
+    exp_zi = c()
+    se = data # NULL
+    
+    data_matrix <- SummarizedExperiment::assay(se) # NULL
+    vals_to_mod = data_matrix[sel, cases]
+    
+    for(i in 1:length(sel)){ 
+      tmp = strainspy:::rescale_beta(x = data_matrix[sel[i], cases]/100,
+                                     beta = scale_factor,
+                                     zi = 0)
+      
+      vals_to_mod[i,] = tmp$rescaled*100
+      exp_beta[i] = tmp$expected_beta
+      exp_zi[i] = tmp$expected_zi
+    }
+    
+    # add modified counts for cases
+    data_matrix[sel, cases] = vals_to_mod
+    
+    # add modified assay back to se
+    SummarizedExperiment::assay(se) <- data_matrix
+    
+    fit_zib_updated = strainspy:::update_fit(fit = fit_zib_null, se = se, update_idx = sel, nthreads = 10)
+    fit_ob_updated = strainspy:::update_fit(fit = fit_ob_null, se = se, update_idx = sel, nthreads = 10)
+    fit_cascon_updated = strainspy:::update_fit(fit = fit_cascon_null, se = se, update_idx = sel, nthreads = 10, min_identity = 0.93)
+    # fit_lr_updated = strainspy:::update_fit(fit = fit_lr_null, se = se, update_idx = sel, nthreads = 10, family = "binomial")
+    cat(scale_factor, "\n")
+    
+    op_id = rbind(op_id, 
+                  cbind(scale_factor, 
+                        rbind(
+                          c("zib", strainspy:::get_confusion_mx(top_hits = top_hits(fit_zib_updated), gt_contigs = contigs, all_contigs = rownames(se), print_cm = T)),
+                          c("ob", strainspy:::get_confusion_mx(top_hits = top_hits(fit_ob_updated), gt_contigs = contigs, all_contigs = rownames(se), print_cm = T)),
+                          c("cc", strainspy:::get_confusion_mx(top_hits = top_hits(fit_cascon_updated), gt_contigs = contigs, all_contigs = rownames(se), print_cm = T)))))
+  }
+  
+  colnames(op_id) = c("sf", "Test", "tp", "fn", "fp", "tn")
+  saveRDS(op_id, save_path)
+  
+}
+
+op_id = op_id[order(op_id$sf, decreasing = T), ]; rownames(op_id) = NULL
+gg_facet_plot(op_id, "Variation in feature identity", reverse_x = T)
+```
+
+    ## Warning: Removed 7 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+    ## Warning: Removed 7 rows containing missing values or values outside the scale range
+    ## (`geom_line()`).
+
+<img src="simulations_files/figure-gfm/unnamed-chunk-4-1.png" alt="" width="100%" />
+
+### Simulate changes in presence/absence
+
+``` r
+save_path = "output_rds/zeevi_sim_pa.rds"
+if(file.exists(save_path)){
+  op_pa = readRDS(save_path)
+} else {
+  zero_props = seq(0.15, 0.7, by = 0.05)
+  op_pa = data.frame()
+  for(zero_prop in zero_props){
+    exp_beta = c()
+    exp_zi = c()
+    se = data # NULL
+    
+    data_matrix <- SummarizedExperiment::assay(se) # NULL
+    vals_to_mod = data_matrix[sel, cases]
+    
+    for(i in 1:length(sel)){ 
+      tmp = strainspy:::rescale_beta(x = data_matrix[sel[i], cases]/100,
+                                     beta = 1,
+                                     zi = zero_prop)
+      
+      vals_to_mod[i,] = tmp$rescaled*100
+      exp_beta[i] = tmp$expected_beta
+      exp_zi[i] = tmp$expected_zi
+    }
+    
+    # add modified counts for cases
+    data_matrix[sel, cases] = vals_to_mod
+    
+    # add modified assay back to se
+    SummarizedExperiment::assay(se) <- data_matrix
+    
+    fit_zib_updated = strainspy:::update_fit(fit = fit_zib_null, se = se, update_idx = sel, nthreads = 10)
+    fit_ob_updated = strainspy:::update_fit(fit = fit_ob_null, se = se, update_idx = sel, nthreads = 10)
+    fit_cascon_updated = strainspy:::update_fit(fit = fit_cascon_null, se = se, update_idx = sel, nthreads = 10, min_identity = 0.9)
+    cat(zero_prop, "\n")
+    
+    op_pa = rbind(op_pa, 
+                  cbind(zero_prop, 
+                        rbind(
+                          c("zib", strainspy:::get_confusion_mx(top_hits = top_hits(fit_zib_updated), gt_contigs = contigs, all_contigs = rownames(se), print_cm = T)),
+                          c("ob", strainspy:::get_confusion_mx(top_hits = top_hits(fit_ob_updated), gt_contigs = contigs, all_contigs = rownames(se), print_cm = T)),
+                          c("cc", strainspy:::get_confusion_mx(top_hits = top_hits(fit_cascon_updated), gt_contigs = contigs, all_contigs = rownames(se), print_cm = T)))))
+  }
+  
+  colnames(op_pa) = c("z_prop", "Test", "tp", "fn", "fp", "tn")
+  saveRDS(op_pa, save_path)
+}
+
+gg_facet_plot(op_pa, "Variation in feature presence/absence")
+```
+
+    ## Warning: Removed 6 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+    ## Warning: Removed 6 rows containing missing values or values outside the scale range
+    ## (`geom_line()`).
+
+<img src="simulations_files/figure-gfm/unnamed-chunk-5-1.png" alt="" width="100%" />
+
+### Simulate both identity and presence/absence changes
+
+``` r
+save_path = "output_rds/zeevi_sim_full.rds"
+if(file.exists(save_path)){
+  op_full = readRDS(save_path)
+} else {
+  zero_props = seq(0, 0.72, by = 0.05)
+  scale_factors = c(seq(0.95, 0.995, by = 0.005),0.999,1)
+  op_full = data.frame()
+  
+  for(scale_factor in scale_factors){
+    for(zero_prop in zero_props){
+      
+      t0 = Sys.time()
+      
+      exp_beta = c()
+      exp_zi = c()
+      se = data # NULL
+      
+      data_matrix <- SummarizedExperiment::assay(se) # NULL
+      vals_to_mod = data_matrix[sel, cases]
+      
+      for(i in 1:length(sel)){ 
+        tmp = rescale_beta(x = data_matrix[sel[i], cases]/100,
+                           beta = scale_factor,
+                           zi = zero_prop)
+        
+        vals_to_mod[i,] = tmp$rescaled*100
+        exp_beta[i] = tmp$expected_beta
+        exp_zi[i] = tmp$expected_zi
+      }
+      
+      # add modified counts for cases
+      data_matrix[sel, cases] = vals_to_mod
+      
+      # add modified assay back to se
+      SummarizedExperiment::assay(se) <- data_matrix
+      
+      fit_zib_updated = strainspy:::update_fit(fit = fit_zib_null, se = se, update_idx = sel, nthreads = 10)
+      fit_ob_updated = strainspy:::update_fit(fit = fit_ob_null, se = se, update_idx = sel, nthreads = 10)
+      fit_cascon_updated = strainspy:::update_fit(fit = fit_cascon_null, se = se, update_idx = sel, nthreads = 10, min_identity = 0.9)
+      cat("eval_time (min) =", Sys.time() - t0, "sf =", scale_factor, "zp =",  zero_prop, "\n")
+      
+      op_full = rbind(op_full, 
+                      cbind(zero_prop, scale_factor,
+                            rbind(
+                              c("zib", strainspy:::get_confusion_mx(top_hits = top_hits(fit_zib_updated), gt_contigs = contigs, all_contigs = rownames(se), print_cm = T)),
+                              c("ob", strainspy:::get_confusion_mx(top_hits = top_hits(fit_ob_updated), gt_contigs = contigs, all_contigs = rownames(se), print_cm = T)),
+                              c("cc", strainspy:::get_confusion_mx(top_hits = top_hits(fit_cascon_updated), gt_contigs = contigs, all_contigs = rownames(se), print_cm = T)))))
+    }
+  }
+  colnames(op_full) = c("z_prop", "sf", "Test", "tp", "fn", "fp", "tn")
+  saveRDS(op_full, save_path)
+}
+gg_heatmaps(op_full)
+```
+
+<img src="simulations_files/figure-gfm/unnamed-chunk-6-1.png" alt="" width="100%" />
+
+## Generate a manhattan plots with ground truth for a single data point
+
+``` r
+# scale_factor = 0.975
+# zero_prop = 0.25
+# 
+# exp_beta = c()
+# exp_zi = c()
+# se = data # NULL
+# 
+# data_matrix <- SummarizedExperiment::assay(se) # NULL
+# vals_to_mod = data_matrix[sel, cases]
+# 
+# for(i in 1:length(sel)){ 
+#   tmp = strainspy:::rescale_beta(x = data_matrix[sel[i], cases]/100,
+#                                  beta = scale_factor,
+#                                  zi = zero_prop)
+#   
+#   vals_to_mod[i,] = tmp$rescaled*100
+#   exp_beta[i] = tmp$expected_beta
+#   exp_zi[i] = tmp$expected_zi
+# }
+# 
+# # add modified counts for cases
+# data_matrix[sel, cases] = vals_to_mod
+# 
+# # add modified assay back to se
+# SummarizedExperiment::assay(se) <- data_matrix
+# 
+# fit_zib_updated = strainspy:::update_fit(fit = fit_zib_null, se = se, update_idx = sel, nthreads = 10)
+# fit_ob_updated = strainspy:::update_fit(fit = fit_ob_null, se = se, update_idx = sel, nthreads = 10)
+# fit_cascon_updated = strainspy:::update_fit(fit = fit_cascon_null, se = se, update_idx = sel, nthreads = 10, min_identity = 0.9)
+# 
+# strainspy:::plot_manhattan_gt(fit_zib_updated, method = "holm", ground_truth = contigs)
+# strainspy:::plot_manhattan_gt(fit_ob_updated, method = "holm", ground_truth = contigs)
+# strainspy:::plot_manhattan_gt(fit_cascon_updated, method = "holm", ground_truth = contigs)
+```
+
+# Paper Figure
+
+``` r
+# We'll do 10 replicates of cascon, but keep the split the same
+set.seed(789)
+sel_ = sample(which(!is.na(fit_zib_null@coefficients$X.Intercept.)), 1000) # Start with a larger sample
+contigs_ = data@elementMetadata$Contig_name[sel_]
+
+ds = SummarizedExperiment::assay(data)
+ds = as.matrix(ds[sel_, cases])
+zs = apply(ds, 1, function(x) length(which(x == 0))) # count zeros in each contig
+
+set.seed(789) 
+zs_sel = sample(which(zs < 20), 250)
+
+sel_pool = sel_[zs_sel] # roughly permits up to 20 zeros (20% zeros)
+contig_pool = contigs_[zs_sel]
+
+save_path = "output_rds/zeevi_sim_paper_2.rds"
+
+
+if(file.exists(save_path)){
+  op_pa_full = readRDS(save_path)
+} else {
+  
+  op_pa_full = data.frame()
+  zero_props = seq(0.15, 0.75, by = 0.1)
+  scale_factors = c(seq(0.975, 0.995, by = 0.005),0.999,1)
+  # 
+  # zero_props = 0.5
+  # scale_factors = 0.98
+  
+  set.seed(789);
+  seeds = sample(1000, 10)[2:10]
+  
+  for(s in seeds){
+    t = Sys.time()
+    # Presence absence simulation
+    op_pa = data.frame()
+    for(zero_prop in zero_props){
+      exp_beta = c()
+      exp_zi = c()
+      se = data # NULL
+      
+      data_matrix <- SummarizedExperiment::assay(se) # NULL
+      
+      set.seed(s); subset = sample(length(sel_pool), 50) # Add some randomising
+      sel = sel_pool[subset] 
+      contigs = contig_pool[subset]
+      
+      vals_to_mod = data_matrix[sel, cases]
+      
+      for(i in 1:length(sel)){ 
+        tmp = strainspy:::rescale_beta(x = data_matrix[sel[i], cases]/100,
+                                       beta = 1,
+                                       zi = zero_prop)
+        
+        vals_to_mod[i,] = tmp$rescaled*100
+        exp_beta[i] = tmp$expected_beta
+        exp_zi[i] = tmp$expected_zi
+      }
+      
+      # add modified counts for cases
+      data_matrix[sel, cases] = vals_to_mod
+      
+      # Can we allow ANI < 0.95, sounds meaningless
+      lt95ani = which(vals_to_mod < 95 & vals_to_mod != 0)
+      if(length(lt95ani) > 0) {
+        cat("Set", length(lt95ani), "values to 0\n")
+        vals_to_mod[lt95ani] = 0
+      }
+      
+      # add modified assay back to se
+      SummarizedExperiment::assay(se) <- data_matrix
+      
+      fit_zib_updated = strainspy:::update_fit(fit = fit_zib_null, se = se, update_idx = sel, nthreads = 10)
+      fit_ob_updated = strainspy:::update_fit(fit = fit_ob_null, se = se, update_idx = sel, nthreads = 10)
+      fit_cascon_updated = strainspy:::update_fit(fit = fit_cascon_null, se = se, update_idx = sel, nthreads = 10, min_identity = 0.97)
+      cat(zero_prop, "\n")
+      
+      op_pa = rbind(op_pa, 
+                    cbind(s, "pa",
+                          zero_prop, 
+                          rbind(
+                            c("zib", strainspy:::get_confusion_mx(top_hits = top_hits(fit_zib_updated, method = "BH"), gt_contigs = contigs, all_contigs = rownames(se), print_cm = T)),
+                            c("ob", strainspy:::get_confusion_mx(top_hits = top_hits(fit_ob_updated, method = "BH"), gt_contigs = contigs, all_contigs = rownames(se), print_cm = T)),
+                            c("cc", strainspy:::get_confusion_mx(top_hits = top_hits(fit_cascon_updated, method = "BH"), gt_contigs = contigs, all_contigs = rownames(se), print_cm = T))
+                          )
+                    )
+      )
+    }
+    
+    
+    
+    colnames(op_pa) = c("seed", "sim", "stat", "Test", "tp", "fn", "fp", "tn")
+    op_pa_full = rbind(op_pa_full, op_pa)
+    
+    # Identity simulation
+    op_id = data.frame()
+    for(scale_factor in scale_factors){
+      exp_beta = c()
+      exp_zi = c()
+      se = data # NULL
+      
+      data_matrix <- SummarizedExperiment::assay(se) # NULL
+      vals_to_mod = data_matrix[sel, cases]
+      
+      for(i in 1:length(sel)){ 
+        tmp = strainspy:::rescale_beta(x = data_matrix[sel[i], cases]/100,
+                                       beta = scale_factor,
+                                       zi = 0)
+        
+        vals_to_mod[i,] = tmp$rescaled*100
+        exp_beta[i] = tmp$expected_beta
+        exp_zi[i] = tmp$expected_zi
+      }
+      
+      # Can we allow ANI < 0.95, sounds meaningless
+      lt95ani = which(vals_to_mod < 95 & vals_to_mod != 0)
+      if(length(lt95ani) > 0) {
+        cat("Set", length(lt95ani), "values to 0\n")
+        vals_to_mod[lt95ani] = 0
+      }
+      # add modified counts for cases
+      data_matrix[sel, cases] = vals_to_mod
+      
+      # add modified assay back to se
+      SummarizedExperiment::assay(se) <- data_matrix
+      
+      fit_zib_updated = strainspy:::update_fit(fit = fit_zib_null, se = se, update_idx = sel, nthreads = 10)
+      fit_ob_updated = strainspy:::update_fit(fit = fit_ob_null, se = se, update_idx = sel, nthreads = 10)
+      fit_cascon_updated = strainspy:::update_fit(fit = fit_cascon_null, se = se, update_idx = sel, nthreads = 10, min_identity = 0.97)
+      # fit_lr_updated = strainspy:::update_fit(fit = fit_lr_null, se = se, update_idx = sel, nthreads = 10, family = "binomial")
+      cat(scale_factor, "\n")
+      
+      op_id = rbind(op_id, 
+                    cbind(s, "id",
+                          scale_factor, 
+                          rbind(
+                            c("zib", strainspy:::get_confusion_mx(top_hits = top_hits(fit_zib_updated, method = "BH"), gt_contigs = contigs, all_contigs = rownames(se), print_cm = T)),
+                            c("ob", strainspy:::get_confusion_mx(top_hits = top_hits(fit_ob_updated, method = "BH"), gt_contigs = contigs, all_contigs = rownames(se), print_cm = T)),
+                            c("cc", strainspy:::get_confusion_mx(top_hits = top_hits(fit_cascon_updated, method = "BH"), gt_contigs = contigs, all_contigs = rownames(se), print_cm = T))
+                          )
+                    )
+      )
+    }
+    colnames(op_id) = c("seed", "sim", "stat", "Test", "tp", "fn", "fp", "tn")
+    op_pa_full = rbind(op_pa_full, op_id)
+    Sys.time() - t
+  }
+  saveRDS(op_pa_full, save_path)
+}
+
+gg_facet_plot2 <- function(op, title = NULL, reverse_x = FALSE){
+  # Use 'stat' as the x-axis variable
+  op$var <- as.numeric(op$stat)
+  xlab_ <- if ("sf" %in% colnames(op)) {
+    "Scale Factor"
+  } else if ("z_prop" %in% colnames(op)) {
+    "Zero Proportion"
+  } else {
+    "Stat"
+  }
+  
+  # Ensure proper types
+  op$Test <- factor(op$Test)
+  op <- op %>%
+    mutate(
+      tp = as.numeric(tp),
+      fn = as.numeric(fn),
+      fp = as.numeric(fp),
+      tn = as.numeric(tn),
+      Sensitivity = tp / (tp + fn) * 100,
+      Specificity = tn / (tn + fp) * 100#,
+      # Precision   = tp / (tp + fp) * 100,
+      # F1          = 2 * tp / (2 * tp + fp + fn) * 100
+    )
+  
+  # Convert to long format
+  long_op <- op %>%
+    pivot_longer(
+      cols = c(Sensitivity, Specificity), #, Precision, F1),
+      names_to = "Metric",
+      values_to = "Value"
+    )
+  
+  long_op$Metric <- factor(long_op$Metric, levels = c("Sensitivity", "Specificity", "Precision", "F1"))
+  
+  # Summarize: mean and SE over seeds
+  summary_op <- long_op %>%
+    group_by(var, Test, Metric) %>%
+    summarise(
+      Mean = mean(Value, na.rm = TRUE),
+      SE = sd(Value, na.rm = TRUE) / sqrt(n()),
+      .groups = "drop"
+    )
+  
+  
+  if (reverse_x) {
+    summary_op$var = factor(summary_op$var, levels = sort(unique(summary_op$var), decreasing = T))
+  } else {
+    summary_op$var = factor(summary_op$var, levels = sort(unique(summary_op$var)))
+  }
+  
+  
+  dw = 0.25
+  # Plot with error bars
+  p <- ggplot(summary_op, aes(x = var, y = Mean, color = Test, shape = Test)) +
+    geom_point(size = 2.5, position = position_dodge(width = dw)) +
+    geom_line(linewidth = 1, position = position_dodge(width = dw), aes(group = Test)) +
+    geom_errorbar(
+      aes(ymin = Mean - SE, ymax = Mean + SE),
+      width = 1,
+      linewidth = 1,  # increase this value (e.g., 1 → 1.2 or 1.5)
+      position = position_dodge(dw)
+    ) +
+    facet_wrap(~Metric, scales = "free_y") +
+    theme_clean(base_size = 20) +
+    scale_color_manual(values = c(
+      "#D55E00", # reddish-orange  
+      "#0072B2", # deep blue  
+      "#009E73"  # teal/green  
+    )) +
+    labs(
+      title = title,
+      x = xlab_,
+      y = NULL
+    )
+  
+  # ggplot(summary_op, aes(x = var, y = Mean, col = Test)) +
+  #   geom_point(size = 2.5) +                     # Increase point size
+  #   geom_line(linewidth = 1) +                   # Increase line width
+  #   geom_errorbar(aes(ymin = Mean - SE, ymax = Mean + SE), width = 0.01) +
+  #   facet_wrap(~Metric, scales = "free_y") +
+  #   theme_clean(base_size = 14) +
+  #   theme(text = element_text(size = 16)) +
+  #   labs(
+  #     title = title,
+  #     x = xlab_,
+  #     y = NULL
+  #   )
+  
+  # Optionally reverse x-axis
+  
+  
+  print(p)
+}
+
+gg_facet_plot2(op_pa_full[op_pa_full$sim == "pa", ])
+```
+
+![](simulations_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
+``` r
+gg_facet_plot2(op_pa_full[op_pa_full$sim == "id", ], reverse_x = T)
+```
+
+![](simulations_files/figure-gfm/unnamed-chunk-8-2.png)<!-- -->

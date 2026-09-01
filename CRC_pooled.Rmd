@@ -7,15 +7,11 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
 # Run ZiB analysis in q99 mode
 
 ## Load dependencies
 
-```{r, warning=FALSE, message=FALSE}
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 library(SummarizedExperiment)
 library(tidyverse)
 library(strainspy)
@@ -124,8 +120,8 @@ Looks like there are many hits.
 
 ## Build a summary from top hits
 
-```{r}
-th = comp_ani_diff_and_posthoc_test(se = sy, fit = ZB_fit, th = top_hits(ZB_fit, coef = 2))
+```{r, warning=FALSE, message=FALSE}
+th = comp_ani_diff_and_posthoc_test(se = sy, fit = ZB_fit, th = top_hits(ZB_fit, coef = 2), progress = FALSE)
 th = th[is.na(th$Comment), ]
 th = strainspy:::add_tax2tophits(th, taxonomy)
 
@@ -265,9 +261,32 @@ plot_ani_dist(sy, phenotype = 'disease', contigs = beta_summary$Dominant_contig,
               show_points = T, plot_type = 'box', 
               contig_names = as.character(beta_summary$Species))
 
+
+### E coli
 th_ec = th[th$Species == "Escherichia coli",]
-plot_histogram(sy, phenotype = 'disease', contig = th_ec$Contig_name[3],
-              drop_zeros = T, show_quantiles = F, fit_spline = T, bins = 250)
+
+# Pick a human associated strain
+th_ec$Genome_file[11]
+
+# (enasearch) sudarakm@Sudarakas-MacBook-Pro ~ % datasets summary genome accession GCF_000458275.1            
+# {"reports": [{"accession":"GCF_000458275.1","annotation_info":{"method":"Best-placed reference protein set; GeneMarkS-2+","name":"GCF_000458275.1-RS_2025_06_14","pipeline":"NCBI Prokaryotic Genome Annotation Pipeline (PGAP)","provider":"NCBI RefSeq","release_date":"2025-06-14","software_version":"6.10","stats":{"gene_counts":{"non_coding":95,"protein_coding":4834,"pseudogene":234,"total":5163}}},"assembly_info":{"assembly_level":"Scaffold","assembly_method":"allpaths v. R46382","assembly_name":"Esch_coli_HVH_153_3-9344314_V1","assembly_status":"current","assembly_type":"haploid","bioproject_accession":"PRJNA186185","bioproject_lineage":[{"bioprojects":[{"accession":"PRJNA186185","parent_accessions":["PRJNA186413"],"title":"E coli UTI Bacteremia"},{"accession":"PRJNA186413","title":"Escherichia coli as human pathogen"}]}],"biosample":{"accession":"SAMN01885798","attributes":[{"name":"geo_loc_name","value":"Denmark"},{"name":"collection_date","value":"2004"},{"name":"host","value":"Homo sapiens"},{"name":"lat_lon","value":"missing"},{"name":"host_disease","value":"UTI induced bacteremia"},{"name":"isolation_source","value":"blood"},{"name":"collected_by","value":"missing"},{"name":"strain","value":"HVH 153 (3-9344314)"}],"bioprojects":[{}],"collected_by":"missing","collection_date":"2004","description":{"organism":{"organism_name":"Escherichia coli HVH 153 (3-9344314)","tax_id":1281086},"title":"Pathogen bacterial, clinical or host-associated sample from Escherichia coli HVH 153 (3-9344314)"},"geo_loc_name":"Denmark","host":"Homo sapiens","host_disease":"UTI induced bacteremia","isolation_source":"blood","last_updated":"2019-05-23T15:25:28.339","lat_lon":"missing","models":["Pathogen.ba-cl"],"owner":{"contacts":[{}],"name":"Broad Institute"},"package":"Pathogen.cl.1.0","publication_date":"2013-01-11T00:00:00.000","sample_ids":[{"label":"Sample name","value":"Escherichia coli HVH 153 (3-9344314)"},{"db":"SRA","value":"SRS399665"}],"status":{"status":"live","when":"2013-01-11T09:27:34.707"},"strain":"HVH 153 (3-9344314)","submission_date":"2013-01-11T09:18:22.980"},"comments":"Please be aware that the annotation is done automatically with little or no manual curation.\nThe annotation was added by the NCBI Prokaryotic Genome Annotation Pipeline (PGAP). Information about PGAP can be found here: https://www.ncbi.nlm.nih.gov/genome/annotation_prok/","paired_assembly":{"accession":"GCA_000458275.1","annotation_name":"Annotation submitted by Broad Institute","status":"current"},"release_date":"2013-08-29","sequencing_tech":"Illumina","submitter":"Broad Institute"},"assembly_stats":{"atgc_count":"5265684","contig_l50":8,"contig_n50":232812,"gc_count":"2656312","gc_percent":50.5,"genome_coverage":"140","number_of_component_sequences":45,"number_of_contigs":45,"number_of_scaffolds":14,"scaffold_l50":3,"scaffold_n50":856756,"total_sequence_length":"5303299","total_ungapped_length":"5265684"},"average_nucleotide_identity":{"best_ani_match":{"ani":98.92,"assembly":"GCA_000013265.1","assembly_coverage":88.06,"category":"claderef","organism_name":"Escherichia coli","type_assembly_coverage":89.52},"category":"category_na","comment":"na","match_status":"species_match","submitted_ani_match":{"ani":98.92,"assembly":"GCA_000013265.1","assembly_coverage":88.06,"category":"claderef","organism_name":"Escherichia coli UTI89","type_assembly_coverage":89.52},"submitted_organism":"Escherichia coli HVH 153 (3-9344314)","submitted_species":"Escherichia coli","taxonomy_check_status":"OK"},"checkm_info":{"checkm_marker_set":"Escherichia coli","checkm_marker_set_rank":"species","checkm_species_tax_id":562,"checkm_version":"v1.2.3","completeness":99,"completeness_percentile":49.7728,"contamination":0.86},"current_accession":"GCF_000458275.1","organism":{"infraspecific_names":{"strain":"HVH 153 (3-9344314)"},"organism_name":"Escherichia coli HVH 153 (3-9344314)","tax_id":1281086},"paired_accession":"GCA_000458275.1","source_database":"SOURCE_DATABASE_REFSEQ","wgs_info":{"master_wgs_url":"https://www.ncbi.nlm.nih.gov/nuccore/AVXM00000000.1","wgs_contigs_url":"https://www.ncbi.nlm.nih.gov/Traces/wgs/AVXM01","wgs_project_accession":"AVXM01"}}],"total_count": 1}
+
+
+plot_histogram(sy, phenotype = 'disease', contig = th_ec$Contig_name[11],
+              drop_zeros = T, show_quantiles = F, fit_spline = T, bins = 30)
+
+
+### Streptococcus vestibularis
+
+th_sv = th[th$Species == "Streptococcus vestibularis",]
+
+th_sv$Genome_file[2]
+
+# (enasearch) sudarakm@Sudarakas-MacBook-Pro ~ % datasets summary genome accession GCF_958445235.1                   
+# {"reports": [{"accession":"GCF_958445235.1","annotation_info":{"method":"Best-placed reference protein set; GeneMarkS-2+","name":"GCF_958445235.1-RS_2025_07_23","pipeline":"NCBI Prokaryotic Genome Annotation Pipeline (PGAP)","provider":"NCBI RefSeq","release_date":"2025-07-23","software_version":"6.10","stats":{"gene_counts":{"non_coding":38,"protein_coding":1697,"pseudogene":98,"total":1833}}},"assembly_info":{"assembly_level":"Contig","assembly_method":"metaspades v3.15.3","assembly_name":"ERR9609794_bin.7_MetaWRAP_v1.3_MAG","assembly_status":"current","assembly_type":"haploid","bioproject_accession":"PRJEB62825","bioproject_lineage":[{"bioprojects":[{"accession":"PRJEB62825","title":"EMG produced TPA metagenomics assembly of PRJEB21612 data set (Alterations of the gut microbiome in hypertension)."}]}],"biosample":{"accession":"SAMEA114061883","attributes":[{"name":"ENA-CHECKLIST","value":"ERC000047"},{"name":"ENA-FIRST-PUBLIC","value":"2023-07-13T16:22:57Z"},{"name":"ENA-LAST-UPDATE","value":"2023-07-13T16:22:57Z"},{"name":"External Id","value":"SAMEA114061883"},{"name":"INSDC center alias","value":"EMG"},{"name":"INSDC center name","value":"EMG"},{"name":"INSDC first public","value":"2023-07-13T16:22:57Z"},{"name":"INSDC last update","value":"2023-07-13T16:22:57Z"},{"name":"INSDC status","value":"public"},{"name":"Submitter Id","value":"ERR9609794_bin.7_MetaWRAP_v1.3_MAG"},{"name":"assembly quality","value":"Many fragments with little to no review of assembly other than reporting of standard assembly statistics"},{"name":"assembly software","value":"metaspades v3.15.3"},{"name":"binning parameters","value":"MaxBin2, MetaBat2, Concoct with default parameter of the metaWRAP pipeline. Bin refinement module used from metaWRAP with default parameters."},{"name":"binning software","value":"MetaWRAP v1.3"},{"name":"env_broad_scale","value":"Human digestive system"},{"name":"broker name","value":"EMG broker account, EMBL-EBI"},{"name":"collection_date","value":"2015"},{"name":"completeness score","value":"97.8"},{"name":"completeness software","value":"CheckM"},{"name":"contamination score","value":"1.42"},{"name":"env_medium","value":"faeces"},{"name":"geo_loc_name","value":"China"},{"name":"geographic location (latitude)","value":"39.0"},{"name":"geographic location (longitude)","value":"122.0"},{"name":"investigation_type","value":"metagenome-assembled genome"},{"name":"isolation_source","value":"human feces metagenome"},{"name":"local environmental context","value":"colon"},{"name":"metagenomic source","value":"human feces metagenome"},{"name":"project_name","value":"Human gut microbiota is believed to be directly or indirectly involved in cardiovascular diseases and hypertension. However, the identification and functional status of the hypertension-related gut microbe(s) have not yet been surveyed in a comprehensive manner. Here we characterized the gut microbiome in hypertension status by comparing fecal samples of 60 patients with primary hypertension and 60 gender-, age-, and body weight-matched healthy controls based on whole-metagenome shotgun sequencing."},{"name":"sample derived from","value":"SAMEA14093502"},{"name":"sample_name","value":"ERR9609794_bin.7_MetaWRAP_v1.3_MAG"},{"name":"scientific_name","value":"Streptococcus vestibularis"},{"name":"sequencing method","value":"Illumina HiSeq 2000"},{"name":"taxonomic classification","value":"The taxonomy of this Metagenome-Assembled Genome was originally computed with GTDBtk, which assigned the following taxonomic annotation: d__Bacteria;p__Firmicutes;c__Bacilli;o__Lactobacillales;f__Streptococcaceae;g__Streptococcus;s__Streptococcus vestibularis"},{"name":"taxonomic identity marker","value":"multi-marker approach"}],"collection_date":"2015","description":{"comment":"This sample represents a Third Party Annotation (TPA) metagenome-assembled genome assembled from the metagenomic run ERR9609794 of study ERP023883.","organism":{"organism_name":"Streptococcus vestibularis","tax_id":1343},"title":"Metagenome-Assembled Genome: ERR9609794_bin.7_MetaWRAP_v1.3_MAG"},"geo_loc_name":"China","isolation_source":"human feces metagenome","last_updated":"2023-07-15T06:13:51.000","models":["Generic"],"owner":{"name":"EBI"},"package":"Generic.1.0","project_name":"Human gut microbiota is believed to be directly or indirectly involved in cardiovascular diseases and hypertension. However, the identification and functional status of the hypertension-related gut microbe(s) have not yet been surveyed in a comprehensive manner. Here we characterized the gut microbiome in hypertension status by comparing fecal samples of 60 patients with primary hypertension and 60 gender-, age-, and body weight-matched healthy controls based on whole-metagenome shotgun sequencing.","publication_date":"2023-07-13T00:00:00.000","sample_ids":[{"db":"SRA","value":"ERS16045747"}],"sample_name":"ERR9609794_bin.7_MetaWRAP_v1.3_MAG","status":{"status":"live","when":"2023-07-17T10:07:32.262"},"submission_date":"2023-07-17T10:07:32.262"},"comments":"The annotation was added by the NCBI Prokaryotic Genome Annotation Pipeline (PGAP). Information about PGAP can be found here: https://www.ncbi.nlm.nih.gov/genome/annotation_prok/","genome_notes":["derived from metagenome"],"paired_assembly":{"accession":"GCA_958445235.1","status":"current"},"release_date":"2023-07-18","sequencing_tech":"Illumina HiSeq 2000","submitter":"EMG"},"assembly_stats":{"atgc_count":"1832103","contig_l50":14,"contig_n50":42507,"gc_count":"725658","gc_percent":39.5,"genome_coverage":"101","number_of_component_sequences":72,"number_of_contigs":72,"number_of_scaffolds":72,"scaffold_l50":14,"scaffold_n50":42507,"total_sequence_length":"1832103","total_ungapped_length":"1832103"},"average_nucleotide_identity":{"best_ani_match":{"ani":97.14,"assembly":"GCA_053203075.1","assembly_coverage":89.61,"category":"type","organism_name":"Streptococcus vestibularis","type_assembly_coverage":87.66},"category":"category_na","comment":"na","match_status":"species_match","submitted_ani_match":{"ani":97.14,"assembly":"GCA_053203075.1","assembly_coverage":89.61,"category":"type","organism_name":"Streptococcus vestibularis","type_assembly_coverage":87.66},"submitted_organism":"Streptococcus vestibularis","submitted_species":"Streptococcus vestibularis","taxonomy_check_status":"OK"},"checkm_info":{"checkm_marker_set":"Streptococcus","checkm_marker_set_rank":"genus","checkm_species_tax_id":1343,"checkm_version":"v1.2.4","completeness":96.77,"completeness_percentile":20.7547,"contamination":0.4},"current_accession":"GCF_958445235.1","organism":{"infraspecific_names":{"isolate":"ERR9609794_bin.7_MetaWRAP_v1.3_MAG"},"organism_name":"Streptococcus vestibularis","tax_id":1343},"paired_accession":"GCA_958445235.1","source_database":"SOURCE_DATABASE_REFSEQ","wgs_info":{"master_wgs_url":"https://www.ncbi.nlm.nih.gov/nuccore/CAUCRO000000000.1","wgs_contigs_url":"https://www.ncbi.nlm.nih.gov/Traces/wgs/CAUCRO01","wgs_project_accession":"CAUCRO01"}}],"total_count": 1}
+
+plot_histogram(sy, phenotype = 'disease', contig = th_sv$Contig_name[2],
+              drop_zeros = T, show_quantiles = F, fit_spline = T, bins = 30)
 
 ```
 
@@ -584,307 +603,307 @@ In short, it looks like species such as *Fusobacterium animalis*, *Peptostreptoc
 
 ## Paper figures
 ```{r}
-
-# For CRC ZI signals, let's show the presence absence (<95% ANI) as a tile plot
-zi_summary$Dominant_contig[order(abs(zi_summary$Dominant_coef), decreasing = T)[1:5]]
-
-# Which ones to use:
-# Dialister pneumosintes - NZ_CP017037.1
-# Peptostreptococcus stomatis - NZ_ADGQ01000074.1
-# Gemella morbillorum - NZ_LS483440.1
-# Parvimonas micra - NZ_LR134472.1
-# Fusobacterium animalis - NZ_CP071098.1
-
-# Roseburia rectibacter - NZ_CP092473.1
-
-zib_contigs = c("NZ_CP017037.1", "NZ_ADGQ01000074.1", "NZ_LS483440.1", "NZ_LR134472.1", "NZ_CP071098.1", 
-                "CAKRCB010000001.1", "CABUSM010000001.1", "CAKRGY010000001.1", "CAUDRE010000001.1", "NZ_QUJS01000001.1")
-sy_ss = sy[sapply(zib_contigs, function(x) grep(x, rownames(sy))),]
-
-prev_ = list()
-for(i in c("CRC", "Control")){
-  sy_ss_t = as.matrix(assay(subset(sy_ss, select = colData(sy_ss)$disease  %in% i)))
-  prev_[[i]] = apply(sy_ss_t, 1, function(x) sum(x >= 95)/ncol(sy_ss_t))
-}
-prev_df = data.frame(do.call(cbind, prev_))
-prev_df$Species = c("Dialister pneumosintes", 
-                    "Peptostreptococcus stomatis",
-                    "Gemella morbillorum",
-                    "Parvimonas micra",
-                    "Fusobacterium animalis",
-                    "Lachnospira sp.",
-                    "Faecalibacterium sp.",
-                    "Butyribacter hominis",
-                    "Faecalibacterium prausnitzii",
-                    "Butyribacter intestini")
-
-
-prev_df <- prev_df %>%
-  mutate(
-    log2FC = log2(CRC / Control),
-    direction = ifelse(log2FC > 0, "Enriched in CRC", "Depleted in CRC")
-  )
-
-# explicit ordering: CRC group first (high to low), then Control group
-crc_df <- prev_df %>%
-  filter(direction == "Enriched in CRC") %>%
-  arrange(desc(CRC))
-
-ctrl_df <- prev_df %>%
-  filter(direction == "Depleted in CRC") %>%
-  arrange(CRC)
-
-prev_df$Species <- factor(
-  prev_df$Species,
-  levels = c(ctrl_df$Species, crc_df$Species)
-)
-
-ggplot(prev_df, aes(y = Species)) +
-  
-  geom_segment(
-    aes(x = Control, xend = CRC, yend = Species, color = direction),
-    linewidth = 1.2
-  ) +
-  
-  geom_point(aes(x = Control, color = direction),
-             shape = 21, fill = "white", size = 3) +
-  
-  geom_point(aes(x = CRC, color = direction),
-             shape = 21, fill = "black", size = 3) +
-  
-  scale_color_manual(values = c(
-    "Enriched in CRC" = "#d73027",
-    "Depleted in CRC" = "#4575b4"
-  )) +
-  
-  labs(x = "Prevalence", y = NULL, color = NULL) +
-  
-  theme_classic(base_size = 16) +   # 👈 main change
-  
-  theme(
-    axis.text.y = element_text(size = 14),
-    axis.text.x = element_text(size = 13),
-    axis.title.x = element_text(size = 15, face = "bold"),
-    
-    legend.position = "top",
-    legend.text = element_text(size = 13),
-    
-    axis.line = element_line(linewidth = 0.7)
-  )
-
-#####################################
-do_lolipop = function(th_sp){
-  
-  library(dplyr)
-  library(tidyr)
-  library(ggplot2)
-  
-  ## =========================================================
-  ## species name
-  ## =========================================================
-  
-  species_name = unique(th_sp$Species)
-  
-  ## =========================================================
-  ## get submatrices
-  ## =========================================================
-  
-  sy_ec = sy[
-    sapply(
-      th_sp$Contig_name,
-      function(x) which(rownames(sy) %in% x)
-    ),
-  ]
-  
-  sy_ec_crc = as.matrix(
-    assay(
-      subset(
-        sy_ec,
-        select = colData(sy_ec)$disease %in% "CRC"
-      )
-    )
-  )
-  
-  sy_ec_ctr = as.matrix(
-    assay(
-      subset(
-        sy_ec,
-        select = colData(sy_ec)$disease %in% "Control"
-      )
-    )
-  )
-  
-  ## =========================================================
-  ## mean ANI per strain
-  ## =========================================================
-  
-  crc_mean <- apply(
-    sy_ec_crc,
-    1,
-    function(x)
-      mean(x[x > 0], na.rm = TRUE)
-  )
-  
-  ## reconstruct HC from model-estimated contrast
-  hc_mean <- crc_mean - th_sp$ANI_Difference
-  
-  ## =========================================================
-  ## plotting dataframe
-  ## =========================================================
-  
-  df_plot <- data.frame(
-    strain = names(hc_mean),
-    HC = hc_mean,
-    CRC = crc_mean,
-    effect = th_sp$ANI_Difference,
-    padj = th_sp$p_adjust
-  )
-  
-  ## direction
-  df_plot$direction <- df_plot$CRC > df_plot$HC
-  
-  ## WLS weights
-  df_plot$weights <- -log10(df_plot$padj + 1e-10)
-  
-  ## avoid zero / inf weirdness
-  df_plot$weights[!is.finite(df_plot$weights)] <- max(
-    df_plot$weights[is.finite(df_plot$weights)],
-    na.rm = TRUE
-  )
-  
-  ## =========================================================
-  ## long format
-  ## =========================================================
-  
-  plot_long <- df_plot %>%
-    pivot_longer(
-      cols = c(HC, CRC),
-      names_to = "group",
-      values_to = "ANI"
-    ) %>%
-    left_join(
-      df_plot %>%
-        select(
-          strain,
-          direction,
-          weights
-        ),
-      by = "strain"
-    )
-  
-  ## =========================================================
-  ## weighted overall ANI shift
-  ## =========================================================
-  
-  overall_shift <- weighted.mean(
-    df_plot$effect,
-    w = df_plot$weights,
-    na.rm = TRUE
-  )
-  
-  ## =========================================================
-  ## plot
-  ## =========================================================
-  cat(min(plot_long$ANI))
-  cat(max(plot_long$ANI))
-  
-  p = ggplot(
-    plot_long,
-    aes(
-      x = group,
-      y = ANI,
-      group = strain
-    )
-  ) +
-    
-    ## strain trajectories
-    geom_line(
-      aes(
-        colour = direction.x
-      ),
-      alpha = 0.55,
-      linewidth = 0.7
-    ) +
-    
-    ## endpoints
-    geom_point(
-      size = 1.8,
-      colour = "black",
-      alpha = 0.8
-    )
-  
-  ## only add trend if >1 strain
-  if(nrow(th_sp) > 1){
-    
-    p = p +
-      
-      geom_smooth(
-        aes(
-          group = 1,
-          weight = weights.x
-        ),
-        method = "lm",
-        se = FALSE,
-        linewidth = 1.2,
-        linetype = "dashed",
-        colour = "grey30"
-      )
-  }
-  
-  p = p +
-    
-    scale_colour_manual(
-      values = c(
-        "TRUE"  = "#d95f5f",
-        "FALSE" = "#5f8fd9"
-      ),
-      guide = "none"
-    ) +
-    
-    coord_cartesian(
-      ylim = c(96.5, 98.75)
-    ) +
-    
-    labs(
-      title = species_name,
-      subtitle = paste0(
-        "Weighted mean ΔANI (CRC − HC) = ",
-        round(overall_shift, 4)
-      ),
-      x = NULL,
-      y = "Mean ANI"
-    ) +
-    
-    theme_classic() +
-    
-    theme(
-      
-      plot.title = element_text(
-        face = "italic",
-        size = 16
-      ),
-      
-      plot.subtitle = element_text(
-        size = 16,
-        colour = "grey30"
-      ),
-      
-      axis.text = element_text(
-        size = 16
-      ),
-      
-      axis.title.y = element_text(
-        size = 16
-      ),
-      
-      legend.position = "none"
-    )
-  
-  return(p)
-}
-
-th_beta = th[th$hit_component=="beta",]
-th_beta = th_beta[order(abs(th_beta$ANI_Difference), decreasing = T),]
+#  Some files are missing to generate these, but these are optional
+# # For CRC ZI signals, let's show the presence absence (<95% ANI) as a tile plot
+# zi_summary$Dominant_contig[order(abs(zi_summary$Dominant_coef), decreasing = T)[1:5]]
+# 
+# # Which ones to use:
+# # Dialister pneumosintes - NZ_CP017037.1
+# # Peptostreptococcus stomatis - NZ_ADGQ01000074.1
+# # Gemella morbillorum - NZ_LS483440.1
+# # Parvimonas micra - NZ_LR134472.1
+# # Fusobacterium animalis - NZ_CP071098.1
+# 
+# # Roseburia rectibacter - NZ_CP092473.1
+# 
+# zib_contigs = c("NZ_CP017037.1", "NZ_ADGQ01000074.1", "NZ_LS483440.1", "NZ_LR134472.1", "NZ_CP071098.1", 
+#                 "CAKRCB010000001.1", "CABUSM010000001.1", "CAKRGY010000001.1", "CAUDRE010000001.1", "NZ_QUJS01000001.1")
+# sy_ss = sy[sapply(zib_contigs, function(x) grep(x, rownames(sy))),]
+# 
+# prev_ = list()
+# for(i in c("CRC", "Control")){
+#   sy_ss_t = as.matrix(assay(subset(sy_ss, select = colData(sy_ss)$disease  %in% i)))
+#   prev_[[i]] = apply(sy_ss_t, 1, function(x) sum(x >= 95)/ncol(sy_ss_t))
+# }
+# prev_df = data.frame(do.call(cbind, prev_))
+# prev_df$Species = c("Dialister pneumosintes", 
+#                     "Peptostreptococcus stomatis",
+#                     "Gemella morbillorum",
+#                     "Parvimonas micra",
+#                     "Fusobacterium animalis",
+#                     "Lachnospira sp.",
+#                     "Faecalibacterium sp.",
+#                     "Butyribacter hominis",
+#                     "Faecalibacterium prausnitzii",
+#                     "Butyribacter intestini")
+# 
+# 
+# prev_df <- prev_df %>%
+#   mutate(
+#     log2FC = log2(CRC / Control),
+#     direction = ifelse(log2FC > 0, "Enriched in CRC", "Depleted in CRC")
+#   )
+# 
+# # explicit ordering: CRC group first (high to low), then Control group
+# crc_df <- prev_df %>%
+#   filter(direction == "Enriched in CRC") %>%
+#   arrange(desc(CRC))
+# 
+# ctrl_df <- prev_df %>%
+#   filter(direction == "Depleted in CRC") %>%
+#   arrange(CRC)
+# 
+# prev_df$Species <- factor(
+#   prev_df$Species,
+#   levels = c(ctrl_df$Species, crc_df$Species)
+# )
+# 
+# ggplot(prev_df, aes(y = Species)) +
+#   
+#   geom_segment(
+#     aes(x = Control, xend = CRC, yend = Species, color = direction),
+#     linewidth = 1.2
+#   ) +
+#   
+#   geom_point(aes(x = Control, color = direction),
+#              shape = 21, fill = "white", size = 3) +
+#   
+#   geom_point(aes(x = CRC, color = direction),
+#              shape = 21, fill = "black", size = 3) +
+#   
+#   scale_color_manual(values = c(
+#     "Enriched in CRC" = "#d73027",
+#     "Depleted in CRC" = "#4575b4"
+#   )) +
+#   
+#   labs(x = "Prevalence", y = NULL, color = NULL) +
+#   
+#   theme_classic(base_size = 16) +   # 👈 main change
+#   
+#   theme(
+#     axis.text.y = element_text(size = 14),
+#     axis.text.x = element_text(size = 13),
+#     axis.title.x = element_text(size = 15, face = "bold"),
+#     
+#     legend.position = "top",
+#     legend.text = element_text(size = 13),
+#     
+#     axis.line = element_line(linewidth = 0.7)
+#   )
+# 
+# #####################################
+# do_lolipop = function(th_sp){
+#   
+#   library(dplyr)
+#   library(tidyr)
+#   library(ggplot2)
+#   
+#   ## =========================================================
+#   ## species name
+#   ## =========================================================
+#   
+#   species_name = unique(th_sp$Species)
+#   
+#   ## =========================================================
+#   ## get submatrices
+#   ## =========================================================
+#   
+#   sy_ec = sy[
+#     sapply(
+#       th_sp$Contig_name,
+#       function(x) which(rownames(sy) %in% x)
+#     ),
+#   ]
+#   
+#   sy_ec_crc = as.matrix(
+#     assay(
+#       subset(
+#         sy_ec,
+#         select = colData(sy_ec)$disease %in% "CRC"
+#       )
+#     )
+#   )
+#   
+#   sy_ec_ctr = as.matrix(
+#     assay(
+#       subset(
+#         sy_ec,
+#         select = colData(sy_ec)$disease %in% "Control"
+#       )
+#     )
+#   )
+#   
+#   ## =========================================================
+#   ## mean ANI per strain
+#   ## =========================================================
+#   
+#   crc_mean <- apply(
+#     sy_ec_crc,
+#     1,
+#     function(x)
+#       mean(x[x > 0], na.rm = TRUE)
+#   )
+#   
+#   ## reconstruct HC from model-estimated contrast
+#   hc_mean <- crc_mean - th_sp$ANI_Difference
+#   
+#   ## =========================================================
+#   ## plotting dataframe
+#   ## =========================================================
+#   
+#   df_plot <- data.frame(
+#     strain = names(hc_mean),
+#     HC = hc_mean,
+#     CRC = crc_mean,
+#     effect = th_sp$ANI_Difference,
+#     padj = th_sp$p_adjust
+#   )
+#   
+#   ## direction
+#   df_plot$direction <- df_plot$CRC > df_plot$HC
+#   
+#   ## WLS weights
+#   df_plot$weights <- -log10(df_plot$padj + 1e-10)
+#   
+#   ## avoid zero / inf weirdness
+#   df_plot$weights[!is.finite(df_plot$weights)] <- max(
+#     df_plot$weights[is.finite(df_plot$weights)],
+#     na.rm = TRUE
+#   )
+#   
+#   ## =========================================================
+#   ## long format
+#   ## =========================================================
+#   
+#   plot_long <- df_plot %>%
+#     pivot_longer(
+#       cols = c(HC, CRC),
+#       names_to = "group",
+#       values_to = "ANI"
+#     ) %>%
+#     left_join(
+#       df_plot %>%
+#         select(
+#           strain,
+#           direction,
+#           weights
+#         ),
+#       by = "strain"
+#     )
+#   
+#   ## =========================================================
+#   ## weighted overall ANI shift
+#   ## =========================================================
+#   
+#   overall_shift <- weighted.mean(
+#     df_plot$effect,
+#     w = df_plot$weights,
+#     na.rm = TRUE
+#   )
+#   
+#   ## =========================================================
+#   ## plot
+#   ## =========================================================
+#   cat(min(plot_long$ANI))
+#   cat(max(plot_long$ANI))
+#   
+#   p = ggplot(
+#     plot_long,
+#     aes(
+#       x = group,
+#       y = ANI,
+#       group = strain
+#     )
+#   ) +
+#     
+#     ## strain trajectories
+#     geom_line(
+#       aes(
+#         colour = direction.x
+#       ),
+#       alpha = 0.55,
+#       linewidth = 0.7
+#     ) +
+#     
+#     ## endpoints
+#     geom_point(
+#       size = 1.8,
+#       colour = "black",
+#       alpha = 0.8
+#     )
+#   
+#   ## only add trend if >1 strain
+#   if(nrow(th_sp) > 1){
+#     
+#     p = p +
+#       
+#       geom_smooth(
+#         aes(
+#           group = 1,
+#           weight = weights.x
+#         ),
+#         method = "lm",
+#         se = FALSE,
+#         linewidth = 1.2,
+#         linetype = "dashed",
+#         colour = "grey30"
+#       )
+#   }
+#   
+#   p = p +
+#     
+#     scale_colour_manual(
+#       values = c(
+#         "TRUE"  = "#d95f5f",
+#         "FALSE" = "#5f8fd9"
+#       ),
+#       guide = "none"
+#     ) +
+#     
+#     coord_cartesian(
+#       ylim = c(96.5, 98.75)
+#     ) +
+#     
+#     labs(
+#       title = species_name,
+#       subtitle = paste0(
+#         "Weighted mean ΔANI (CRC − HC) = ",
+#         round(overall_shift, 4)
+#       ),
+#       x = NULL,
+#       y = "Mean ANI"
+#     ) +
+#     
+#     theme_classic() +
+#     
+#     theme(
+#       
+#       plot.title = element_text(
+#         face = "italic",
+#         size = 16
+#       ),
+#       
+#       plot.subtitle = element_text(
+#         size = 16,
+#         colour = "grey30"
+#       ),
+#       
+#       axis.text = element_text(
+#         size = 16
+#       ),
+#       
+#       axis.title.y = element_text(
+#         size = 16
+#       ),
+#       
+#       legend.position = "none"
+#     )
+#   
+#   return(p)
+# }
+# 
+# th_beta = th[th$hit_component=="beta",]
+# th_beta = th_beta[order(abs(th_beta$ANI_Difference), decreasing = T),]
 
 # species_name <- "Roseburia sp019411365"
 # th_sp <- th_beta %>%
@@ -912,28 +931,28 @@ th_beta = th_beta[order(abs(th_beta$ANI_Difference), decreasing = T),]
 # Two opportunists
 # Pick this one, 0.07 difference!
 
-species_name <- "Escherichia coli"
-th_sp <- th_beta %>%
-  filter(Species == species_name)
-p1 = do_lolipop(th_sp)
-
-species_name <- "Streptococcus vestibularis"
-th_sp <- th_beta %>%
-  filter(Species == species_name)
-p2 = do_lolipop(th_sp)
-
-# Two good ones
-species_name <- "Faecalibacterium prausnitzii_D"
-th_sp <- th_beta %>%
-  filter(Species == species_name)
-p3 = do_lolipop(th_sp)
-
-species_name <- "Faecalibacterium longum"
-th_sp <- th_beta %>%
-  filter(Species == species_name)
-p4 = do_lolipop(th_sp)
-
-p1 + p2 + p3 + p4
+# species_name <- "Escherichia coli"
+# th_sp <- th_beta %>%
+#   filter(Species == species_name)
+# p1 = do_lolipop(th_sp)
+# 
+# species_name <- "Streptococcus vestibularis"
+# th_sp <- th_beta %>%
+#   filter(Species == species_name)
+# p2 = do_lolipop(th_sp)
+# 
+# # Two good ones
+# species_name <- "Faecalibacterium prausnitzii_D"
+# th_sp <- th_beta %>%
+#   filter(Species == species_name)
+# p3 = do_lolipop(th_sp)
+# 
+# species_name <- "Faecalibacterium longum"
+# th_sp <- th_beta %>%
+#   filter(Species == species_name)
+# p4 = do_lolipop(th_sp)
+# 
+# p1 + p2 + p3 + p4
 
 
 
